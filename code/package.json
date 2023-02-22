@@ -1,0 +1,32 @@
+{
+  "name": "arss",
+  "description": "A rss reader.",
+  "version": "0.0.1",
+  "license": "MIT",
+  "main": "js/cmd.js",
+  "browserify": {
+    "transform": [
+      "brfs"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xriss/arss",
+    "directory": ""
+  },
+  "bin": {},
+  "directories": {},
+  "dependencies": {
+    "idb": "^7.0.2",
+    "jquery": "^3.6.0",
+    "plated": "^0.0.85",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "brfs": "^2.0.2",
+    "browserify": "^17.0.0",
+    "browserify-css": "^0.15.0",
+    "uglifyify": "^5.0.2",
+    "watchify": "^4.0.0"
+  }
+}
