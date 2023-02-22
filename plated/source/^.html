@@ -3,7 +3,14 @@
 #^html trim=ends
 <!DOCTYPE html>
 <html>
-<head>{head}</head>
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="{_root}js/arss.js"></script>
+    <script>
+        require("arss").setup({})
+    </script>
+    {head}
+</head>
 <body>{body}</body>
 </html>
 
