@@ -20,6 +20,7 @@
     "idb": "^7.0.2",
     "jquery": "^3.6.0",
     "plated": "^0.0.85",
+    "rss-parser": "^3.12.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
