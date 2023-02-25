@@ -1,5 +1,5 @@
 
-var jxml=exports
+const jxml=exports
 
 
 jxml.xmap={}

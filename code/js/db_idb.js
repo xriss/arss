@@ -1,7 +1,7 @@
 
-let db=exports
+const db=exports
 
-let idb = require( "idb/with-async-ittr" )
+const idb = require( "idb/with-async-ittr" )
 
 db.setup=async function()
 {

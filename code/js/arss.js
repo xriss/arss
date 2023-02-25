@@ -1,5 +1,5 @@
 
-var arss=exports
+const arss=exports
 
 
 const jxml = require('./jxml.js');
@@ -28,20 +28,11 @@ arss.start=async function()
 	url="http://rss.cnn.com/rss/cnn_topstories.rss"
 	url="./tmp/subscriptions.opml"
 	
-	let txt=await hoard.fetch_text(url)
+	let txt=await hoard.fetch_text(url,true)
 	let jsn=jxml.parse_xml(txt,jxml.xmap.opml)
 	console.log(txt)
 	console.log(jsn)
 
-//  let feed = await parser.parseURL(url);
-//  console.log(feed);
-/*
-	$.get( url, function( data ) {
-	  console.log( url );
-	  console.log( data );
-	  $( "body" ).html( ""+data );
-	});
-*/
 
 }
 

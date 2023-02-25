@@ -2,14 +2,14 @@
 // Copyright (c) 2019 International Aid Transparency Initiative (IATI)
 // Licensed under the MIT license whose full text can be found at http://opensource.org/licenses/MIT
 
-var cmd=exports;
+const cmd=exports;
 
-let pfs=require("fs").promises
+const pfs=require("fs").promises
 
-var jml=require("./jxml.js")
+const jml=require("./jxml.js")
 
 
-var ls=function(a) { console.log(util.inspect(a,{depth:null})); }
+const ls=function(a) { console.log(util.inspect(a,{depth:null})); }
 
 
 cmd.parse=function(argv)
