@@ -26,9 +26,9 @@ arss.start=async function()
 
 	await db.setup()
 
-//	await feeds.add_opml("./tmp/subscriptions.opml")
-//	await feeds.fetch_all()
-	await items.test()
+	await feeds.add_opml("./tmp/subscriptions.opml")
+	feeds.fetch_all()
+	items.test()
 
 /*
 	let url="https://edition.cnn.com/"

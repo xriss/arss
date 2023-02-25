@@ -40,24 +40,38 @@ items.test=async function()
 {
 	let aa=[]
 	
+	let frameurl=undefined
+	
+	if(window.location.hash!="")
+	{
+		frameurl=window.location.hash.substring(1)
+		document.getElementById('arss_page').setAttribute('src', frameurl)
+	}
+
 	let list=await db.list("items",{},"date","prev")
 	let count=0
 	for(item of list)
 	{
 		count++
-		if( count>100 ){ break }
+		if( count>1000 ){ break }
 		console.log(item)
+		if(!frameurl){
+			frameurl=item["/link"]
+			window.location.hash="#"+frameurl
+			document.getElementById('arss_page').setAttribute('src', frameurl)
+		}
 		aa.push(
 `
 <div>
-<div><a href="${item["/link"]}" target="arss_page">${item["/title"]}</a></div>
+<div><a href="${item["/link"]}" target="arss_page" onclick="window.location.hash='#${item["/link"]}'">${item["/title"]}</a></div>
 <div>${item["/description"]}</div>
 </div>
 <div>-</div>
 `)
 	}
 	
-	document.getElementById('arss_list').innerHTML = aa.join("");
+	document.getElementById('arss_list').innerHTML = aa.join("")
+
 
 }
 
