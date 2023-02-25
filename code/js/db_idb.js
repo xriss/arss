@@ -1,41 +1,39 @@
 
-var db=exports
+let db=exports
 
 let idb = require( "idb/with-async-ittr" )
 
 db.setup=async function()
 {
-
-	db.handle = await idb.openDB("arss", 1, {
+	db.handle = await idb.openDB("arss", 2, {
 		upgrade(handle) {
 			try{
-				let keyval=handle.createObjectStore('keyval')
-				feeds.createIndex("date", "date")
+				let it=handle.createObjectStore('keyval')
+				it.createIndex("date", "date")
 			}catch(e){console.error(e)}
 			
 			try{
-				let hoard=handle.createObjectStore('hoard')
-				feeds.createIndex("date", "date")
+				let it=handle.createObjectStore('hoard')
+				it.createIndex("date", "date")
 			}catch(e){console.error(e)}
 			
 			try{
-				let feeds=handle.createObjectStore("feeds", {
+				let it=handle.createObjectStore("feeds", {
 					keyPath: "id",
 					autoIncrement: true,
 				})
-				feeds.createIndex("date", "date")
+				it.createIndex("date", "date")
 			}catch(e){console.error(e)}
 			
 			try{
-				let items=handle.createObjectStore("items", {
+				let it=handle.createObjectStore("items", {
 					keyPath: "id",
 					autoIncrement: true,
 				})
-				items.createIndex("date", "date")
+				it.createIndex("date", "date")
 			}catch(e){console.error(e)}
 		},
 	})
-
 }
 
 db.get=async function(table,key)
@@ -45,10 +43,10 @@ db.get=async function(table,key)
 	return ret
 }
 
-db.put=async function(table,it,key)
+db.set=async function(table,key,it)
 {
 	table=table||"keyval"
-	await db.handle.put(table, it ,key )
+	await db.handle.put(table, it, key )
 }
 
 db.add=async function(table,it)

@@ -5,6 +5,7 @@ module.exports = {
   resolve: {
     fallback : {
       fs: false,
+      fetch: require.resolve('cross-fetch'),
       buffer: require.resolve('buffer'),
       stream: require.resolve("stream-browserify"),
     },
