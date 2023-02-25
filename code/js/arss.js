@@ -6,6 +6,7 @@ const jxml = require('./jxml.js')
 const db = require('./db_idb.js')
 const hoard = require('./hoard.js')
 const feeds = require('./feeds.js')
+const items = require('./items.js')
 
   
   
@@ -25,8 +26,9 @@ arss.start=async function()
 
 	await db.setup()
 
-	await feeds.add_opml("./tmp/subscriptions.opml")
-	await feeds.fetch_all()
+//	await feeds.add_opml("./tmp/subscriptions.opml")
+//	await feeds.fetch_all()
+	await items.test()
 
 /*
 	let url="https://edition.cnn.com/"

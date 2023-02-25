@@ -26,12 +26,13 @@ feeds.add_opml=async function(url)
 {
 	let txt=await hoard.fetch_text(url,true)
 	let jsn=jxml.parse_xml(txt,jxml.xmap.opml)
+console.log(jsn)
 	for( it of jsn["/opml/body/outline"] )
 	{
 		let feed={}
-		if( it["@xmlUrl"] )
+		if( it["@xmlurl"] )
 		{
-			feed.url=it["@xmlUrl"]
+			feed.url=it["@xmlurl"]
 			await feeds.add(feed)
 		}
 	}

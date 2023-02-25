@@ -51,7 +51,7 @@ jxml.parse_xml=function(data,xmap)
 	}
 
 	parser.onopentag=(node)=>{
-		tag="/"+node.name
+		tag="/"+node.name.toLowerCase()
 
 		let path=xpath.join("")+tag
 		let tagpath=opath.at(-1)+tag
@@ -61,14 +61,14 @@ jxml.parse_xml=function(data,xmap)
 			top={}
 			if(! parent[tagpath] ) { parent[tagpath]=[] }
 			parent[tagpath].push(top)
-			for(n in node.attributes) { top["@"+n]=node.attributes[n] }
+			for(n in node.attributes) { top["@"+n.toLowerCase()]=node.attributes[n] }
 			stack.push(top)
 			xpath.push(tag)
 			opath.push("")
 		}
 		else
 		{
-			for(n in node.attributes) { top[tagpath+"@"+n]=node.attributes[n] }
+			for(n in node.attributes) { top[tagpath+"@"+n.toLowerCase()]=node.attributes[n] }
 			stack.push(top)
 			xpath.push(tag)
 			opath.push(tagpath)

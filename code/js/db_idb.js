@@ -49,7 +49,7 @@ db.add=async function(table,it)
 	await db.handle.add(table, it )
 }
 
-db.list=async function(table,filter,sort)
+db.list=async function(table,filter,sort,sortdir)
 {
 	table=table||"keyval"
 	filter=filter || {}
@@ -71,14 +71,14 @@ db.list=async function(table,filter,sort)
 	if(sort)
 	{
 		const index=tx.store.index(sort)
-		for await (const cursor of index.iterate())
+		for await (const cursor of index.iterate(null,sortdir))
 		{
 			f(cursor)
 		}
 	}
 	else
 	{
-		for await (const cursor of tx.store)
+		for await (const cursor of tx.store.iterate(null,sortdir))
 		{
 			f(cursor)
 		}

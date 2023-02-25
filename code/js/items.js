@@ -15,7 +15,7 @@ items.prepare=function(it,feed)
 	}
 	let uuid=it["/guid"] || it["/link"] || it["/title"] || it["/pubdate"] || ""
 	it.uuid=it.feed+"^"+uuid
-	it.date=new Date()
+	it.date=new Date(it["/pubdate"])
 }
 
 items.add=async function(it)
@@ -34,4 +34,30 @@ items.add=async function(it)
 	await db.set("items",it.uuid,it)
 }
 
+
+
+items.test=async function()
+{
+	let aa=[]
+	
+	let list=await db.list("items",{},"date","prev")
+	let count=0
+	for(item of list)
+	{
+		count++
+		if( count>100 ){ break }
+		console.log(item)
+		aa.push(
+`
+<div>
+<div><a href="${item["/link"]}" target="arss_page">${item["/title"]}</a></div>
+<div>${item["/description"]}</div>
+</div>
+<div>-</div>
+`)
+	}
+	
+	document.getElementById('arss_list').innerHTML = aa.join("");
+
+}
 
