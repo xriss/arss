@@ -1,16 +1,9 @@
 
 const hoard=exports
 
-const db = require('./db_idb.js');
+const db = require('./db_idb.js')
 
-const fetch = require('fetch');
-
-const fetch_text=async function(url)
-{
-	let res=await fetch(url)
-	if( res.status >= 400 ) { throw new Error("Bad response from server"); }
-	return res.text();
-}
+const fetch = require('fetch')
 
 hoard.maxage=15*60*1000
 
@@ -25,12 +18,18 @@ hoard.fetch_text=async function(url,refresh)
 			return it.text
 		}
 	}
-	let res=await fetch(url)
 	it={}
-	it.status=res.status
-	it.text=await res.text()
+	it.status=0
 	it.date=new Date()
-	await db.set("hoard",url,it)
+	try{
+		const controller = new AbortController()
+		const signal = controller.signal
+		setTimeout(function(){controller.abort()}, 10*1000)
+		let res=await fetch(url,{signal})//,{redirect: 'follow',follow: 20})
+		it.status=res.status
+		it.text=await res.text()
+	}catch(e){console.error(e)}		
+	await db.set("hoard",url,it) // always write even if we fail
 	return it.text
 }
 

@@ -2,9 +2,10 @@
 const arss=exports
 
 
-const jxml = require('./jxml.js');
-const db = require('./db_idb.js');
-const hoard = require('./hoard.js');
+const jxml = require('./jxml.js')
+const db = require('./db_idb.js')
+const hoard = require('./hoard.js')
+const feeds = require('./feeds.js')
 
   
   
@@ -24,15 +25,18 @@ arss.start=async function()
 
 	await db.setup()
 
+	await feeds.add_opml("./tmp/subscriptions.opml")
+	await feeds.fetch_all()
+
+/*
 	let url="https://edition.cnn.com/"
 	url="http://rss.cnn.com/rss/cnn_topstories.rss"
-	url="./tmp/subscriptions.opml"
 	
 	let txt=await hoard.fetch_text(url,true)
-	let jsn=jxml.parse_xml(txt,jxml.xmap.opml)
+	let jsn=jxml.parse_xml(txt,jxml.xmap.rss)
 	console.log(txt)
 	console.log(jsn)
-
+*/
 
 }
 

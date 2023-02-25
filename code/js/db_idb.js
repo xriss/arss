@@ -18,18 +18,12 @@ db.setup=async function()
 			}catch(e){console.error(e)}
 			
 			try{
-				let it=handle.createObjectStore("feeds", {
-					keyPath: "id",
-					autoIncrement: true,
-				})
+				let it=handle.createObjectStore("feeds")
 				it.createIndex("date", "date")
 			}catch(e){console.error(e)}
 			
 			try{
-				let it=handle.createObjectStore("items", {
-					keyPath: "id",
-					autoIncrement: true,
-				})
+				let it=handle.createObjectStore("items")
 				it.createIndex("date", "date")
 			}catch(e){console.error(e)}
 		},
@@ -60,7 +54,7 @@ db.list=async function(table,filter,sort)
 	table=table||"keyval"
 	filter=filter || {}
 	let rs=[]
-	const tx = db.transaction(table, 'read');
+	const tx = db.handle.transaction(table, 'readonly');
 	const f=function(cursor)
 	{
 		let it = { ...cursor.value }

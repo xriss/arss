@@ -3,8 +3,19 @@ const jxml=exports
 
 
 jxml.xmap={}
+
 // single level outline
 jxml.xmap.opml={"/opml/body/outline":true}
+
+jxml.xmap.rss={
+	"/rss/channel/category":true,
+	"/rss/channel/item":true,
+	"/rss/channel/item/category":true,
+	"/rss/channel/item/enclosure":true,
+	"/rss/channel/item/media:content":true,
+	"/rss/channel/item/media:group":true,
+	"/rss/channel/item/media:group/media:content":true,
+}
 
 const sax=require('sax')
 
