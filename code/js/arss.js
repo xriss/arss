@@ -11,11 +11,12 @@ const fetch_text=async function(url)
 }
 
 
-let Parser = require('rss-parser');
-let parser = new Parser();
+//let Parser = require('rss-parser');
+//let parser = new Parser();
 
 
 const jxml = require('./jxml.js');
+const db = require('./db_idb.js');
 
   
   
@@ -42,8 +43,9 @@ arss.setup=function(args)
 
 arss.start=async function()
 {
-
 	console.log("ARSS is here")
+
+	db.setup()
 
 	let url="https://edition.cnn.com/"
 	url="http://rss.cnn.com/rss/cnn_topstories.rss"

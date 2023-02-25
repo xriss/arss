@@ -18,19 +18,17 @@
   "directories": {},
   "dependencies": {
     "browserfs": "^1.4.3",
+    "buffer": "^6.0.3",
     "cross-fetch": "^3.1.5",
-    "idb": "^7.0.2",
-    "jquery": "^3.6.0",
+    "fs": "^0.0.1-security",
+    "idb": "^7.1.1",
     "plated": "^0.0.85",
-    "rss-parser": "^3.12.0",
     "sax": "^1.2.4",
-    "uuid": "^8.3.2"
+    "stream-browserify": "^3.0.0"
   },
   "devDependencies": {
-    "brfs": "^2.0.2",
-    "browserify": "^17.0.0",
-    "browserify-css": "^0.15.0",
-    "uglifyify": "^5.0.2",
-    "watchify": "^4.0.0"
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.11.1"
   }
 }

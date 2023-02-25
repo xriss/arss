@@ -12,11 +12,10 @@ fi
 # then require commands
 
 require.sh npx
-require.sh pv
 
 mkdir -p ../plated/source/js
 
-echo "watchify"
 
-npx watchify --ignore-missing -t brfs -g [ browserify-css --autoInject=false --minify=true --stripComments=true ] -v -r ./js/arss.js:arss -d -o ../plated/source/js/arss.js
+npx webpack watch --mode development
+
 

@@ -19,6 +19,4 @@ npm install
 
 mkdir -p ../plated/source/js
 
-echo "browserify"
-
-npx browserify --ignore-missing -t brfs -g [ browserify-css --autoInject=false --minify=true --stripComments=true ] -g uglifyify -r ./js/arss.js:arss -d | pv | npx terser --source-map --output ../plated/source/js/arss.js
+npx webpack --mode production
