@@ -26,7 +26,7 @@ feeds.add_opml=async function(url)
 {
 	let txt=await hoard.fetch_text(url,true)
 	let jsn=jxml.parse_xml(txt,jxml.xmap.opml)
-console.log(jsn)
+//console.log(jsn)
 	for( it of jsn["/opml/body/outline"] )
 	{
 		let feed={}
@@ -51,9 +51,11 @@ feeds.fetch=async function(feed)
 {
 	try{
 		let txt=await hoard.fetch_text(feed.url)
-		let jsn=jxml.parse_xml(txt,jxml.xmap.rss)
-		console.log(jsn)
-		if(jsn["/rss/channel/item"])
+		let jsn
+		try{ jsn=jxml.parse_xml(txt,jxml.xmap.rss) }
+		catch(e){}
+//		console.log(jsn)
+		if(jsn && jsn["/rss/channel/item"])
 		{
 			for( item of jsn["/rss/channel/item"] )
 			{

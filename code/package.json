@@ -23,6 +23,7 @@
     "fs": "^0.0.1-security",
     "idb": "^7.1.1",
     "plated": "^0.0.85",
+    "sanitize-html": "^2.10.0",
     "sax": "^1.2.4",
     "stream-browserify": "^3.0.0"
   },
