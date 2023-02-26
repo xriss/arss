@@ -1,2 +1,7 @@
 
-Please view the [README](plated/README.md) in the plated directory.
+A RSS reader.
+
+Requires some hacks to disable browser security so it can do naughty things like read other websites.
+
+
+
