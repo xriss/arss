@@ -17,6 +17,7 @@
   "bin": {},
   "directories": {},
   "dependencies": {
+    "@vighnesh153/github-gist": "^0.3.0",
     "browserfs": "^1.4.3",
     "buffer": "^6.0.3",
     "cross-fetch": "^3.1.5",

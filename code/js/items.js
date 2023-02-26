@@ -58,11 +58,13 @@ items.test=async function()
 	
 	let frameurl=undefined
 	
+/*
 	if(window.location.hash!="")
 	{
 		frameurl=window.location.hash.substring(1)
 		document.getElementById('arss_page').setAttribute('src', frameurl)
 	}
+*/
 
 	let list=await db.list("items",{},"date","prev")
 	let count=0
@@ -71,11 +73,13 @@ items.test=async function()
 		count++
 		if( count>1000 ){ break }
 //		console.log(item)
+/*
 		if(!frameurl){
 			frameurl=item["/link"]
 			window.location.hash="#"+frameurl
 			document.getElementById('arss_page').setAttribute('src', frameurl)
 		}
+*/
 		const notags={allowedTags: [],allowedAttributes: {}}
 		const allowtags={ allowedTags:[ "img" , "p" ] }
 		const cleanlink = sanistr(item["/link"])
@@ -85,17 +89,138 @@ items.test=async function()
 		date=date[0]+" "+date[1].substring(0,5)
 
 		aa.push(`
-<div>
-<div><a href="${cleanlink}" target="arss_page" onclick="window.location.hash='#${cleanlink}'">${cleantitle}</a></div>
+<div class="arss_item" id="${cleanlink}">
+<div><a href="${cleanlink}" target="_blank" ">${cleantitle}</a></div>
+<div class="arss_date">${date}</div>
 <div>${cleanhtml}</div>
-<div>${date}</div>
 </div>
-<div>-</div>
 `)
 	}
 	
 	document.getElementById('arss_list').innerHTML = aa.join("")
-
-
+	
+	items.test_display()
 }
+items.test_display=function()
+{
+	const maxframes=5	// used for caching content
+	
+	let parent=document.getElementById('arss_list')
+	let list=parent.children
+	
+/*
 
+	let frames=[]
+	frames[0]=document.getElementById('arss_page')
+	let frame_last=frames[0]
+	let frame_show=function(frame)
+	{
+		if(frame_last==frame) { return }
+//		if(frame_last) { frame_last.style.display="none" }
+		frame_last=frame
+		frame.style.display="block"		
+		frame.parentElement.append(frame)
+	}
+	let frame_count=0
+	let frame_new=function(url)
+	{
+console.log("NEW",url)
+		if(frames.length>maxframes) // maximum cache
+		{
+			let frame=frames.pop()
+			frame.remove()
+		}
+		frame_count=frame_count+1
+		let clone = frames[0].cloneNode();
+		clone.style.display="block"
+		clone.id="arss_page"+frame_count
+		clone.name="arss_page"+frame_count
+		clone.src=url
+		frames[0].parentElement.prepend(clone)
+		frames.unshift(clone)
+		return clone
+	}
+	let frame_find=function(url)
+	{
+		for(let idx=0;idx<frames.length;idx++)
+		{
+			let frame=frames[idx]
+			if(frame.src==url)
+			{
+				return frame
+			}
+		}
+	}
+	let frame_bump=function(url)
+	{
+		for(let idx=0;idx<frames.length;idx++)
+		{
+			let frame=frames[idx]
+			if(frame.src==url)
+			{
+				frames.splice(idx,1) // remove
+				frames.unshift(frame) // place at front
+				return frame
+			}
+		}
+	}
+	let frame_url=function(url)
+	{
+		let frame=frame_bump(url) || frame_new(url)
+		frame_show(frame)
+	}
+*/
+	
+	let display_last=null
+	let display=function(e)
+	{
+		if(display_last==e) { return }
+		if(display_last) { display_last.classList.remove("active") }
+		display_last=e
+		e.classList.add("active")
+//		frame_url(e.id)
+		document.getElementById('arss_page').src=e.id
+		
+		// auto cache next/prev pages
+/*
+		let el=e.nextSibling
+		while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.nextSibling }
+		if(el) { if(!frame_find(el.id)) { frame_new(el.id) ; console.log("cache : "+el.id) } }
+		el=e.previousSibling
+		while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.previousSibling }
+		if(el) { if(!frame_find(el.id)) { frame_new(el.id) ; console.log("cache : "+el.id) } }
+*/
+		
+	}
+
+	let top=function(e)
+	{
+		if(!e){return 0}
+		var rect = e.getBoundingClientRect()
+		var win = e.ownerDocument.defaultView
+		return rect.top + win.pageYOffset
+	}
+	
+	let lastx=0
+	let lasty=0
+	let mouseover=function(ev)
+	{
+		lastx=ev.clientX
+		lasty=ev.clientY
+		
+		let el=ev.target
+		while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.parentElement }
+		if(el){display(el)}
+	}
+	for(e of list){e.onmouseover=mouseover}
+
+	parent.onscroll = function(ev)
+	{
+		let el=document.elementFromPoint(lastx,lasty)
+		while(el && !el.classList.contains("arss_item") ){ el = el.parentElement }
+		if(el){display(el)}
+	}
+
+
+	display(list[0])
+}

@@ -7,6 +7,7 @@ const db = require('./db_idb.js')
 const hoard = require('./hoard.js')
 const feeds = require('./feeds.js')
 const items = require('./items.js')
+const gist = require('./gist.js')
 
   
   
@@ -25,10 +26,18 @@ arss.start=async function()
 	console.log("ARSS is here")
 
 	await db.setup()
-
-	await feeds.add_opml("./tmp/subscriptions.opml")
+	await gist.setup()
+	
+	await feeds.load_opml()
+	await feeds.save_opml()
 	feeds.fetch_all()
 	items.test()
+
+/*
+	await feeds.add_opml("","./tmp/subscriptions.opml")
+	feeds.fetch_all()
+	items.test()
+*/
 
 /*
 	let url="https://edition.cnn.com/"

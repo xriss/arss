@@ -6,6 +6,7 @@ const hoard = require('./hoard.js')
 const db = require('./db_idb.js')
 const jxml = require('./jxml.js')
 const items = require('./items.js')
+const gist = require('./gist.js')
 
 
 feeds.add=async function(it)
@@ -22,20 +23,43 @@ feeds.add=async function(it)
 }
 
 
-feeds.add_opml=async function(url)
+feeds.add_opml=async function(data,url)
 {
-	let txt=await hoard.fetch_text(url,true)
-	let jsn=jxml.parse_xml(txt,jxml.xmap.opml)
+	if(url){data=await hoard.fetch_text(url,true)}
+	if(!data){return}
+	let jsn=jxml.parse_xml(data,jxml.xmap.opml)
 //console.log(jsn)
-	for( it of jsn["/opml/body/outline"] )
+	if(jsn["/opml/body/outline"] )
 	{
-		let feed={}
-		if( it["@xmlurl"] )
+		for( it of jsn["/opml/body/outline"] )
 		{
-			feed.url=it["@xmlurl"]
-			await feeds.add(feed)
+			let feed={}
+			if( it["@xmlurl"] )
+			{
+				feed.url=it["@xmlurl"]
+				await feeds.add(feed)
+			}
 		}
 	}
+}
+
+feeds.build_opml=async function()
+{
+	let list=await db.list("feeds")
+	let data="<opml></opml>"
+	return data
+}
+
+feeds.load_opml=async function()
+{
+	let data=await gist.read("subscriptions.opml")
+	await feeds.add_opml(data)
+}
+
+feeds.save_opml=async function()
+{
+	let data=await feeds.build_opml()
+	await gist.write("subscriptions.opml",data)
 }
 
 feeds.fetch_all=async function()
