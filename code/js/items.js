@@ -99,11 +99,11 @@ items.test=async function()
 	
 	document.getElementById('arss_list').innerHTML = aa.join("")
 	
-	items.test_display()
+	await items.test_display()
 }
-items.test_display=function()
+items.test_display=async function()
 {
-	const maxframes=5	// used for caching content
+//	const maxframes=5	// used for caching content
 	
 	let parent=document.getElementById('arss_list')
 	let list=parent.children
@@ -172,15 +172,19 @@ console.log("NEW",url)
 */
 	
 	let display_last=null
-	let display=function(e)
+	let display=async function(e)
 	{
 		if(display_last==e) { return }
 		if(display_last) { display_last.classList.remove("active") }
 		display_last=e
 		e.classList.add("active")
 //		frame_url(e.id)
+
 		document.getElementById('arss_page').src=e.id
-		
+//		let html=await hoard.fetch_text(e.id,true)
+//		document.getElementById('arss_page').src="data:text/html,"+ encodeURIComponent(html)
+
+
 		// auto cache next/prev pages
 /*
 		let el=e.nextSibling

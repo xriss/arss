@@ -29,7 +29,7 @@ arss.start=async function()
 	await gist.setup()
 	
 	await feeds.load_opml()
-	await feeds.save_opml()
+//	await feeds.save_opml()
 	feeds.fetch_all()
 	items.test()
 
