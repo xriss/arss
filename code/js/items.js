@@ -180,20 +180,21 @@ console.log("NEW",url)
 		e.classList.add("active")
 //		frame_url(e.id)
 
-		document.getElementById('arss_page').src=e.id
-//		let html=await hoard.fetch_text(e.id,true)
-//		document.getElementById('arss_page').src="data:text/html,"+ encodeURIComponent(html)
+//		document.getElementById('arss_page').src=e.id
+		let html=await hoard.fetch_text(e.id)
+		document.getElementById('arss_page').src="data:text/html,"+ encodeURIComponent(html)
 
 
 		// auto cache next/prev pages
-/*
+
 		let el=e.nextSibling
 		while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.nextSibling }
-		if(el) { if(!frame_find(el.id)) { frame_new(el.id) ; console.log("cache : "+el.id) } }
+		if(el) { if(!frame_find(el.id)) { hoard.fetch_text(el.id) } }
 		el=e.previousSibling
 		while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.previousSibling }
-		if(el) { if(!frame_find(el.id)) { frame_new(el.id) ; console.log("cache : "+el.id) } }
-*/
+		if(el) { if(!frame_find(el.id)) { hoard.fetch_text(el.id)} }
+		
+
 		
 	}
 

@@ -23,6 +23,7 @@
     "cross-fetch": "^3.1.5",
     "fs": "^0.0.1-security",
     "idb": "^7.1.1",
+    "json-stable-stringify": "^1.0.2",
     "plated": "^0.0.85",
     "sanitize-html": "^2.10.0",
     "sax": "^1.2.4",
