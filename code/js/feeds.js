@@ -67,7 +67,7 @@ feeds.fetch_all=async function()
 	let list=await db.list("feeds")
 	for( feed of list )
 	{
-		await feeds.fetch(feed)
+		feeds.fetch(feed)
 	}
 }
 

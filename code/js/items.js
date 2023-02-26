@@ -189,10 +189,10 @@ console.log("NEW",url)
 
 		let el=e.nextSibling
 		while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.nextSibling }
-		if(el) { if(!frame_find(el.id)) { hoard.fetch_text(el.id) } }
+		if(el) { hoard.fetch_text(el.id) }
 		el=e.previousSibling
 		while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.previousSibling }
-		if(el) { if(!frame_find(el.id)) { hoard.fetch_text(el.id)} }
+		if(el) { hoard.fetch_text(el.id) }
 		
 
 		

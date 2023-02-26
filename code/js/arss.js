@@ -87,7 +87,7 @@ arss.load_gist=async function()
 		let jsn=JSON.parse(data)
 		if(jsn)
 		{
-			arss.load(jsn)
+			await arss.load(jsn)
 		}
 	}
 }
