@@ -99,77 +99,14 @@ items.test=async function()
 	
 	document.getElementById('arss_list').innerHTML = aa.join("")
 	
+	items.dragable()
+	
 	await items.test_display()
 }
 items.test_display=async function()
 {
-//	const maxframes=5	// used for caching content
-	
 	let parent=document.getElementById('arss_list')
 	let list=parent.children
-	
-/*
-
-	let frames=[]
-	frames[0]=document.getElementById('arss_page')
-	let frame_last=frames[0]
-	let frame_show=function(frame)
-	{
-		if(frame_last==frame) { return }
-//		if(frame_last) { frame_last.style.display="none" }
-		frame_last=frame
-		frame.style.display="block"		
-		frame.parentElement.append(frame)
-	}
-	let frame_count=0
-	let frame_new=function(url)
-	{
-console.log("NEW",url)
-		if(frames.length>maxframes) // maximum cache
-		{
-			let frame=frames.pop()
-			frame.remove()
-		}
-		frame_count=frame_count+1
-		let clone = frames[0].cloneNode();
-		clone.style.display="block"
-		clone.id="arss_page"+frame_count
-		clone.name="arss_page"+frame_count
-		clone.src=url
-		frames[0].parentElement.prepend(clone)
-		frames.unshift(clone)
-		return clone
-	}
-	let frame_find=function(url)
-	{
-		for(let idx=0;idx<frames.length;idx++)
-		{
-			let frame=frames[idx]
-			if(frame.src==url)
-			{
-				return frame
-			}
-		}
-	}
-	let frame_bump=function(url)
-	{
-		for(let idx=0;idx<frames.length;idx++)
-		{
-			let frame=frames[idx]
-			if(frame.src==url)
-			{
-				frames.splice(idx,1) // remove
-				frames.unshift(frame) // place at front
-				return frame
-			}
-		}
-	}
-	let frame_url=function(url)
-	{
-		let frame=frame_bump(url) || frame_new(url)
-		frame_show(frame)
-	}
-*/
 	
 	let display_last=null
 	let display=async function(e)
@@ -178,24 +115,17 @@ console.log("NEW",url)
 		if(display_last) { display_last.classList.remove("active") }
 		display_last=e
 		e.classList.add("active")
-//		frame_url(e.id)
 
-//		document.getElementById('arss_page').src=e.id
 		let html=await hoard.fetch_text(e.id)
 		document.getElementById('arss_page').src="data:text/html,"+ encodeURIComponent(html)
 
-
 		// auto cache next/prev pages
-
 		let el=e.nextSibling
 		while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.nextSibling }
 		if(el) { hoard.fetch_text(el.id) }
 		el=e.previousSibling
 		while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.previousSibling }
 		if(el) { hoard.fetch_text(el.id) }
-		
-
-		
 	}
 
 	let top=function(e)
@@ -226,6 +156,44 @@ console.log("NEW",url)
 		if(el){display(el)}
 	}
 
-
 	display(list[0])
+}
+
+items.dragable=function()
+{
+	let parent=document.getElementById('arss_bar')
+	let el=document.getElementById('arss_butt_drag')
+	
+	let width=0;
+
+	el.onmousedown=function(e)
+	{
+		e.preventDefault()
+
+		width=document.body.clientWidth
+		
+		let full = document.createElement("div")
+		full.div.innerHTML=`<div style=' cursor:move; background:transparent; position:absolute; left:0px; right:0px; top:0px; bottom:0px; '></div>`
+		full=full.firstElementChild
+		document.body.append(full)
+
+		full.onmouseup = function(e)
+		{
+			full.onmouseup = null
+			full.onmousemove = null
+			full.remove()
+		}
+
+		full.onmousemove = function(e)
+		{
+			e.preventDefault()
+			
+			let f=Math.floor(100*(e.clientX+el.clientWidth)/width)
+			if(f<10){f=10}
+			if(f>90){f=90}
+			document.getElementById("arss_bar").style.left=f+"%"
+			document.getElementById("arss_list").style.left=f+"%"
+			document.getElementById("arss_page").style.width=f+"%"
+		}
+	}
 }

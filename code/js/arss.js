@@ -27,19 +27,17 @@ arss.start=async function()
 	console.log("ARSS is here")
 
 	await db.setup()
+	await items.test()
 	await gist.setup()
-
 	
 	await arss.load_gist()
 
-
-	await items.test()
-
-
 	await feeds.fetch_all()
 
-
 	await arss.save_gist()
+
+// redraw after loading
+	await items.test()
 }
 
 

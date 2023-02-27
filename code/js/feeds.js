@@ -64,11 +64,13 @@ feeds.save_opml=async function()
 
 feeds.fetch_all=async function()
 {
+	let rets=[]
 	let list=await db.list("feeds")
 	for( feed of list )
 	{
-		feeds.fetch(feed)
+		rets.push(feeds.fetch(feed))
 	}
+	await Promise.all(rets)
 }
 
 feeds.fetch=async function(feed)
