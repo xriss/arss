@@ -27,9 +27,9 @@ items.add=async function(it)
 	let item={}
 	if(old)
 	{
-		for( n in old ){ item[n]=old[n] }
+		for(let n in old ){ item[n]=old[n] }
 	}
-	for( n in it ){ item[n]=it[n] }
+	for(let n in it ){ item[n]=it[n] }
 	if(old)
 	{
 		item.date=old.date||item.date
@@ -56,30 +56,15 @@ items.test=async function()
 {
 	let aa=[]
 	
-	let frameurl=undefined
-	
-/*
-	if(window.location.hash!="")
-	{
-		frameurl=window.location.hash.substring(1)
-		document.getElementById('arss_page').setAttribute('src', frameurl)
-	}
-*/
-
 	let list=await db.list("items",{},"date","prev")
 	let count=0
-	for(item of list)
+	let now=(new Date()).getTime()
+	for(let item of list)
 	{
 		count++
 		if( count>1000 ){ break }
-//		console.log(item)
-/*
-		if(!frameurl){
-			frameurl=item["/link"]
-			window.location.hash="#"+frameurl
-			document.getElementById('arss_page').setAttribute('src', frameurl)
-		}
-*/
+		if( item.date.getTime() > now ){ continue }
+
 		const notags={allowedTags: [],allowedAttributes: {}}
 		const allowtags={ allowedTags:[ "img" , "p" ] }
 		const cleanlink = sanistr(item["/link"])
@@ -97,13 +82,12 @@ items.test=async function()
 `)
 	}
 	
-	document.getElementById('arss_list').innerHTML = aa.join("")
-	
-	items.dragable()
-	
-	await items.test_display()
+	document.getElementById('arss_list_read').innerHTML = aa.join("")	
+
+	items.test_display()
 }
-items.test_display=async function()
+
+items.test_display=function()
 {
 	let parent=document.getElementById('arss_list')
 	let list=parent.children
@@ -147,7 +131,7 @@ items.test_display=async function()
 		while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.parentElement }
 		if(el){display(el)}
 	}
-	for(e of list){e.onmouseover=mouseover}
+	for(let e of list){e.onmouseover=mouseover}
 
 	parent.onscroll = function(ev)
 	{
@@ -159,41 +143,3 @@ items.test_display=async function()
 	display(list[0])
 }
 
-items.dragable=function()
-{
-	let parent=document.getElementById('arss_bar')
-	let el=document.getElementById('arss_butt_drag')
-	
-	let width=0;
-
-	el.onmousedown=function(e)
-	{
-		e.preventDefault()
-
-		width=document.body.clientWidth
-		
-		let full = document.createElement("div")
-		full.innerHTML=`<div style=' cursor:move; background:transparent; position:absolute; left:0px; right:0px; top:0px; bottom:0px; '></div>`
-		full=full.firstElementChild
-		document.body.append(full)
-
-		full.onmouseup = function(e)
-		{
-			full.onmouseup = null
-			full.onmousemove = null
-			full.remove()
-		}
-
-		full.onmousemove = function(e)
-		{
-			e.preventDefault()
-			
-			let f=Math.floor(100*(e.clientX+el.clientWidth)/width)
-			if(f<10){f=10}
-			if(f>90){f=90}
-			document.getElementById("arss_bar").style.left=f+"%"
-			document.getElementById("arss_list").style.left=f+"%"
-			document.getElementById("arss_page").style.width=f+"%"
-		}
-	}
-}

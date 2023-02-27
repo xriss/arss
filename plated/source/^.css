@@ -31,12 +31,15 @@ a.bar:hover	{background-color:#1400ff; border-bottom:none;}
 	overflow:scroll;
 }
 
+#arss_butt_drag { width:16px; cursor: move; }
+#arss_butt_read { width:64px; cursor: pointer; }
+#arss_butt_feed { width:64px; cursor: pointer; }
+#arss_butt_status { text-align:left; }
 .arss_butt
 {
-	cursor: move;
 	line-height:32px;
 	height:32px;
-	width:16px;
+	width:8px;
 	display:inline-block;
 	text-align:center;
 	background:#f0f0f0;

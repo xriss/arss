@@ -9,6 +9,7 @@ const hoard = require('./hoard.js')
 const feeds = require('./feeds.js')
 const items = require('./items.js')
 const gist = require('./gist.js')
+const display = require('./display.js')
 
   
   
@@ -25,6 +26,9 @@ arss.setup=function(args)
 arss.start=async function()
 {
 	console.log("ARSS is here")
+	
+	display.all()
+	display.status("Loading...")
 
 	await db.setup()
 	await items.test()
@@ -46,7 +50,7 @@ arss.merge=async function(jsn)
 {
 	if(jsn.feeds)
 	{
-		for( feed of jsn.feeds )
+		for(let feed of jsn.feeds )
 		{
 			await feeds.add(feed)
 		}
@@ -69,7 +73,7 @@ arss.save=async function()
 	
 	jsn.feeds=[]
 	let list=await db.list("feeds")
-	for( feed of list )
+	for(let feed of list )
 	{
 		jsn.feeds.push(feed)
 	}
@@ -94,6 +98,6 @@ arss.save_gist=async function()
 	let jsn=await arss.save()
 	let txt=stringify(jsn,{space:" "})
 	await gist.write("arss.json",txt)
-	console.log(txt)
+//	console.log(txt)
 }
 
