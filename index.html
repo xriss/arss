@@ -40,12 +40,15 @@ a.bar:hover	{background-color:#1400ff; border-bottom:none;}
 	overflow:scroll;
 }
 
+#arss_butt_drag { width:16px; cursor: move; }
+#arss_butt_read { width:64px; cursor: pointer; }
+#arss_butt_feed { width:64px; cursor: pointer; }
+#arss_butt_status { text-align:left; }
 .arss_butt
 {
-	cursor: move;
 	line-height:32px;
 	height:32px;
-	width:16px;
+	width:8px;
 	display:inline-block;
 	text-align:center;
 	background:#f0f0f0;
@@ -94,7 +97,7 @@ a.bar:hover	{background-color:#1400ff; border-bottom:none;}
 
 </style>
 </head>
-<body><div id="arss_bar" class="arss_bar" ><div class="arss_butt" id="arss_butt_drag">*</div></div>
-<div id="arss_list" class="arss_list" > Loading... </div>
+<body><div id="arss_bar" class="arss_bar" ></div>
+<div id="arss_list" class="arss_list" ></div>
 <iframe name="arss_page" id="arss_page" class="arss_page" sandbox="" > </iframe></body>
 </html>
