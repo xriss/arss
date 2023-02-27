@@ -173,7 +173,7 @@ items.dragable=function()
 		width=document.body.clientWidth
 		
 		let full = document.createElement("div")
-		full.div.innerHTML=`<div style=' cursor:move; background:transparent; position:absolute; left:0px; right:0px; top:0px; bottom:0px; '></div>`
+		full.innerHTML=`<div style=' cursor:move; background:transparent; position:absolute; left:0px; right:0px; top:0px; bottom:0px; '></div>`
 		full=full.firstElementChild
 		document.body.append(full)
 
