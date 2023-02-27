@@ -52,7 +52,7 @@ let sanistr=function(s) {
 	return s.replace(/[&<>"'/]/ig, (match)=>(map[match]));
 }
 
-items.test=async function()
+items.test=async function(showidx)
 {
 	let aa=[]
 	
@@ -84,12 +84,12 @@ items.test=async function()
 	
 	document.getElementById('arss_list_read').innerHTML = aa.join("")	
 
-	items.test_display()
+	items.test_display(showidx)
 }
 
-items.test_display=function()
+items.test_display=function(showidx)
 {
-	let parent=document.getElementById('arss_list')
+	let parent=document.getElementById('arss_list_read')
 	let list=parent.children
 	
 	let display_last=null
@@ -140,6 +140,6 @@ items.test_display=function()
 		if(el){display(el)}
 	}
 
-	display(list[0])
+	if("number"==typeof showidx){ display(list[showidx]) }
 }
 
