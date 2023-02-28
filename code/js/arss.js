@@ -37,11 +37,16 @@ arss.start=async function()
 	
 	await arss.load_gist()
 
-	await feeds.fetch_all()
+	// keep refreshing feeds
+	let feeds_fetch;feeds_fetch=async function()
+	{
+		await feeds.fetch_all()
+		window.setTimeout(feeds_fetch, 5*60*1000) // every 5 mins
+	}
+	await feeds_fetch() // first time
 
 	await arss.save_gist()
 
-// redraw after loading but do not force first item
 }
 
 

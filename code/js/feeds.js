@@ -74,7 +74,6 @@ feeds.fetch_all=async function()
 	
 	feeds.list_length=list.length
 	feeds.list_length_count=0
-	items.add_count=0
 	
 	for(let feed of list )
 	{
@@ -82,14 +81,22 @@ feeds.fetch_all=async function()
 	}
 	await Promise.all(rets)
 
-	display.status("")
+	if(items.add_count>0)
+	{
+		display.status("+"+items.add_count)
+		if( document.getElementById('arss_list_read').parentElement.scrollTop==0 ) // at top, so refresh
+		{
+			items.display()
+		}
+	}
+	else
+	{
+		display.status("")
+	}
 }
 
 feeds.fetch=async function(feed)
 {
-if(feed.fails<8) // giveup after a few attempts
-{
-	
 	try{
 		let txt=await hoard.fetch_text(feed.url)
 
@@ -108,8 +115,9 @@ if(feed.fails<8) // giveup after a few attempts
 				feed.title=rss["/rss/channel/title"]
 			}
 			feed.items_count=0
-			for(let item of rss["/rss/channel/item"] )
+			for(let rss_item of rss["/rss/channel/item"] )
 			{
+				let item={rss:rss_item}
 				feed.items_count++
 				items.prepare(item,feed)
 				await items.add(item)
@@ -124,8 +132,9 @@ if(feed.fails<8) // giveup after a few attempts
 				feed.title=atom["/feed/title"]
 			}
 			feed.items_count=0
-			for(let item of atom["/feed/entry"] )
+			for(let atom_entry of atom["/feed/entry"] )
 			{
+				let item={atom:atom_entry}
 				feed.items_count++
 				items.prepare(item,feed)
 				await items.add(item)
@@ -140,8 +149,6 @@ if(feed.fails<8) // giveup after a few attempts
 		await db.set("feeds",feed.url,feed) // save updated feed info
 	}catch(e){console.error(e)}
 
-}
-
 	feeds.list_length_count++
 	display.status(Math.floor(100*(feeds.list_length_count/feeds.list_length))+"% +"+items.add_count)
 }
@@ -154,7 +161,7 @@ feeds.display=async function(showidx)
 	let feeds=await db.list("feeds")
 	let now=(new Date()).getTime()
 
-	let dofeed=function(feed)
+	for(let feed of feeds)
 	{
 		let fails=""
 		if( feed.fails||0  > 0 )
@@ -171,26 +178,6 @@ feeds.display=async function(showidx)
 <div>${fails}</div>
 </div>
 `)
-	}
-
-	for(let feed of feeds)
-	{
-		if(feed.fails<8)
-		{
-			dofeed(feed)
-		}
-	}
-	aa.push(`
-<div>
-The following feeds have failed repeatedly and have been given up on.
-</div>
-`)
-	for(let feed of feeds)
-	{
-		if(feed.fails>=8)
-		{
-			dofeed(feed)
-		}
 	}
 	
 	document.getElementById('arss_list_feed').innerHTML = aa.join("")	

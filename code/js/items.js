@@ -13,23 +13,69 @@ const display = require('./display.js')
 
 items.prepare=function(item,feed)
 {
+	let atom=item.atom||{}
+	let rss=item.rss||{}
+	
 	if(feed)
 	{
 		item.feed=feed.url
+		item.feed_title=feed.title
 	}
-	let uuid=item["/guid"] || item["/id"] || item["/link"] || item["/title"] || item["/pubdate"] || ""
+	
+	let uuid=rss["/guid"] || atom["/id"] || rss["/link"] || rss["/title"] || rss["/pubdate"] || ""
 	item.uuid=item.feed+"^"+uuid
-	if(item["/pubdate"])
+
+	if(rss["/pubdate"])
 	{
-		item.date=new Date(item["/pubdate"])
+		item.date=new Date(rss["/pubdate"])
 	}
-	if(item["/published"])
+	else
+	if(atom["/updated"])
 	{
-		item.date=new Date(item["/published"])
+		item.date=new Date(atom["/updated"])
 	}
-	item.link=item["/link"]
-	item.title=item["/title"]
-	item.html=item["/description"]||item["/content"]
+	else
+	if(atom["/published"])
+	{
+		item.date=new Date(atom["/published"])
+	}
+
+	if(rss["/link"])
+	{
+		item.link=rss["/link"]
+	}
+	else
+	if(atom["/link"])
+	{
+		item.link=atom["/link"][0]["@href"]
+		for(let link of atom["/link"])
+		{
+			if(link["@ref"]=="alternate")
+			{
+				item.link=link["@href"]
+			}
+		}
+	}
+
+	if(rss["/title"])
+	{
+		item.title=rss["/title"]
+	}
+	else
+	if(atom["/title"])
+	{
+		item.title=atom["/title"]
+	}
+
+	if(rss["/description"])
+	{
+		item.html=rss["/description"]
+	}
+	else
+	if(atom["/content"])
+	{
+		item.html=atom["/content"]
+	}
 
 	return item
 }
@@ -59,21 +105,26 @@ items.add=async function(it)
 
 items.display=async function(showidx)
 {
+	items.add_count=0
+	document.getElementById('arss_list_read').innerHTML = ""
+	display.status("")
+	
 	let aa=[]
 	
-	let items=await db.list("items",{},"date","prev")
+	let items_list=await db.list("items",{},"date","prev")
 	let count=0
 	let now=(new Date()).getTime()
-	for(let item of items)
+	for(let item of items_list)
 	{
 		count++
 		if( count>1000 ){ break }
-		if( item.date.getTime() > now ){ continue }
+		if( item.date.getTime() > now+(10*60*1000) ){ continue } // ignore far future dates
 
 		const notags={allowedTags: [],allowedAttributes: {}}
 		const allowtags={ allowedTags:[ "img" , "p" ] }
 		const cleanlink = display.sanistr(item.link)
 		const cleantitle = display.sanistr(item.title)
+		const cleanfeed = display.sanistr(item.feed_title)
 		const cleanhtml = sanihtml(item.html||"",allowtags)
 		let date=item.date.toISOString().split("T")
 		date=date[0]+" "+date[1].substring(0,5)
@@ -82,6 +133,7 @@ items.display=async function(showidx)
 <div class="arss_item" id="${cleanlink}">
 <div><a href="${cleanlink}" target="_blank" ">${cleantitle}</a></div>
 <div class="arss_date">${date}</div>
+<div class="arss_item_feed">${cleanfeed}</div>
 <div>${cleanhtml}</div>
 </div>
 `)
@@ -137,6 +189,13 @@ items.display=async function(showidx)
 		let el=document.elementFromPoint(lastx,lasty)
 		while(el && !el.classList.contains("arss_item") ){ el = el.parentElement }
 		if(el){display_item(el)}
+		if(parent.parentElement.scrollTop==0) // hit top, maybe refresh
+		{
+			if(items.add_count>0)
+			{
+				items.display()
+			}
+		}
 	}
 
 	if("number"==typeof showidx){ display_item(parent.children[showidx]) }
