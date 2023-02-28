@@ -8,19 +8,33 @@ const sanihtml = require('sanitize-html');
 const hoard = require('./hoard.js')
 const db = require('./db_idb.js')
 const jxml = require('./jxml.js')
+const display = require('./display.js')
 
 
-items.prepare=function(it,feed)
+items.prepare=function(item,feed)
 {
 	if(feed)
 	{
-		it.feed=feed.url
+		item.feed=feed.url
 	}
-	let uuid=it["/guid"] || it["/link"] || it["/title"] || it["/pubdate"] || ""
-	it.uuid=it.feed+"^"+uuid
-	it.date=new Date(it["/pubdate"])
+	let uuid=item["/guid"] || item["/id"] || item["/link"] || item["/title"] || item["/pubdate"] || ""
+	item.uuid=item.feed+"^"+uuid
+	if(item["/pubdate"])
+	{
+		item.date=new Date(item["/pubdate"])
+	}
+	if(item["/published"])
+	{
+		item.date=new Date(item["/published"])
+	}
+	item.link=item["/link"]
+	item.title=item["/title"]
+	item.html=item["/description"]||item["/content"]
+
+	return item
 }
 
+items.add_count=0
 items.add=async function(it)
 {
 	let old=await db.get("items",it.uuid)
@@ -28,6 +42,10 @@ items.add=async function(it)
 	if(old)
 	{
 		for(let n in old ){ item[n]=old[n] }
+	}
+	else
+	{
+		items.add_count++
 	}
 	for(let n in it ){ item[n]=it[n] }
 	if(old)
@@ -39,27 +57,14 @@ items.add=async function(it)
 
 
 
-let sanistr=function(s) {
-	s=""+s
-	const map = {
-		'&': '&amp;',
-		'<': '&lt;',
-		'>': '&gt;',
-		'"': '&quot;',
-		"'": '&#x27;',
-		"/": '&#x2F;',
-	};
-	return s.replace(/[&<>"'/]/ig, (match)=>(map[match]));
-}
-
-items.test=async function(showidx)
+items.display=async function(showidx)
 {
 	let aa=[]
 	
-	let list=await db.list("items",{},"date","prev")
+	let items=await db.list("items",{},"date","prev")
 	let count=0
 	let now=(new Date()).getTime()
-	for(let item of list)
+	for(let item of items)
 	{
 		count++
 		if( count>1000 ){ break }
@@ -67,9 +72,9 @@ items.test=async function(showidx)
 
 		const notags={allowedTags: [],allowedAttributes: {}}
 		const allowtags={ allowedTags:[ "img" , "p" ] }
-		const cleanlink = sanistr(item["/link"])
-		const cleantitle = sanistr(item["/title"])
-		const cleanhtml = sanihtml(item["/description"]||"",allowtags)
+		const cleanlink = display.sanistr(item.link)
+		const cleantitle = display.sanistr(item.title)
+		const cleanhtml = sanihtml(item.html||"",allowtags)
 		let date=item.date.toISOString().split("T")
 		date=date[0]+" "+date[1].substring(0,5)
 
@@ -84,20 +89,14 @@ items.test=async function(showidx)
 	
 	document.getElementById('arss_list_read').innerHTML = aa.join("")	
 
-	items.test_display(showidx)
-}
-
-items.test_display=function(showidx)
-{
 	let parent=document.getElementById('arss_list_read')
-	let list=parent.children
 	
-	let display_last=null
-	let display=async function(e)
+	let display_item_last=null
+	let display_item=async function(e)
 	{
-		if(display_last==e) { return }
-		if(display_last) { display_last.classList.remove("active") }
-		display_last=e
+		if(display_item_last==e) { return }
+		if(display_item_last) { display_item_last.classList.remove("active") }
+		display_item_last=e
 		e.classList.add("active")
 
 		let html=await hoard.fetch_text(e.id)
@@ -129,17 +128,17 @@ items.test_display=function(showidx)
 		
 		let el=ev.target
 		while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.parentElement }
-		if(el){display(el)}
+		if(el){display_item(el)}
 	}
-	for(let e of list){e.onmouseover=mouseover}
+	for(let e of parent.children){e.onmouseover=mouseover}
 
-	parent.onscroll = function(ev)
+	parent.parentElement.onscroll = function(ev)
 	{
 		let el=document.elementFromPoint(lastx,lasty)
 		while(el && !el.classList.contains("arss_item") ){ el = el.parentElement }
-		if(el){display(el)}
+		if(el){display_item(el)}
 	}
 
-	if("number"==typeof showidx){ display(list[showidx]) }
+	if("number"==typeof showidx){ display_item(parent.children[showidx]) }
 }
 

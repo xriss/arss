@@ -39,7 +39,6 @@ a.bar:hover	{background-color:#1400ff; border-bottom:none;}
 {
 	line-height:32px;
 	height:32px;
-	width:8px;
 	display:inline-block;
 	text-align:center;
 	background:#f0f0f0;
@@ -60,6 +59,14 @@ a.bar:hover	{background-color:#1400ff; border-bottom:none;}
 	background:#f0f0f0;
 }
 
+.arss_list_read
+{
+	width: 100%;
+}
+.arss_list_feed
+{
+	width: 100%;
+}
 .arss_list
 {
 	position:absolute;
@@ -79,7 +86,21 @@ a.bar:hover	{background-color:#1400ff; border-bottom:none;}
 .arss_item
 {
 	padding:16px 8px;
+	width: 100%;
 }
+
+.arss_feed
+{
+	padding:16px 8px;
+	width: 100%;
+}
+
+.arss_feed input
+{
+	font-size:24px;
+	width:100%;
+}
+
 
 .active
 {

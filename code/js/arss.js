@@ -31,7 +31,7 @@ arss.start=async function()
 	display.status("Loading...")
 
 	await db.setup()
-	await items.test(0)
+	await items.display(0)
 
 	await gist.setup()
 	
@@ -42,7 +42,6 @@ arss.start=async function()
 	await arss.save_gist()
 
 // redraw after loading but do not force first item
-	await items.test()
 }
 
 

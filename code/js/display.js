@@ -1,14 +1,30 @@
 
 const display=exports
 
+const feeds = require('./feeds.js')
 
 
-let element=function(html)
+display.element=function(html)
 {
 	let e = document.createElement("div")
 	e.innerHTML=html
 	return e.firstElementChild
 }
+
+display.sanistr=function(s)
+{
+	s=""+s
+	const map = {
+		'&': '&amp;',
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;',
+		"'": '&#x27;',
+		"/": '&#x2F;',
+	};
+	return s.replace(/[&<>"'/]/ig, (match)=>(map[match]));
+}
+
 
 display.all=function()
 {
@@ -28,21 +44,25 @@ display.bar=function()
 	let parent=document.getElementById('arss_bar')
 	parent.innerHTML=""
 
-	parent.append(element(`
-<div class="arss_butt" id="arss_butt_drag">*</div>
+	parent.append(display.element(`
+<div class="arss_butt" id="arss_butt_drag">A</div>
 `))
 
-	parent.append(element(`
-<div class="arss_butt" id="arss_butt_read">READ</div>
+	parent.append(display.element(`
+<div class="arss_butt" id="arss_butt_read">RSS</div>
 `))
 
-	parent.append(element(`
+	parent.append(display.element(`
 <div class="arss_butt" id="arss_butt_feed">FEED</div>
 `))
 
-	parent.append(element(`
+	parent.append(display.element(`
 <div class="arss_butt" id="arss_butt_status"> </div>
 `))
+
+
+document.getElementById("arss_butt_read").onclick = function(){display.page("read")};
+document.getElementById("arss_butt_feed").onclick = function(){display.page("feed")};
 
 }
 
@@ -51,12 +71,12 @@ display.list=function()
 	let parent=document.getElementById('arss_list')
 	parent.innerHTML=""
 
-	parent.append(element(`
+	parent.append(display.element(`
 <div class="arss_list_read" id="arss_list_read"></div>
 `))
 
-	parent.append(element(`
-<div class="arss_list_edit" id="arss_list_edit"></div>
+	parent.append(display.element(`
+<div class="arss_list_feed" id="arss_list_feed"></div>
 `))
 
 }
@@ -74,7 +94,7 @@ display.drag=function()
 
 		width=document.body.clientWidth
 		
-		let full=element(`
+		let full=display.element(`
 <div style=' cursor:move; background:transparent; position:absolute; left:0px; right:0px; top:0px; bottom:0px; '></div>
 `)
 		document.body.append(full)
@@ -99,3 +119,20 @@ display.drag=function()
 		}
 	}
 }
+
+display.page=function(name)
+{
+	if(name=="read")
+	{
+		document.getElementById("arss_list_read").style.display="inline-block"
+		document.getElementById("arss_list_feed").style.display="none"
+	}
+	else
+	if(name=="feed")
+	{
+		document.getElementById("arss_list_read").style.display="none"
+		document.getElementById("arss_list_feed").style.display="inline-block"
+		feeds.display()
+	}
+}
+

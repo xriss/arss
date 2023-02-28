@@ -17,6 +17,15 @@ jxml.xmap.rss={
 	"/rss/channel/item/media:group/media:content":true,
 }
 
+jxml.xmap.atom={
+	"/feed/category":true,
+	"/feed/link":true,
+	"/feed/entry":true,
+	"/feed/entry/category":true,
+	"/feed/entry/link":true,
+}
+
+
 const sax=require('sax')
 
 /*
