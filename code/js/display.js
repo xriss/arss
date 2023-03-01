@@ -31,6 +31,7 @@ display.all=function()
 	display.bar()
 	display.list()
 	display.drag()
+	display.page("read")
 }
 
 display.status=function(html)
@@ -45,11 +46,11 @@ display.bar=function()
 	parent.innerHTML=""
 
 	parent.append(display.element(`
-<div class="arss_butt" id="arss_butt_drag">A</div>
+<div class="arss_butt" id="arss_butt_drag">*</div>
 `))
 
 	parent.append(display.element(`
-<div class="arss_butt" id="arss_butt_read">RSS</div>
+<div class="arss_butt" id="arss_butt_read">READ</div>
 `))
 
 	parent.append(display.element(`
@@ -57,12 +58,16 @@ display.bar=function()
 `))
 
 	parent.append(display.element(`
-<div class="arss_butt" id="arss_butt_status"> </div>
+<div class="arss_butt" id="arss_butt_opts">OPTS</div>
 `))
 
+	parent.append(display.element(`
+<div class="arss_butt" id="arss_butt_status">.</div>
+`))
 
 document.getElementById("arss_butt_read").onclick = function(){display.page("read")};
 document.getElementById("arss_butt_feed").onclick = function(){display.page("feed")};
+document.getElementById("arss_butt_opts").onclick = function(){display.page("opts")};
 
 }
 
@@ -77,6 +82,10 @@ display.list=function()
 
 	parent.append(display.element(`
 <div class="arss_list_feed" id="arss_list_feed"></div>
+`))
+
+	parent.append(display.element(`
+<div class="arss_list_opts" id="arss_list_opts"></div>
 `))
 
 }
@@ -126,13 +135,23 @@ display.page=function(name)
 	{
 		document.getElementById("arss_list_read").style.display="inline-block"
 		document.getElementById("arss_list_feed").style.display="none"
+		document.getElementById("arss_list_opts").style.display="none"
 	}
 	else
 	if(name=="feed")
 	{
 		document.getElementById("arss_list_read").style.display="none"
 		document.getElementById("arss_list_feed").style.display="inline-block"
+		document.getElementById("arss_list_opts").style.display="none"
 		feeds.display()
+	}
+	else
+	if(name=="opts")
+	{
+		document.getElementById("arss_list_read").style.display="none"
+		document.getElementById("arss_list_feed").style.display="none"
+		document.getElementById("arss_list_opts").style.display="inline-block"
+//		opts.display()
 	}
 }
 

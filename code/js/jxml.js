@@ -4,8 +4,13 @@ const jxml=exports
 
 jxml.xmap={}
 
-// single level outline
-jxml.xmap.opml={"/opml/body/outline":true}
+// technically we should keep nesting outlines
+jxml.xmap.opml={
+	"/opml/body/outline":true,
+	"/opml/body/outline/outline":true,
+	"/opml/body/outline/outline/outline":true,
+	"/opml/body/outline/outline/outline/outline":true,
+}
 
 jxml.xmap.rss={
 	"/rss/channel/category":true,
@@ -27,6 +32,18 @@ jxml.xmap.atom={
 
 
 const sax=require('sax')
+
+jxml.sanistr=function(s)
+{
+	s=""+s
+	const map = {
+		'&': '&amp;',
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;',
+	};
+	return s.replace(/[&<>"]/ig, (match)=>(map[match]));
+}
 
 /*
 
@@ -55,6 +72,7 @@ jxml.parse_xml=function(data,xmap)
 	let ismulti=function(path)
 	{
 		if(!xmap) { return true } // if no map then everything is multi
+		if("function"===typeof xmap) { return xmap(path) }// only approved paths are multi
 		if(xmap[path]) { return true } // only given paths are multi
 		return false
 	}
@@ -127,7 +145,109 @@ jxml.parse_xml=function(data,xmap)
 	return ret
 }
 
+// expand a json xml object so each element is forced into an array
+// this guarantees the format is what you would have gotten from a parse without an xmap
+jxml.expand=function(it,paths)
+{
+	let ret=jxml.expand_one(it)
+	jxml.recurse(ret,jxml.expand,paths)
+	return ret
+}
+// perform top level expansion only, still need to recurse
+jxml.expand_one=function(it)
+{
+	let ret={}
+	for(let path in it ) // make arrays
+	{
+		if( (path=="") || (path[0]=="@") ) // simple
+		{
+			ret[path]=it[path] // this should never be an array
+		}
+		else // find split and put in an array
+		{
+			let idx=path.indexOf("/",1) // skip first char which can be a / or @
+			let idx2=path.indexOf("@",1) // skip first char which can be a / or @
+			if( (idx2>0) && ( (idx2<idx) || (idx<0) ) ) { idx=idx2 } // second / or first @
+			if( (idx<0) && Array.isArray(it[path]) ) // full path, no / or @ to split and already an array
+			{
+				ret[path]=[ ...it[path] ] // copy array
+			}
+			else
+			{
+console.log(path+" : ",idx,idx2)
+				if( idx<0 ) // a text node
+				{
+					idx=path.length
+				}
+				let base=path.substring(0,idx)
+				if( !Array.isArray(ret[base]) ) { ret[base]=[{}] } // make array with one object
+				ret[base][0][ path.substring(idx) ]=it[path] // copy into first object ( we will dupe the array on next pass )
+			}
+		}
+	}
+	return ret
+}
 
+// call recursively into arrays with an array of path strings
+jxml.recurse=function(it,func,paths)
+{
+	paths=paths||[]
+	for(let path in it ) // do arrays
+	{
+		if(Array.isArray(it[path]))
+		{
+			paths.push(path)
+			for(let i=0;i<it[path].length;i++)
+			{
+				it[path][i]=func(it[path][i],paths)
+			}
+			paths.pop()
+		}
+	}
+	return it
+}
+
+jxml.build_xml=function(data)
+{
+	let ss=[]
+
+	data=jxml.expand(data) // fully expand so every sub tag is an array
+	
+/*
+	let stringify = require('json-stable-stringify');
+	console.log(stringify(data,{space:" "}))
+*/
+
+	let parse
+	parse=function(it,paths)
+	{
+		let top=paths[paths.length-1] // this will start with a /
+		let indent=(" ").repeat(Math.max(0,paths.length-1))
+		if(top) // catch the starting empty paths
+		{
+			ss.push(indent+"<"+top.substring(1))
+			for(let path in it )
+			{
+				if(path[0]=="@") // add atributes
+				{
+					ss.push(" "+path.substring(1)+"=\""+jxml.sanistr(it[path])+"\"")
+				}
+			}
+			ss.push(">\n")
+			if(it[""]){ss.push(indent+" "+jxml.sanistr(it[""])+"\n")} // push text
+		}
+		jxml.recurse(it,parse,paths) // add sub tags
+		if(top)
+		{
+			ss.push(indent+"<"+top+">\n")
+		}
+	}
+	parse(data,[])
+
+	
+	let s=ss.join("")
+	return s
+}
 
 jxml.test=async function(argv)
 {
@@ -139,5 +259,7 @@ jxml.test=async function(argv)
 	let ret=jxml.parse_xml(txt,jxml.xmap.opml)
 
 	console.log(stringify(ret,{space:" "}))
+
+	console.log(jxml.build_xml(ret))
 }
 

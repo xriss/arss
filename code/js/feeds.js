@@ -166,7 +166,7 @@ feeds.display=async function(showidx)
 		let fails=""
 		if( feed.fails||0  > 0 )
 		{
-			fails = "Fails : "+display.sanistr(feed.fails)
+			fails = "Fails : "+display.sanistr(feed.fails)+" <a class='arss_feed_delete'>DELETE</a>"
 		}
 		const cleanlink = display.sanistr(feed.url)
 		const cleantitle = display.sanistr(feed.title)

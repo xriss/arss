@@ -30,11 +30,13 @@ items.prepare=function(item,feed)
 		item.date=new Date(rss["/pubdate"])
 	}
 	else
+/*
 	if(atom["/updated"])
 	{
 		item.date=new Date(atom["/updated"])
 	}
 	else
+*/
 	if(atom["/published"])
 	{
 		item.date=new Date(atom["/published"])
@@ -152,7 +154,10 @@ items.display=async function(showidx)
 		e.classList.add("active")
 
 		let html=await hoard.fetch_text(e.id)
-		document.getElementById('arss_page').src="data:text/html,"+ encodeURIComponent(html)
+// maybe squirt a base tag into the head so relative urls will still work?
+		document.getElementById('arss_page').srcdoc=html
+
+
 
 		// auto cache next/prev pages
 		let el=e.nextSibling
