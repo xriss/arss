@@ -64,6 +64,17 @@ a.bar:hover	{background-color:#1400ff; border-bottom:none;}
 {
 	background:#e0e0e0;
 }
+.arss_info_butt_info
+{
+	width:90%;
+	margin: 32px auto ;
+}
+.arss_info_butt_warn
+{
+	width:100%;
+	padding: 32px 5% ;
+	background:#ffc0c0;
+}
 
 
 .arss_bar
@@ -121,12 +132,22 @@ a.bar:hover	{background-color:#1400ff; border-bottom:none;}
 	width: 100%;
 }
 
-.arss_feed input
+.arss_feed input[type=checkbox]
+{
+	display:inline-block;
+	width:32px;
+}
+
+.arss_feed input[type=text]
 {
 	font-size:24px;
 	width:100%;
 }
 
+.arss_feed_delete
+{
+	cursor: pointer;
+}
 
 .active
 {

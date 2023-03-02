@@ -110,6 +110,8 @@ feeds.fetch_all=async function()
 
 feeds.fetch=async function(feed)
 {
+	if(!feed.off) // check if the feed is turned off
+	{
 	try{
 		let txt=await hoard.fetch_text(feed.url)
 
@@ -158,57 +160,11 @@ feeds.fetch=async function(feed)
 		{
 			feed.fails=(feed.fails||0)+1
 		}
-
 		await db.set("feeds",feed.url,feed) // save updated feed info
 	}catch(e){console.error(e)}
+	}
 
 	feeds.list_length_count++
 	display.status(Math.floor(100*(feeds.list_length_count/feeds.list_length))+"% +"+items.add_count)
-}
-
-
-feeds.display=async function(showidx)
-{
-	let aa=[]
-	
-	let feeds=await db.list("feeds")
-	let now=(new Date()).getTime()
-
-	for(let feed of feeds)
-	{
-		let fails=""
-		if( feed.fails||0  > 0 )
-		{
-			fails = "Fails : "+display.sanistr(feed.fails)+" <a class='arss_feed_delete'>DELETE</a>"
-		}
-		const cleanlink = display.sanistr(feed.url)
-		const cleantitle = display.sanistr(feed.title)
-
-		aa.push(`
-<div class="arss_feed" id="${cleanlink}">
-<div>${cleantitle}</div>
-<input type="text"  value="${cleanlink}"/>
-<div>${fails}</div>
-</div>
-`)
-	}
-	
-	document.getElementById('arss_list_feed').innerHTML = aa.join("")	
-
-	let parent=document.getElementById('arss_list_feed')
-	
-/*
-	let mouseover=function(ev)
-	{
-		lastx=ev.clientX
-		lasty=ev.clientY
-		
-		let el=ev.target
-		while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.parentElement }
-		if(el){display(el)}
-	}
-	for(let e of list){e.onmouseover=mouseover}
-*/
-
 }
 

@@ -25,21 +25,24 @@ items.prepare=function(item,feed)
 	let uuid=rss["/guid"] || atom["/id"] || rss["/link"] || rss["/title"] || rss["/pubdate"] || ""
 	item.uuid=item.feed+"^"+uuid
 
-	item.date=item.date||new Date() // make sure we have a data
-	if(rss["/pubdate"])
+	if(!item.date) // do not change date, just set it once
 	{
-		item.date=new Date(rss["/pubdate"])
+		if(rss["/pubdate"])
+		{
+			item.date=new Date(rss["/pubdate"])
+		}
+		else
+		if(atom["/published"]) // prefer published
+		{
+			item.date=new Date(atom["/published"])
+		}
+		else
+		if(atom["/updated"]) // but sometimes we do not have it
+		{
+			item.date=new Date(atom["/updated"])
+		}
 	}
-	else
-	if(atom["/published"]) // prefer published
-	{
-		item.date=new Date(atom["/published"])
-	}
-	else
-	if(atom["/updated"]) // but sometimes we do not have it
-	{
-		item.date=new Date(atom["/updated"])
-	}
+	item.date=item.date||new Date() // make sure we have a date
 
 	if(rss["/link"])
 	{

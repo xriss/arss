@@ -37,6 +37,8 @@ gist.setup=async function()
 
 	try{
 		await gist.handle.initialize();
+		gist.id=gist.handle.id
+		gist.url=`https://gist.github.com/${gist.id}` 
 	}catch(e){
 		gist.handle=null
 	}

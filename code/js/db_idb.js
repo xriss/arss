@@ -36,8 +36,8 @@ db.setup=async function()
 	{
 		try{
 			let its=[
-				{url:"https://notshi.github.io/printscreen/blog/feed.xml",tags:"/quiet"},
-				{url:"https://xixs.com/blog/feed.xml",tags:"/quiet"},
+				{url:"https://notshi.github.io/printscreen/blog/feed.xml",tags:"#quiet"},
+				{url:"https://xixs.com/blog/feed.xml",tags:"#quiet"},
 			]
 			for(let it of its)
 			{
@@ -67,6 +67,17 @@ db.add=async function(table,it)
 	await db.handle.add(table, it )
 }
 
+db.clear=async function(table)
+{
+	table=table||"keyval"
+	await db.handle.clear(table)
+}
+
+db.delete=async function(table,key)
+{
+	table=table||"keyval"
+	await db.handle.delete(table,key)
+}
 db.list=async function(table,filter,sort,sortdir)
 {
 	table=table||"keyval"

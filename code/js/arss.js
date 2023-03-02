@@ -27,14 +27,14 @@ arss.start=async function()
 {
 	console.log("ARSS is here")
 	
+	await db.setup()
+	await gist.setup()
+
 	display.all()
 	display.status("Loading...")
 
-	await db.setup()
 	await items.display(0)
 
-	await gist.setup()
-	
 	await arss.load_gist()
 
 	// keep refreshing feeds
