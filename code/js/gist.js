@@ -19,11 +19,13 @@ https://microsoftedge.microsoft.com/addons/detail/cors-unblock/hkjklmhkbkdhlgnnf
 gist.setup=async function()
 {
 	let gist_token=await db.get("keyval","gist_token")
+/*
 	if(!gist_token)
 	{
 		gist_token=window.prompt("Github gist token required for saving.","");
 		await db.set("keyval","gist_token",gist_token)
 	}
+*/
 
 	gist.handle = new GithubGist({
 	  personalAccessToken: gist_token,

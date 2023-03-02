@@ -5,8 +5,10 @@ const idb = require( "idb/with-async-ittr" )
 
 db.setup=async function()
 {
+	let newdata=false
 	db.handle = await idb.openDB("arss", 2, {
 		upgrade(handle) {
+			newdata=true
 			try{
 				let it=handle.createObjectStore('keyval')
 				it.createIndex("date", "date")
@@ -26,8 +28,24 @@ db.setup=async function()
 				let it=handle.createObjectStore("items")
 				it.createIndex("date", "date")
 			}catch(e){console.error(e)}
+
 		},
 	})
+// auto add default feeds to empty database
+	if(newdata)
+	{
+		try{
+			let its=[
+				{url:"https://notshi.github.io/printscreen/blog/feed.xml",tags:"/quiet"},
+				{url:"https://xixs.com/blog/feed.xml",tags:"/quiet"},
+			]
+			for(let it of its)
+			{
+				it.date=new Date()
+				await db.handle.put("feeds", it, it.url )
+			}
+		}catch(e){console.error(e)}
+	}
 }
 
 db.get=async function(table,key)

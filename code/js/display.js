@@ -80,6 +80,28 @@ display.opts=function()
 	parent.innerHTML=""
 
 	parent.append(display.element(`
+<div class="arss_info_butt" id="arss_info_butt_gist_token">Set token to connect to github gists for persistant storage.</div>
+`))
+
+	parent.append(display.element(`
+<div class="arss_info_butt_tail">
+This requires a github token with read / write access to your gists.
+You can create one at <a target="_blank" href="https://github.com/settings/tokens/new?scopes=gist">CREATE TOKEN</a>.
+Make sure you copy it into your clipboard then click the button above to input it and refresh the page.
+A private gist will be created/reconnected and then used to store all your ARSS options.
+This can also be used to "log you into your ARSS account" on a new browser.
+</div>
+`))
+
+	parent.append(display.element(`
+<div class="arss_info_butt" id="arss_info_butt_empty_cache">Reload all cache.</div>
+`))
+
+	parent.append(display.element(`
+<div class="arss_info_butt" id="arss_info_butt_empty_items">Reload all items (old items may be lost).</div>
+`))
+
+	parent.append(display.element(`
 <div class="arss_info_butt" id="arss_info_butt_load_opml">Import feeds from an OPML file.<input id="arss_info_butt_load_opml_file" type="file"/></div>
 `))
 
@@ -89,6 +111,9 @@ display.opts=function()
 
 	document.getElementById("arss_info_butt_load_opml_file").onchange = display.load_opml
 	document.getElementById("arss_info_butt_save_opml").onclick = display.save_opml
+	
+	document.getElementById("arss_info_butt_gist_token").onclick = display.gist_token
+	
 
 }
 
@@ -217,15 +242,6 @@ display.save_opml=async function(e)
 	let feeds=await db.list("feeds")
 	let now=(new Date()).getTime()
 	
-// feedly?
-/*
-	out[0]={}
-	out[0]["/outline"]=[]
-	out[0]["@text"]="ARSS"
-	out[0]["@title"]="ARSS"
-	out=out[0]["/outline"]
-*/
-
 	for(let feed of feeds)
 	{
 		let it={}
@@ -243,5 +259,16 @@ display.save_opml=async function(e)
 	link.setAttribute("href", "data:"+data)
 	link.setAttribute("download", "arss_reader.opml")
 	link.click();
+}
+
+
+display.gist_token=async function(e)
+{
+	gist_token=window.prompt("Github gist token required for saving.","");
+	if(gist_token)
+	{
+		await db.set("keyval","gist_token",gist_token)
+		window.location.reload()
+	}
 }
 
