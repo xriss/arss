@@ -2,6 +2,8 @@
 const display=exports
 
 const feeds = require('./feeds.js')
+const db = require('./db_idb.js')
+const jxml = require('./jxml.js')
 
 
 display.element=function(html)
@@ -82,11 +84,11 @@ display.opts=function()
 `))
 
 	parent.append(display.element(`
-<div class="arss_info_butt" id="arss_info_butt_save_opml">Export all feeds as an OPML file.</div>
+<a class="arss_info_butt" id="arss_info_butt_save_opml">Export all feeds as an OPML file.</a>
 `))
 
-	document.getElementById("arss_info_butt_load_opml_file").onchange = function(){display.load_opml()}
-	document.getElementById("arss_info_butt_save_opml").onclick = function(){display.save_opml()}
+	document.getElementById("arss_info_butt_load_opml_file").onchange = display.load_opml
+	document.getElementById("arss_info_butt_save_opml").onclick = display.save_opml
 
 }
 
@@ -202,7 +204,44 @@ display.load_opml=async function()
 	window.location.reload()
 }
 
-display.save_opml=async function()
+display.save_opml=async function(e)
 {
+	let j={
+ "/opml/head/title": "ARSS Reader",
+ "/opml@version": "1.0",
+ "/opml/body/outline": [],
+}
+
+	let out=j["/opml/body/outline"]
+	
+	let feeds=await db.list("feeds")
+	let now=(new Date()).getTime()
+	
+// feedly?
+/*
+	out[0]={}
+	out[0]["/outline"]=[]
+	out[0]["@text"]="ARSS"
+	out[0]["@title"]="ARSS"
+	out=out[0]["/outline"]
+*/
+
+	for(let feed of feeds)
+	{
+		let it={}
+		it["@type"]="rss"
+		it["@xmlUrl"]=feed.url
+		it["@htmlUrl"]=feed.url
+		it["@text"]=feed.title
+		it["@title"]=feed.title
+		out.push(it)
+	}
+	let x=jxml.build_xml(j)
+    
+	let link = document.createElement('a')
+	let data = "text/xml;charset=utf-8," + encodeURIComponent(x)
+	link.setAttribute("href", "data:"+data)
+	link.setAttribute("download", "arss_reader.opml")
+	link.click();
 }
 

@@ -174,7 +174,6 @@ jxml.expand_one=function(it)
 			}
 			else
 			{
-console.log(path+" : ",idx,idx2)
 				if( idx<0 ) // a text node
 				{
 					idx=path.length
@@ -209,7 +208,7 @@ jxml.recurse=function(it,func,paths)
 
 jxml.build_xml=function(data)
 {
-	let ss=[]
+	let ss=['<?xml version="1.0" encoding="UTF-8"?>\n']
 
 	data=jxml.expand(data) // fully expand so every sub tag is an array
 	
@@ -223,6 +222,7 @@ jxml.build_xml=function(data)
 	{
 		let top=paths[paths.length-1] // this will start with a /
 		let indent=(" ").repeat(Math.max(0,paths.length-1))
+		let children=false
 		if(top) // catch the starting empty paths
 		{
 			ss.push(indent+"<"+top.substring(1))
@@ -232,14 +232,28 @@ jxml.build_xml=function(data)
 				{
 					ss.push(" "+path.substring(1)+"=\""+jxml.sanistr(it[path])+"\"")
 				}
+				if((path[0]=="/")||(path=="")) // children
+				{
+					children=true
+				}
 			}
-			ss.push(">\n")
-			if(it[""]){ss.push(indent+" "+jxml.sanistr(it[""])+"\n")} // push text
+			if(children)
+			{
+				ss.push(" >\n")
+				if(it[""]){ss.push(indent+" "+jxml.sanistr(it[""])+"\n")} // push text
+			}
+			else
+			{
+				ss.push(" />\n")
+			}
 		}
 		jxml.recurse(it,parse,paths) // add sub tags
 		if(top)
 		{
-			ss.push(indent+"<"+top+">\n")
+			if(children)
+			{
+				ss.push(indent+"<"+top+">\n")
+			}
 		}
 	}
 	parse(data,[])
