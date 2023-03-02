@@ -12,9 +12,21 @@ const gist = require('./gist.js')
 const display = require('./display.js')
 
   
-  
+function getQueryVariable(variable) {
+	return ret
+}
+
+
 arss.setup=function(args)
 {
+	arss.query={}
+	for (let v of window.location.search.substring(1).split('&') )
+	{
+		let pair = v.split('=')
+		arss.query[ decodeURIComponent(pair[0]) ] = decodeURIComponent(pair[1])
+	}
+	console.log(arss.query)
+
 	arss.args=args || {}		// remember args
 	if( document.readyState == "loading" )
 	{ document.addEventListener("DOMContentLoaded", arss.start) }
@@ -28,6 +40,9 @@ arss.start=async function()
 	console.log("ARSS is here")
 	
 	await db.setup()
+
+	arss.cors=await db.get("keyval","cors") || arss.args.cors || arss.query.cors
+
 	await gist.setup()
 
 	display.all()

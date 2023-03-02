@@ -98,8 +98,8 @@ else
 <div class="arss_info_butt_warn">
 
 You are are not currently connected to a github gist and I would advise 
-that you connect before clicking any other buttons on this page which 
-may cause loss of data.
+that you connect before clicking any other buttons which may cause loss 
+of data.
 
 </div>
 `))

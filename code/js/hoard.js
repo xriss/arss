@@ -2,6 +2,7 @@
 const hoard=exports
 
 const db = require('./db_idb.js')
+const arss = require('./arss.js')
 
 const fetch = require('fetch')
 
@@ -10,6 +11,7 @@ hoard.maxage=15*60*1000
 
 hoard.fetch_text=async function(url,refresh)
 {
+	let corsurl=(arss.cors||"")+url
 	let oldtext
 	let it
 	if(!refresh) { it=await db.get("hoard",url) } // try cache
@@ -31,7 +33,7 @@ hoard.fetch_text=async function(url,refresh)
 			const controller = new AbortController()
 			const signal = controller.signal
 			setTimeout(function(){controller.abort()}, 10*1000)
-			let res=await fetch(url,{signal})//,{redirect: 'follow',follow: 20})
+			let res=await fetch(corsurl,{signal})//,{redirect: 'follow',follow: 20})
 			it.status=res.status
 			it.text=await res.text()
 			it.randage=Math.floor(Math.random() * hoard.maxage);

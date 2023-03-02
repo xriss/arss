@@ -5,6 +5,7 @@ const { GithubGist } = require('@vighnesh153/github-gist');
 
 
 const db = require('./db_idb.js')
+const arss = require('./arss.js')
 
 /*
 
@@ -18,22 +19,23 @@ https://microsoftedge.microsoft.com/addons/detail/cors-unblock/hkjklmhkbkdhlgnnf
 
 gist.setup=async function()
 {
-	let gist_token=await db.get("keyval","gist_token")
-/*
-	if(!gist_token)
-	{
-		gist_token=window.prompt("Github gist token required for saving.","");
-		await db.set("keyval","gist_token",gist_token)
-	}
-*/
 
-	gist.handle = new GithubGist({
+	let gist_token=await db.get("keyval","gist_token")
+
+	let opts={
 	  personalAccessToken: gist_token,
 	  appIdentifier: 'arss',
 	  enableRequestCaching: true,
 	  isPublic: false,
 	  corsConfig: { type: 'none' },
-	});
+	}
+	
+	if(arss.cors) // apply simple cors proxy
+	{
+		opts.corsConfig={ type: 'custom', customRequestConfig: function(url){ return { url : arss.cors+url } } }
+	}
+
+	gist.handle = new GithubGist(opts);
 
 	try{
 		await gist.handle.initialize();
