@@ -32,16 +32,29 @@ feeds.add_opml=async function(data,url)
 	if(!data){return}
 	let jsn=jxml.parse_xml(data,jxml.xmap.opml)
 //console.log(jsn)
-	if(jsn["/opml/body/outline"] )
+
+	let check;check=async function(it)
+	{
+		let feed={}
+		if( it["@xmlurl"] )
+		{
+			feed.url=it["@xmlurl"]
+			await feeds.add(feed)
+		}
+		if(it["/outline"]) // check sub outlines
+		{
+			for(let it2 of it["/outline"] )
+			{
+				await check(it2)
+			}
+		}
+	}
+
+	if( jsn["/opml/body/outline"] )
 	{
 		for(let it of jsn["/opml/body/outline"] )
 		{
-			let feed={}
-			if( it["@xmlurl"] )
-			{
-				feed.url=it["@xmlurl"]
-				await feeds.add(feed)
-			}
+			await check(it)
 		}
 	}
 }

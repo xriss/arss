@@ -25,21 +25,20 @@ items.prepare=function(item,feed)
 	let uuid=rss["/guid"] || atom["/id"] || rss["/link"] || rss["/title"] || rss["/pubdate"] || ""
 	item.uuid=item.feed+"^"+uuid
 
+	item.date=item.date||new Date() // make sure we have a data
 	if(rss["/pubdate"])
 	{
 		item.date=new Date(rss["/pubdate"])
 	}
 	else
-/*
-	if(atom["/updated"])
-	{
-		item.date=new Date(atom["/updated"])
-	}
-	else
-*/
-	if(atom["/published"])
+	if(atom["/published"]) // prefer published
 	{
 		item.date=new Date(atom["/published"])
+	}
+	else
+	if(atom["/updated"]) // but sometimes we do not have it
+	{
+		item.date=new Date(atom["/updated"])
 	}
 
 	if(rss["/link"])
@@ -52,13 +51,14 @@ items.prepare=function(item,feed)
 		item.link=atom["/link"][0]["@href"]
 		for(let link of atom["/link"])
 		{
-			if(link["@ref"]=="alternate")
+			if( link["@rel"]=="alternate" )
 			{
 				item.link=link["@href"]
 			}
 		}
 	}
 
+	item.title=item.title||""
 	if(rss["/title"])
 	{
 		item.title=rss["/title"]
@@ -69,6 +69,7 @@ items.prepare=function(item,feed)
 		item.title=atom["/title"]
 	}
 
+	item.html=item.html||""
 	if(rss["/description"])
 	{
 		item.html=rss["/description"]

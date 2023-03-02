@@ -31,6 +31,7 @@ display.all=function()
 	display.bar()
 	display.list()
 	display.drag()
+	display.opts()
 	display.page("read")
 }
 
@@ -65,9 +66,27 @@ display.bar=function()
 <div class="arss_butt" id="arss_butt_status">.</div>
 `))
 
-document.getElementById("arss_butt_read").onclick = function(){display.page("read")};
-document.getElementById("arss_butt_feed").onclick = function(){display.page("feed")};
-document.getElementById("arss_butt_opts").onclick = function(){display.page("opts")};
+	document.getElementById("arss_butt_read").onclick = function(){display.page("read")}
+	document.getElementById("arss_butt_feed").onclick = function(){display.page("feed")}
+	document.getElementById("arss_butt_opts").onclick = function(){display.page("opts")}
+
+}
+
+display.opts=function()
+{
+	let parent=document.getElementById('arss_list_opts')
+	parent.innerHTML=""
+
+	parent.append(display.element(`
+<div class="arss_info_butt" id="arss_info_butt_load_opml">Import feeds from an OPML file.<input id="arss_info_butt_load_opml_file" type="file"/></div>
+`))
+
+	parent.append(display.element(`
+<div class="arss_info_butt" id="arss_info_butt_save_opml">Export all feeds as an OPML file.</div>
+`))
+
+	document.getElementById("arss_info_butt_load_opml_file").onchange = function(){display.load_opml()}
+	document.getElementById("arss_info_butt_save_opml").onclick = function(){display.save_opml()}
 
 }
 
@@ -153,5 +172,37 @@ display.page=function(name)
 		document.getElementById("arss_list_opts").style.display="inline-block"
 //		opts.display()
 	}
+}
+
+
+display.load_opml=async function()
+{
+	let input=document.getElementById("arss_info_butt_load_opml_file")
+
+	let read=function(file){
+		return new Promise(
+			function(resolve, reject)
+			{
+				let fp = new FileReader();  
+				fp.onload = function()
+				{
+					resolve(fp.result )
+				}
+				fp.onerror = reject
+				fp.readAsText(file)
+			}
+		)
+	}
+	let data=await read(input.files[0])
+
+	await feeds.add_opml(data)
+	
+	await arss.save_gist()
+
+	window.location.reload()
+}
+
+display.save_opml=async function()
+{
 }
 
