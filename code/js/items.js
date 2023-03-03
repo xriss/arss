@@ -18,6 +18,7 @@ items.prepare=function(item,feed)
 	{
 		item.feed=feed.url
 		item.feed_title=feed.title
+		item.feed_tags=feed.tags
 	}
 	
 	let uuid=rss["/guid"] || atom["/id"] || rss["/link"] || rss["/title"] || rss["/pubdate"] || ""

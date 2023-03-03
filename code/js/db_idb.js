@@ -36,8 +36,8 @@ db.setup=async function()
 	{
 		try{
 			let its=[
-				{url:"https://notshi.github.io/printscreen/blog/feed.xml",tags:"#quiet"},
-				{url:"https://xixs.com/blog/feed.xml",tags:"#quiet"},
+				{url:"https://notshi.github.io/printscreen/blog/feed.xml",tags:"#QUIET"},
+				{url:"https://xixs.com/blog/feed.xml",tags:"#QUIET"},
 			]
 			for(let it of its)
 			{

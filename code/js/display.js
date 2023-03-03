@@ -39,6 +39,9 @@ display.all=function()
 	display.drag()
 	display.opts()
 	display.page("read")
+
+	window.onhashchange = display.hash_change
+
 }
 
 display.status=function(html)
@@ -101,8 +104,10 @@ else
 <div class="arss_info_butt_warn">
 
 You are are not currently connected to a github gist and I would advise 
-that you connect before clicking any other buttons which may cause loss 
-of data.
+that you connect before clicking any other buttons. If you do not 
+connect then things will still work ( import an OPML and read away ) 
+but you must be aware that any changes you make can be lost in time, 
+like tears in rain.
 
 </div>
 `))
@@ -227,6 +232,11 @@ display.drag=function()
 			document.getElementById("arss_page").style.width=f+"%"
 		}
 	}
+}
+
+display.hash_change=function(e)
+{
+	display.hash(window.location.hash)
 }
 
 display.hash=function(hash)
@@ -389,9 +399,26 @@ display.feeds=async function()
 	
 	let feeds=await db.list("feeds")
 	let now=(new Date()).getTime()
+	
+	let tags={}
+	let parse_tags=function(s)
+	{
+		s=s||""
+		let aa=s.split("#")
+		for(let a of aa)
+		{
+			let t=a.trim()
+			if(t!="")
+			{
+				tags[t.toUpperCase()]=true
+			}
+		}
+	}
 
 	for(let feed of feeds)
 	{
+		parse_tags(feed.tags)
+		
 		let fails_style="display:none;"
 		let fails=display.sanistr(feed.fails)
 		if( ( (feed.fails||0)  > 0 ) || (feed.off) )
@@ -399,6 +426,7 @@ display.feeds=async function()
 			fails_style="display:block;"
 		}
 		const cleanlink = display.sanistr(feed.url)
+		const cleantags = display.sanistr(feed.tags||"")
 		const cleantitle = display.sanistr(feed.title)
 		let checked="checked"
 		if(feed.off){checked=""}
@@ -418,6 +446,7 @@ display.feeds=async function()
 <div class="arss_feed" id="${cleanlink}">
 <div><input class="arss_feed_checkbox" type="checkbox" ${checked} /><a class="arss_feed_select" >${cleantitle}</a></div>
 <input class="arss_feed_url" type="text" value="${cleanlink}"/>
+<div class="arss_feed_tags">TAGS:<input class="arss_feed_tags_input" type="text" value="${cleantags}"/></div>
 <div class="arss_feed_date">Updated on ${date}</div>
 <div class="arss_deef_count">Number of items ${count}</div>
 <div class="arss_feed_fail" style="${fails_style}">Fails : ${fails} <a class='arss_feed_delete'>DELETE</a></div>
@@ -425,8 +454,17 @@ display.feeds=async function()
 `)
 	}
 	
+	{
+		let ss=[]
+		for(let tag in tags)
+		{
+			ss.push((`
+				<a href="#${tag}">${tag}</a>
+			`).trim())
+		}
+		aa.unshift( `<div class="arss_info"> `+ss.join(" ")+" </div>" ) // stick tag list at top
+	}
 	
-
 	document.getElementById('arss_list_feed').innerHTML = aa.join("")	
 
 	for(let e of document.getElementsByClassName("arss_feed_checkbox") )
@@ -437,6 +475,11 @@ display.feeds=async function()
 	for(let e of document.getElementsByClassName("arss_feed_url") )
 	{
 		e.onchange=display.feeds_url_changed
+	}
+
+	for(let e of document.getElementsByClassName("arss_feed_tags_input") )
+	{
+		e.onchange=display.feeds_tags_changed
 	}
 
 	for(let e of document.getElementsByClassName("arss_feed_delete") )
@@ -508,13 +551,29 @@ display.feeds_url_changed=async function(e)
 	let feed=await db.get("feeds",url)
 	if(!feed){ return } // required
 	
-	console.log(this.value)
-
 	feed.url=this.value // set new url (which moves the feed)
 	
 	await db.set("feeds",feed.url,feed)
 	await db.delete("feeds",url)
 
+}
+
+display.feeds_tags_changed=async function(e)
+{
+	let div_feed=display.div_lookup(this,"arss_feed")
+	if(!div_feed){ return } // required
+	
+	let url=div_feed.id
+	let feed=await db.get("feeds",url)
+	if(!feed){ return } // required
+	
+	let tags=this.value||""
+	tags=tags.trim()
+	tags=tags.toUpperCase()
+
+	feed.tags=this.value // set new tags
+	
+	await db.set("feeds",feed.url,feed)
 }
 
 display.feeds_checkbox_changed=async function(e)
@@ -564,7 +623,15 @@ display.items=async function(showidx)
 	}
 	else
 	{
-		filter={feed:hash.substring(1)} // only this feed
+		let isfeed=await db.get("feeds",hash.substring(1))
+		if(isfeed)
+		{
+			filter={feed:hash.substring(1)} // only this feed
+		}
+		else // is a tag
+		{
+			filter={feed_tags:hash} // only this feed
+		}
 	}
 	
 	let items_list=await db.list("items",filter,"date","prev")
@@ -621,10 +688,13 @@ display.items=async function(showidx)
 			let aa=html.split("<head>")
 			if(aa.length==2)
 			{
-				let url_parts = new URL(".",e.id)
-//				if( url_parts.protocol == "http:" ) { url_parts.protocol = "https:" } // force https
-				let url=url_parts.origin+url_parts.pathname
-				html=aa.join(`<head><base href="${url}" target="_blank" /><meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />`)
+				if(e.id)
+				{
+					let url_parts = new URL(".",e.id)
+	//				if( url_parts.protocol == "http:" ) { url_parts.protocol = "https:" } // force https
+					let url=url_parts.origin+url_parts.pathname
+					html=aa.join(`<head><base href="${url}" target="_blank" /><meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />`)
+				}
 			}
 		}
 
