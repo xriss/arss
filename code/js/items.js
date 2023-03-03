@@ -158,7 +158,18 @@ items.display=async function(showidx)
 		e.classList.add("active")
 
 		let html=await hoard.fetch_text(e.id)
+
 // maybe squirt a base tag into the head so relative urls will still work?
+		if(html)
+		{
+			let aa=html.split("<head>")
+			if(aa.length==2)
+			{
+				let safeurl=display.sanistr(e.id)
+				html=aa.join(`<head><base href="${safeurl}" target="_blank" />`)
+			}
+		}
+
 		document.getElementById('arss_page').srcdoc=html
 
 
