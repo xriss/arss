@@ -167,7 +167,7 @@ items.display=async function(showidx)
 			if(aa.length==2)
 			{
 				let url_parts = new URL(".",e.id)
-				if( url_parts.protocol == "http" ) { url_parts.protocol = "https" } // force https
+				if( url_parts.protocol == "http:" ) { url_parts.protocol = "https:" } // force https
 				let url=url_parts.origin+url_parts.pathname
 				html=aa.join(`<head><base href="${url}" target="_blank" />`)
 			}
