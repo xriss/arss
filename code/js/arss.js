@@ -109,7 +109,12 @@ arss.save=async function()
 	let list=await db.list("feeds")
 	for(let feed of list )
 	{
-		jsn.feeds.push(feed)
+		let it={}
+		it.url=feed.url
+		it.title=feed.title
+		it.tags=feed.tags
+		it.off=feed.off
+		jsn.feeds.push(it)
 	}
 	
 	return jsn
