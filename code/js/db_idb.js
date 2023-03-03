@@ -38,6 +38,7 @@ db.setup=async function()
 			let its=[
 				{url:"https://notshi.github.io/printscreen/blog/feed.xml",tags:"#QUIET"},
 				{url:"https://xixs.com/blog/feed.xml",tags:"#QUIET"},
+				{url:"https://4lfa.com/comic/feed.xml",tags:"#QUIET"},
 			]
 			for(let it of its)
 			{
@@ -46,6 +47,12 @@ db.setup=async function()
 			}
 		}catch(e){console.error(e)}
 	}
+}
+
+db.close=async function()
+{
+	await db.handle.close()
+	db.handle=null
 }
 
 db.get=async function(table,key)

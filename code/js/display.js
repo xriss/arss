@@ -361,6 +361,7 @@ display.gist_disconnect=async function(e)
 display.empty_cache=async function(e)
 {
 	await db.clear("hoard")
+	await db.close("")
 	window.location.reload()
 }
 
@@ -368,6 +369,7 @@ display.empty_items=async function(e)
 {
 	await db.clear("items")
 	await db.clear("hoard")
+	await db.close("")
 	window.location.reload()
 }
 
@@ -376,6 +378,7 @@ display.empty_feeds=async function(e)
 	await db.clear("feeds")
 	await db.clear("items")
 	await db.clear("hoard")
+	await db.close("")
 	window.location.reload()
 }
 
