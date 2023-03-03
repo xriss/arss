@@ -99,7 +99,7 @@ feeds.fetch_all=async function()
 		display.status("+"+items.add_count)
 		if( document.getElementById('arss_list_read').parentElement.scrollTop==0 ) // at top, so refresh
 		{
-			items.display()
+			display.items(0)
 		}
 	}
 	else
@@ -122,6 +122,25 @@ feeds.fetch=async function(feed)
 		let atom
 		try{ atom=jxml.parse_xml(txt,jxml.xmap.atom) }
 		catch(e){}
+		
+		// feed.items_date date is date of most recent item we have seen in the feed
+		let check_date=function(it)
+		{
+			if(it.date)
+			{
+				if(feed.items_date)
+				{
+					if( feed.items_date < it.date )
+					{
+						feed.items_date=it.date
+					}
+				}
+				else
+				{
+					feed.items_date=it.date
+				}
+			}
+		}
 
 		if(rss && rss["/rss/channel/item"])
 		{
@@ -135,6 +154,7 @@ feeds.fetch=async function(feed)
 				let item={rss:rss_item}
 				feed.items_count++
 				items.prepare(item,feed)
+				check_date(item)
 				await items.add(item)
 			}
 			feed.fails=0
@@ -152,6 +172,7 @@ feeds.fetch=async function(feed)
 				let item={atom:atom_entry}
 				feed.items_count++
 				items.prepare(item,feed)
+				check_date(item)
 				await items.add(item)
 			}
 			feed.fails=0

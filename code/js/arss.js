@@ -62,7 +62,7 @@ arss.start=async function()
 	}
 	display.hash(window.location.hash)
 
-	await items.display(0)
+	await display.items(0)
 
 	await arss.load_gist()
 

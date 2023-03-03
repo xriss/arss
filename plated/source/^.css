@@ -107,13 +107,19 @@ a.bar:hover	{background-color:#1400ff; border-bottom:none;}
 	overflow-y:scroll;
 }
 
-.arss_date
+.arss_item_link
+{
+}
+
+.arss_item_date
 {
   text-align: right;
+	cursor: pointer;
 }
 
 .arss_item_feed
 {
+	cursor: pointer;
 	text-align:right;
 	padding:0px 0px 0px 50%;
 	width: 100%;
@@ -124,6 +130,13 @@ a.bar:hover	{background-color:#1400ff; border-bottom:none;}
 {
 	padding:16px 8px;
 	width: 100%;
+}
+
+.arss_info
+{
+	padding:16px 8px;
+	width: 100%;
+	background:#ffffff;
 }
 
 .arss_feed
@@ -142,6 +155,11 @@ a.bar:hover	{background-color:#1400ff; border-bottom:none;}
 {
 	font-size:24px;
 	width:100%;
+}
+
+.arss_feed_select
+{
+	cursor: pointer;
 }
 
 .arss_feed_delete

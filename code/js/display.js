@@ -3,9 +3,12 @@ const display=exports
 
 const gist = require('./gist.js')
 const feeds = require('./feeds.js')
+const items = require('./items.js')
 const db = require('./db_idb.js')
 const jxml = require('./jxml.js')
+const hoard = require('./hoard.js')
 
+const sanihtml = require('sanitize-html');
 
 display.element=function(html)
 {
@@ -234,7 +237,8 @@ display.hash=function(hash)
 		if(hash=="#read") { display.page("read") } else
 		if(hash=="#feed") { display.page("feed") } else
 		if(hash=="#opts") { display.page("opts") } else
-		display.page("read")
+		display.page("read") // any other hash is a read filter
+		display.items(0)
 	}
 	return window.location.hash
 }
@@ -398,10 +402,24 @@ display.feeds=async function()
 		const cleantitle = display.sanistr(feed.title)
 		let checked="checked"
 		if(feed.off){checked=""}
+		let date="never"
+		if(feed.items_date)
+		{
+			date=(new Date(feed.items_date)).toISOString().split("T")
+			date=date[0]+" "+date[1].substring(0,5)
+		}
+		let count="none"
+		if("number" == typeof feed.items_count)
+		{
+			count=feed.items_count
+		}
+		
 		aa.push(`
 <div class="arss_feed" id="${cleanlink}">
 <div><input class="arss_feed_checkbox" type="checkbox" ${checked} /><a class="arss_feed_select" >${cleantitle}</a></div>
 <input class="arss_feed_url" type="text" value="${cleanlink}"/>
+<div class="arss_feed_date">Updated on ${date}</div>
+<div class="arss_deef_count">Number of items ${count}</div>
 <div class="arss_feed_fail" style="${fails_style}">Fails : ${fails} <a class='arss_feed_delete'>DELETE</a></div>
 </div>
 `)
@@ -425,17 +443,49 @@ display.feeds=async function()
 	{
 		e.onclick=display.feeds_delete
 	}
+	
+	for(let e of document.getElementsByClassName("arss_feed_select") )
+	{
+		e.onclick=display.feeds_select
+	}
+	
 
 }
-display.div_feed=function(e)
+display.div_child=function(e,name)
 {
-	while(e && !e.classList.contains("arss_feed") ){ e = e.parentElement }
+	if(e)
+	{
+		for(let it of e.children)
+		{
+			if( it.classList.contains(name) )
+			{
+				return it
+			}
+		}
+	}
+}
+display.div_lookup=function(e,name)
+{
+	while(e && !e.classList.contains(name) ){ e = e.parentElement }
 	return e
+}
+
+
+display.feeds_select=async function(e)
+{
+	let div_feed=display.div_lookup(this,"arss_feed")
+	if(!div_feed){ return } // required
+	
+	let url=div_feed.id
+	let feed=await db.get("feeds",url)
+	if(!feed){ return } // required
+
+	display.hash("#"+url) // read only this feed
 }
 
 display.feeds_delete=async function(e)
 {
-	let div_feed=display.div_feed(this)
+	let div_feed=display.div_lookup(this,"arss_feed")
 	if(!div_feed){ return } // required
 	
 	let url=div_feed.id
@@ -451,7 +501,7 @@ display.feeds_delete=async function(e)
 
 display.feeds_url_changed=async function(e)
 {
-	let div_feed=display.div_feed(this)
+	let div_feed=display.div_lookup(this,"arss_feed")
 	if(!div_feed){ return } // required
 	
 	let url=div_feed.id
@@ -469,7 +519,7 @@ display.feeds_url_changed=async function(e)
 
 display.feeds_checkbox_changed=async function(e)
 {
-	let div_feed=display.div_feed(this)
+	let div_feed=display.div_lookup(this,"arss_feed")
 	if(!div_feed){ return } // required
 	
 	let url=div_feed.id
@@ -496,3 +546,164 @@ display.feeds_checkbox_changed=async function(e)
 	}
 
 }
+
+
+display.items=async function(showidx)
+{
+	items.add_count=0
+	document.getElementById('arss_list_read').innerHTML = ""
+	display.status("")
+	
+	let aa=[]
+	
+	let hash=display.hash()
+	let filter={}
+	if( hash=="#read" || hash=="#feed" || hash=="#opts" || hash=="#" || hash=="" )
+	{
+		filter={} // no filter
+	}
+	else
+	{
+		filter={feed:hash.substring(1)} // only this feed
+	}
+	
+	let items_list=await db.list("items",filter,"date","prev")
+	let count=0
+	let now=(new Date()).getTime()
+	for(let item of items_list)
+	{
+		count++
+		if( count>1000 ){ break }
+		if( item.date.getTime() > now+(10*60*1000) ){ continue } // ignore far future dates
+
+		const notags={allowedTags: [],allowedAttributes: {}}
+		const allowtags={ allowedTags:[ "img" , "p" ] }
+		const cleanlink = display.sanistr(item.link)
+		const cleantitle = display.sanistr(item.title)
+		const cleanfeed = display.sanistr(item.feed)
+		const cleanfeedtitle = display.sanistr(item.feed_title)
+		const cleanhtml = sanihtml(item.html||"",allowtags)
+		let date=item.date.toISOString().split("T")
+		date=date[0]+" "+date[1].substring(0,5)
+
+		aa.push(`
+<div class="arss_item" id="${cleanlink}">
+<div class="arss_item_link"><a href="${cleanlink}" target="_blank" ">${cleantitle}</a></div>
+<div class="arss_item_date">${date}</div>
+<div class="arss_item_feed" url="${cleanfeed}" >${cleanfeedtitle}</div>
+<div>${cleanhtml}</div>
+</div>
+`)
+	}
+	if(aa.length==0)
+	{
+		aa.push(`
+<div class="arss_info" >No items to display.</div>
+`)
+	}
+	document.getElementById('arss_list_read').innerHTML = aa.join("")
+
+	let parent=document.getElementById('arss_list_read')
+	
+	let display_item_last=null
+	let display_item=async function(e)
+	{
+		if(display_item_last==e) { return }
+		if(display_item_last) { display_item_last.classList.remove("active") }
+		display_item_last=e
+		e.classList.add("active")
+
+		let html=await hoard.fetch_text(e.id)
+
+// maybe squirt a base tag into the head so relative urls will still work?
+		if(html)
+		{
+			let aa=html.split("<head>")
+			if(aa.length==2)
+			{
+				let url_parts = new URL(".",e.id)
+//				if( url_parts.protocol == "http:" ) { url_parts.protocol = "https:" } // force https
+				let url=url_parts.origin+url_parts.pathname
+				html=aa.join(`<head><base href="${url}" target="_blank" /><meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />`)
+			}
+		}
+
+		document.getElementById('arss_page').srcdoc=html
+
+
+
+		// auto cache next/prev pages
+		let el=e.nextSibling
+		while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.nextSibling }
+		if(el) { hoard.fetch_text(el.id) }
+		el=e.previousSibling
+		while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.previousSibling }
+		if(el) { hoard.fetch_text(el.id) }
+	}
+
+	let top=function(e)
+	{
+		if(!e){return 0}
+		var rect = e.getBoundingClientRect()
+		var win = e.ownerDocument.defaultView
+		return rect.top + win.pageYOffset
+	}
+	
+	let lastx=0
+	let lasty=0
+	let mouseover=function(ev)
+	{
+		lastx=ev.clientX
+		lasty=ev.clientY
+		
+		let el=ev.target
+		while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.parentElement }
+		if(el){display_item(el)}
+	}
+	for(let e of parent.children){e.onmouseover=mouseover}
+
+	parent.parentElement.onscroll = function(ev)
+	{
+		let el=document.elementFromPoint(lastx,lasty)
+		while(el && !el.classList.contains("arss_item") ){ el = el.parentElement }
+		if(el){display_item(el)}
+		if(parent.parentElement.scrollTop==0) // hit top, maybe refresh
+		{
+			if(items.add_count>0)
+			{
+				display.items(0)
+			}
+		}
+	}
+
+	for(let e of document.getElementsByClassName("arss_item_date") )
+	{
+		e.onclick=display.items_feed_select
+	}
+	for(let e of document.getElementsByClassName("arss_item_feed") )
+	{
+		e.onclick=display.items_feed_select
+	}
+
+
+	if("number"==typeof showidx){ display_item(parent.children[showidx]) }
+}
+
+display.items_feed_select=async function(e)
+{
+	let div_item=display.div_lookup(this,"arss_item")
+	if(!div_item){ return } // required
+
+	let div_feed=display.div_child(div_item,"arss_item_feed")
+	if(!div_feed){ return } // required
+	
+	console.log(div_feed)
+	let url=div_feed.getAttribute("url")
+	console.log(url)
+
+	let feed=await db.get("feeds",url)
+	if(!feed){ return } // required
+
+	display.hash("#"+url) // read only this feed
+}
+
