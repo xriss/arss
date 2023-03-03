@@ -25,7 +25,6 @@ arss.setup=function(args)
 		let pair = v.split('=')
 		arss.query[ decodeURIComponent(pair[0]) ] = decodeURIComponent(pair[1])
 	}
-	console.log(arss.query)
 
 	arss.args=args || {}		// remember args
 	if( document.readyState == "loading" )
@@ -37,7 +36,7 @@ arss.setup=function(args)
 
 arss.start=async function()
 {
-	console.log("ARSS is here")
+	console.log("ARSS! is here")
 	
 	await db.setup()
 

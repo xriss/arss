@@ -11,6 +11,7 @@ const jxml = require('./jxml.js')
 const display = require('./display.js')
 
 
+
 items.prepare=function(item,feed)
 {
 	let atom=item.atom||{}
@@ -165,8 +166,9 @@ items.display=async function(showidx)
 			let aa=html.split("<head>")
 			if(aa.length==2)
 			{
-				let safeurl=display.sanistr(e.id)
-				html=aa.join(`<head><base href="${safeurl}" target="_blank" />`)
+				let url_parts = new URL(".",e.id)
+				let url=url_parts.origin+url_parts.pathname
+				html=aa.join(`<head><base href="${url}" target="_blank" />`)
 			}
 		}
 
