@@ -69,9 +69,9 @@ display.bar=function()
 <div class="arss_butt" id="arss_butt_status">.</div>
 `))
 
-	document.getElementById("arss_butt_read").onclick = function(){display.page("read")}
-	document.getElementById("arss_butt_feed").onclick = function(){display.page("feed")}
-	document.getElementById("arss_butt_opts").onclick = function(){display.page("opts")}
+	document.getElementById("arss_butt_read").onclick = function(){display.hash("#read")}
+	document.getElementById("arss_butt_feed").onclick = function(){display.hash("#feed")}
+	document.getElementById("arss_butt_opts").onclick = function(){display.hash("#opts")}
 
 }
 
@@ -224,6 +224,19 @@ display.drag=function()
 			document.getElementById("arss_page").style.width=f+"%"
 		}
 	}
+}
+
+display.hash=function(hash)
+{
+	if( hash )
+	{
+		window.location.hash=hash
+		if(hash=="#read") { display.page("read") } else
+		if(hash=="#feed") { display.page("feed") } else
+		if(hash=="#opts") { display.page("opts") } else
+		display.page("read")
+	}
+	return window.location.hash
 }
 
 display.page=function(name)

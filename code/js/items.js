@@ -42,7 +42,6 @@ items.prepare=function(item,feed)
 			item.date=new Date(atom["/updated"])
 		}
 	}
-	item.date=item.date||new Date() // make sure we have a date
 
 	if(rss["/link"])
 	{
@@ -100,11 +99,12 @@ items.add=async function(it)
 		items.add_count++
 	}
 	for(let n in it ){ item[n]=it[n] }
-	if(old)
+	if(old) // old date has precedence
 	{
 		item.date=old.date||item.date
 	}
-	await db.set("items",it.uuid,it)
+	item.date=item.date||new Date() // make sure we have a date
+	await db.set("items",item.uuid,item)
 }
 
 

@@ -20,10 +20,9 @@ https://microsoftedge.microsoft.com/addons/detail/cors-unblock/hkjklmhkbkdhlgnnf
 gist.setup=async function()
 {
 
-	let gist_token=await db.get("keyval","gist_token")
 
 	let opts={
-	  personalAccessToken: gist_token,
+	  personalAccessToken: arss.gist,
 	  appIdentifier: 'arss',
 	  enableRequestCaching: true,
 	  isPublic: false,

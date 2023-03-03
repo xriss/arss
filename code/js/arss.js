@@ -41,12 +41,27 @@ arss.start=async function()
 	
 	await db.setup()
 
+// pickup cors proxy and gist token from url/args/db
 	arss.cors=await db.get("keyval","cors") || arss.args.cors || arss.query.cors
+	arss.gist=await db.get("keyval","gist_token") || arss.args.gist || arss.query.gist
 
 	await gist.setup()
 
 	display.all()
 	display.status("Loading...")
+
+	if( window.location.hash=="" || window.location.hash=="#" )
+	{
+		if(gist.handle)
+		{
+			window.location.hash="#read"
+		}
+		else
+		{
+			window.location.hash="#opts"
+		}
+	}
+	display.hash(window.location.hash)
 
 	await items.display(0)
 
