@@ -683,6 +683,45 @@ display.items=async function(showidx)
 
 	let parent=document.getElementById('arss_list_read')
 	
+	let display_item_time=Date.now()
+	let display_item_next=null
+	let display_item_safe=async function(url)
+	{
+		if(display_item_next) // just update the next url we are waiting to display
+		{
+			display_item_next=url
+			return
+		}
+		
+		let time=Date.now()
+		if( (time-display_item_time)  < 1000 ) // do not spam
+		{
+			display_item_next=url // flag and remember
+			await new Promise(resolve=>setTimeout(resolve, 1000 ))
+			url=display_item_next // may have changed
+			display_item_next=null // remove flag
+		}
+		display_item_time=time
+		
+		if(url)
+		{
+			let html=await hoard.fetch_text(url)
+
+// maybe squirt a base tag into the head so relative urls will still work?
+			if(html)
+			{
+				let aa=html.split("<head>")
+				if(aa.length==2)
+				{
+					let parts = new URL(".",url)
+					let baseurl=parts.origin+parts.pathname
+					html=aa.join(`<head><base href="${baseurl}" target="_blank" /><meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />`)
+				}
+			}
+
+			document.getElementById('arss_page').srcdoc=html
+		}
+	}
 	let display_item_last=null
 	let display_item=async function(e)
 	{
@@ -690,36 +729,19 @@ display.items=async function(showidx)
 		if(display_item_last) { display_item_last.classList.remove("active") }
 		display_item_last=e
 		e.classList.add("active")
-
-		let html=await hoard.fetch_text(e.id)
-
-// maybe squirt a base tag into the head so relative urls will still work?
-		if(html)
+		display_item_safe(e.id)
+/*
+		if(!display_item_next) // if not spamming
 		{
-			let aa=html.split("<head>")
-			if(aa.length==2)
-			{
-				if(e.id)
-				{
-					let url_parts = new URL(".",e.id)
-	//				if( url_parts.protocol == "http:" ) { url_parts.protocol = "https:" } // force https
-					let url=url_parts.origin+url_parts.pathname
-					html=aa.join(`<head><base href="${url}" target="_blank" /><meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />`)
-				}
-			}
+			// auto pre cache next/prev pages
+			let el=e.nextSibling
+			while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.nextSibling }
+			if(el) { hoard.fetch_text(el.id) }
+			el=e.previousSibling
+			while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.previousSibling }
+			if(el) { hoard.fetch_text(el.id) }
 		}
-
-		document.getElementById('arss_page').srcdoc=html
-
-
-
-		// auto cache next/prev pages
-		let el=e.nextSibling
-		while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.nextSibling }
-		if(el) { hoard.fetch_text(el.id) }
-		el=e.previousSibling
-		while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.previousSibling }
-		if(el) { hoard.fetch_text(el.id) }
+*/
 	}
 
 	let top=function(e)
