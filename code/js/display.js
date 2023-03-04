@@ -253,6 +253,15 @@ display.hash=function(hash)
 	return window.location.hash
 }
 
+display.reload=async function()
+{
+	if(db.handle)
+	{
+		await db.close()
+	}
+	window.location.reload()
+}
+
 display.page=function(name)
 {
 	if(name=="read")
@@ -304,7 +313,7 @@ display.load_opml=async function()
 	
 	await arss.save_gist()
 
-	window.location.reload()
+	display.reload()
 }
 
 display.save_opml=async function(e)
@@ -342,35 +351,34 @@ display.save_opml=async function(e)
 }
 
 
+
 display.gist_token=async function(e)
 {
 	gist_token=window.prompt("Github gist token for persistent storage.","");
 	if(gist_token)
 	{
 		await db.set("keyval","gist_token",gist_token)
-		window.location.reload()
+		display.reload()
 	}
 }
 
 display.gist_disconnect=async function(e)
 {
 	await db.set("keyval","gist_token","")
-	window.location.reload()
+	display.reload()
 }
 
 display.empty_cache=async function(e)
 {
 	await db.clear("hoard")
-	await db.close("")
-	window.location.reload()
+	display.reload()
 }
 
 display.empty_items=async function(e)
 {
 	await db.clear("items")
 	await db.clear("hoard")
-	await db.close("")
-	window.location.reload()
+	display.reload()
 }
 
 display.empty_feeds=async function(e)
@@ -378,8 +386,7 @@ display.empty_feeds=async function(e)
 	await db.clear("feeds")
 	await db.clear("items")
 	await db.clear("hoard")
-	await db.close("")
-	window.location.reload()
+	display.reload()
 }
 
 display.add_feed=async function(e)
@@ -390,7 +397,8 @@ display.add_feed=async function(e)
 		let feed={}
 		feed.url=feed_url
 		await feeds.add(feed)
-		window.location.reload()
+		display.hash("#"+feed_url)
+		display.reload()
 	}
 }
 
