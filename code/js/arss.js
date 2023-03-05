@@ -58,7 +58,7 @@ arss.start=async function()
 	if( "string" != typeof arss.cors ) // auto proxy based on domain
 	{
 		let hostname=window.location.hostname.toLowerCase()
-		if( hostname == "xriss.github.com" ) { arss.cors = "https://cors.xixs.com:4444/" }
+		if( hostname == "xriss.github.io" ) { arss.cors = "https://cors.xixs.com:4444/" }
 	}
 
 	await gist.setup()
