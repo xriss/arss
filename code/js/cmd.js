@@ -1,6 +1,11 @@
 #!/usr/bin/env node
-// Copyright (c) 2019 International Aid Transparency Initiative (IATI)
-// Licensed under the MIT license whose full text can be found at http://opensource.org/licenses/MIT
+/*
+
+(C) Kriss@XIXs.com 2023 and released under the MIT license.
+
+See https://github.com/xriss/arss for full notice.
+
+*/
 
 const cmd=exports;
 

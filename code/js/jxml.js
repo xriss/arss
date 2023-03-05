@@ -1,3 +1,10 @@
+/*
+
+(C) Kriss@XIXs.com 2023 and released under the MIT license.
+
+See https://github.com/xriss/arss for full notice.
+
+*/
 
 const jxml=exports
 
