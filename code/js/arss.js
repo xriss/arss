@@ -50,6 +50,16 @@ arss.start=async function()
 // pickup cors proxy and gist token from url/args/db
 	arss.cors=await db.get("keyval","cors") || arss.args.cors || arss.query.cors
 	arss.gist=await db.get("keyval","gist_token") || arss.args.gist || arss.query.gist
+	
+// use exact string value "false" to force an empty string and disable
+	if( arss.cors=="false" ) { arss.cors="" }
+	if( arss.gist=="false" ) { arss.gist="" }
+	
+	if( "string" != typeof arss.cors ) // auto proxy based on domain
+	{
+		let hostname=window.location.hostname.toLowerCase()
+		if( hostname == "xriss.github.com" ) { arss.cors = "https://cors.xixs.com:4444/" }
+	}
 
 	await gist.setup()
 
