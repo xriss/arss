@@ -14,15 +14,12 @@ items.prepare=function(item,feed)
 	let atom=item.atom||{}
 	let rss=item.rss||{}
 	
-	if(feed)
+	if(feed) // cache some basic feed values
 	{
 		item.feed=feed.url
 		item.feed_title=feed.title
 		item.feed_tags=feed.tags
 	}
-	
-	let uuid=rss["/guid"] || atom["/id"] || rss["/link"] || rss["/title"] || rss["/pubdate"] || ""
-	item.uuid=item.feed+"^"+uuid
 
 	if(!item.date) // do not change date, just set it once
 	{
@@ -42,9 +39,15 @@ items.prepare=function(item,feed)
 		}
 	}
 
+
 	if(rss["/link"])
 	{
 		item.link=rss["/link"]
+	}
+	else
+	if(rss["/id"]) // sometimes the real link is the RSS id
+	{
+		item.link=rss["/id"]
 	}
 	else
 	if(atom["/link"])
@@ -57,6 +60,11 @@ items.prepare=function(item,feed)
 				item.link=link["@href"]
 			}
 		}
+	}
+	else
+	if(atom["/id"]) // sometimes the real link is the RSS id
+	{
+		item.link=atom["/id"]
 	}
 
 	item.title=item.title||""
@@ -80,6 +88,10 @@ items.prepare=function(item,feed)
 	{
 		item.html=atom["/content"]
 	}
+
+	// id or link or date
+	let uuid=( rss["/guid"] || atom["/id"] ) || item.link || (""+item.date)
+	item.uuid=item.feed+"^"+uuid
 
 	return item
 }
