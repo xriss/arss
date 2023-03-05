@@ -9,6 +9,27 @@ const items = require('./items.js')
 const gist = require('./gist.js')
 const display = require('./display.js')
 
+feeds.cached={}
+
+feeds.cache=async function(url,feed) // probably fast
+{
+	if(feed) { feeds.cached[url]=feed ; return feed }
+	if(feeds.cached[url]) { return feeds.cached[url] }
+	await feeds.get(url)
+	return feeds.cached[url]
+}
+feeds.get=async function(url) // always slow
+{
+	let feed=await db.get("feeds",url)
+	if(feed) { feeds.cache(feed.url,feed) }
+	return feed
+}
+feeds.set=async function(feed)
+{
+	await db.set("feeds",feed.url,feed)
+	if(feed) { feeds.cache(feed.url,feed) }
+}
+
 
 feeds.add=async function(it)
 {
@@ -23,6 +44,8 @@ feeds.add=async function(it)
 	feed.date=feed.date||new Date()
 	feed.fails=feed.fails||0
 	await db.set("feeds",feed.url,feed)
+	
+	feeds.cache(feed.url,feed)
 }
 
 
@@ -91,6 +114,7 @@ feeds.fetch_all=async function()
 	for(let feed of list )
 	{
 		rets.push(feeds.fetch(feed))
+		feeds.cache(feed.url,feed)
 	}
 	await Promise.all(rets)
 

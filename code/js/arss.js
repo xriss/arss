@@ -46,21 +46,20 @@ arss.start=async function()
 
 	await gist.setup()
 
-	display.all()
-	display.status("Loading...")
-
 	if( window.location.hash=="" || window.location.hash=="#" )
 	{
 		if(gist.handle)
 		{
-			window.location.hash="#read"
+			window.location.hash="#READ"
 		}
 		else
 		{
-			window.location.hash="#opts"
+			window.location.hash="#OPTS"
 		}
 	}
-	display.hash(window.location.hash)
+	display.all()
+
+	display.status("Loading...")
 
 	await display.items(0)
 

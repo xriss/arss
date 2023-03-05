@@ -41,6 +41,7 @@ display.all=function()
 	display.page("read")
 
 	window.onhashchange = display.hash_change
+	display.hash_change()
 
 }
 
@@ -75,9 +76,9 @@ display.bar=function()
 <div class="arss_butt" id="arss_butt_status">.</div>
 `))
 
-	document.getElementById("arss_butt_read").onclick = function(){display.hash("#read")}
-	document.getElementById("arss_butt_feed").onclick = function(){display.hash("#feed")}
-	document.getElementById("arss_butt_opts").onclick = function(){display.hash("#opts")}
+	document.getElementById("arss_butt_read").onclick = function(){display.hash("#READ")}
+	document.getElementById("arss_butt_feed").onclick = function(){display.hash("#FEED")}
+	document.getElementById("arss_butt_opts").onclick = function(){display.hash("#OPTS")}
 
 }
 
@@ -234,19 +235,25 @@ display.drag=function()
 	}
 }
 
-display.hash_change=function(e)
+display.hash_change=async function(e)
 {
 	display.hash(window.location.hash)
+	let url=window.location.hash.substring(1)
+	let feed=await feeds.cache(url)
+	let title=url
+	if(feed && feed.title) { title=feed.title }
+	window.document.title="ARSS on "+title
 }
 
 display.hash=function(hash)
 {
 	if( hash )
 	{
-		window.location.hash=hash
-		if(hash=="#read") { display.page("read") } else
-		if(hash=="#feed") { display.page("feed") } else
-		if(hash=="#opts") { display.page("opts") } else
+		if( window.location.hash != hash ) { window.location.hash=hash }
+		hash=hash.toUpperCase()
+		if(hash=="#READ") { display.page("read") } else
+		if(hash=="#FEED") { display.page("feed") } else
+		if(hash=="#OPTS") { display.page("opts") } else
 		display.page("read") // any other hash is a read filter
 		display.items(0)
 	}
@@ -564,7 +571,7 @@ display.feeds_url_changed=async function(e)
 	
 	feed.url=this.value // set new url (which moves the feed)
 	
-	await db.set("feeds",feed.url,feed)
+	await feeds.set(feed)
 	await db.delete("feeds",url)
 
 }
@@ -584,7 +591,7 @@ display.feeds_tags_changed=async function(e)
 
 	feed.tags=this.value // set new tags
 	
-	await db.set("feeds",feed.url,feed)
+	await feeds.set(feed)
 }
 
 display.feeds_checkbox_changed=async function(e)
@@ -598,7 +605,7 @@ display.feeds_checkbox_changed=async function(e)
 	
 	feed.off=!this.checked // set off status
 	
-	await db.set("feeds",url,feed)
+	await feeds.set(feed)
 	
 	for(let it of div_feed.children)
 	{
@@ -628,7 +635,7 @@ display.items=async function(showidx)
 	
 	let hash=display.hash()
 	let filter={}
-	if( hash=="#read" || hash=="#feed" || hash=="#opts" || hash=="#" || hash=="" )
+	if( hash=="#READ" || hash=="#FEED" || hash=="#OPTS" || hash=="#" || hash=="" )
 	{
 		filter={} // no filter
 	}
@@ -719,7 +726,13 @@ display.items=async function(showidx)
 				}
 			}
 
-			document.getElementById('arss_page').srcdoc=html
+			// remove + change + add so we do not create page history
+			let iframe = document.getElementById('arss_page')
+			let parent = iframe.parentNode
+			iframe.remove()
+			iframe.srcdoc=html
+			parent.append(iframe)
+			
 		}
 	}
 	let display_item_last=null
