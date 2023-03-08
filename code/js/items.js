@@ -16,6 +16,29 @@ const display = require('./display.js')
 
 
 
+items.cached={}
+
+items.cache=async function(uuid,item) // probably fast
+{
+	if(item) { items.cached[uuid]=item ; return item }
+	if(items.cached[uuid]) { return items.cached[uuid] }
+	await items.get(uuid)
+	return items.cached[uuid]
+}
+items.get=async function(uuid) // always slow
+{
+	let item=await db.get("items",uuid)
+	if(item) { items.cache(item.uuid,item) }
+	return item
+}
+items.set=async function(item)
+{
+	await db.set("items",item.uuid,item)
+	if(item) { items.cache(item.uuid,item) }
+}
+
+
+
 items.prepare=function(item,feed)
 {
 	let atom=item.atom||{}
@@ -43,6 +66,11 @@ items.prepare=function(item,feed)
 		if(atom["/updated"]) // but sometimes we do not have it
 		{
 			item.date=new Date(atom["/updated"])
+		}
+		else
+		if(feed && feed.date) // maybe the feed had a date
+		{
+			item.date=feed.date
 		}
 	}
 
@@ -96,9 +124,8 @@ items.prepare=function(item,feed)
 		item.html=atom["/content"]
 	}
 
-	// id or link or date
-	let uuid=( rss["/guid"] || atom["/id"] ) || item.link || (""+item.date)
-	item.uuid=item.feed+"^"+uuid
+	// prefer link, but might be a feed url + ( id or date )
+	item.uuid=item.link || ( item.feed+"#"+( ( rss["/guid"] || atom["/id"] ) || (""+item.date) ) )
 
 	return item
 }

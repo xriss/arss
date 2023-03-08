@@ -37,6 +37,33 @@ feeds.set=async function(feed)
 	if(feed) { feeds.cache(feed.url,feed) }
 }
 
+feeds.prepare=function(feed)
+{
+	let atom=feed.atom||{}
+	let rss=feed.rss||{}
+	
+	if(rss["/rss/channel/title"])
+	{
+		feed.title=rss["/rss/channel/title"]
+	}
+	else
+	if(atom["/feed/title"])
+	{
+		feed.title=atom["/feed/title"]
+	}
+
+	if(rss["/rss/channel/pubdate"])
+	{
+		feed.date=new Date(rss["/rss/channel/pubdate"])
+	}
+	else
+	if(atom["/feed/updated"])
+	{
+		feed.date=new Date(atom["/feed/updated"])
+	}
+
+	return feed
+}
 
 feeds.add=async function(it)
 {
@@ -147,12 +174,14 @@ feeds.fetch=async function(feed)
 		let txt=await hoard.fetch_text(feed.url)
 
 		let rss
-		try{ rss=jxml.parse_xml(txt,jxml.xmap.rss) }
+		try{ feed.rss=jxml.parse_xml(txt,jxml.xmap.rss) }
 		catch(e){}
 
 		let atom
-		try{ atom=jxml.parse_xml(txt,jxml.xmap.atom) }
+		try{ feed.atom=jxml.parse_xml(txt,jxml.xmap.atom) }
 		catch(e){}
+
+		feeds.prepare(feed)
 		
 		// feed.items_date date is date of most recent item we have seen in the feed
 		let check_date=function(it)
@@ -173,14 +202,10 @@ feeds.fetch=async function(feed)
 			}
 		}
 
-		if(rss && rss["/rss/channel/item"])
+		if(feed.rss && feed.rss["/rss/channel/item"])
 		{
-			if(rss["/rss/channel/title"])
-			{
-				feed.title=rss["/rss/channel/title"]
-			}
 			feed.items_count=0
-			for(let rss_item of rss["/rss/channel/item"] )
+			for(let rss_item of feed.rss["/rss/channel/item"] )
 			{
 				let item={rss:rss_item}
 				feed.items_count++
@@ -191,14 +216,10 @@ feeds.fetch=async function(feed)
 			feed.fails=0
 		}
 		else
-		if(atom && atom["/feed/entry"])
+		if(feed.atom && feed.atom["/feed/entry"])
 		{
-			if(atom["/feed/title"])
-			{
-				feed.title=atom["/feed/title"]
-			}
 			feed.items_count=0
-			for(let atom_entry of atom["/feed/entry"] )
+			for(let atom_entry of feed.atom["/feed/entry"] )
 			{
 				let item={atom:atom_entry}
 				feed.items_count++
@@ -212,6 +233,7 @@ feeds.fetch=async function(feed)
 		{
 			feed.fails=(feed.fails||0)+1
 		}
+
 		await db.set("feeds",feed.url,feed) // save updated feed info
 	}catch(e){console.error(e)}
 	}

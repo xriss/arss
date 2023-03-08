@@ -129,7 +129,8 @@ arss.save=async function()
 		it.url=feed.url
 		it.title=feed.title
 		it.tags=feed.tags
-		it.off=feed.off
+		if(feed.off){ it.off=feed.off }
+		if(feed.js){ it.js=feed.js }
 		jsn.feeds.push(it)
 	}
 	

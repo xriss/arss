@@ -152,11 +152,11 @@ can also be used to "log you into your ARSS account" on a new browser.
 `))
 
 	parent.append(display.element(`
-<div class="arss_info_butt" id="arss_info_butt_empty_items">Reload all items (old items may be lost).</div>
+<div class="arss_info_butt" id="arss_info_butt_empty_items">Reload all items <p>Old items will be lost.</p></div>
 `))
 
 	parent.append(display.element(`
-<div class="arss_info_butt" id="arss_info_butt_empty_feeds">Reload all feeds (old items/feeds will be lost).</div>
+<div class="arss_info_butt" id="arss_info_butt_empty_feeds">Reload all feeds <p>Old items and feeds will be lost.</p></div>
 `))
 
 	parent.append(display.element(`
@@ -455,6 +455,10 @@ display.feeds=async function()
 		const cleantitle = display.sanistr(feed.title)
 		let checked="checked"
 		if(feed.off){checked=""}
+
+		let js_checked="checked"
+		if(!feed.js){js_checked=""}
+
 		let date="never"
 		if(feed.items_date)
 		{
@@ -472,6 +476,7 @@ display.feeds=async function()
 <div><input class="arss_feed_checkbox" type="checkbox" ${checked} /><a class="arss_feed_select" >${cleantitle}</a></div>
 <input class="arss_feed_url" type="text" value="${cleanlink}"/>
 <div class="arss_feed_tags">TAGS:<input class="arss_feed_tags_input" type="text" value="${cleantags}"/></div>
+<div><input class="arss_feed_js_checkbox" type="checkbox" ${js_checked} />Enable javascript in preview.</div>
 <div class="arss_feed_date">Updated on ${date}</div>
 <div class="arss_deef_count">Number of items ${count}</div>
 <div class="arss_feed_fail" style="${fails_style}">Fails : ${fails} <a class='arss_feed_delete'>DELETE</a></div>
@@ -495,6 +500,11 @@ display.feeds=async function()
 	for(let e of document.getElementsByClassName("arss_feed_checkbox") )
 	{
 		e.onchange=display.feeds_checkbox_changed
+	}
+
+	for(let e of document.getElementsByClassName("arss_feed_js_checkbox") )
+	{
+		e.onchange=display.feeds_js_checkbox_changed
 	}
 
 	for(let e of document.getElementsByClassName("arss_feed_url") )
@@ -580,7 +590,7 @@ display.feeds_url_changed=async function(e)
 	
 	await feeds.set(feed)
 	await db.delete("feeds",url)
-
+	await arss.save_gist()
 }
 
 display.feeds_tags_changed=async function(e)
@@ -599,6 +609,7 @@ display.feeds_tags_changed=async function(e)
 	feed.tags=this.value // set new tags
 	
 	await feeds.set(feed)
+	await arss.save_gist()
 }
 
 display.feeds_checkbox_changed=async function(e)
@@ -628,9 +639,24 @@ display.feeds_checkbox_changed=async function(e)
 			}
 		}
 	}
-
+	await arss.save_gist()
 }
 
+display.feeds_js_checkbox_changed=async function(e)
+{
+	let div_feed=display.div_lookup(this,"arss_feed")
+	if(!div_feed){ return } // required
+	
+	let url=div_feed.id
+	let feed=await db.get("feeds",url)
+	if(!feed){ return } // required
+	
+	feed.js=this.checked // set java script enabled status for feed
+	
+	await feeds.set(feed)
+	
+	await arss.save_gist()
+}
 
 display.items=async function(showidx)
 {
@@ -671,7 +697,7 @@ display.items=async function(showidx)
 		const notags={allowedTags: [],allowedAttributes: {}}
 		const allowtags={ allowedTags:[ "img" , "p" ] }
 		const cleanlink = display.sanistr(item.link)
-		const cleantitle = display.sanistr(item.title)
+		const cleantitle = display.sanistr(item.title||item.link)
 		const cleanfeed = display.sanistr(item.feed)
 		const cleanfeedtitle = display.sanistr(item.feed_title)
 		const cleanhtml = sanihtml(item.html||"",allowtags)
@@ -719,6 +745,10 @@ display.items=async function(showidx)
 		
 		if(url)
 		{
+			let item=await items.cache(url)
+			let feed
+			if(item && item.feed){feed=await feeds.cache(item.feed)}
+			
 			let html=await hoard.fetch_text(url)
 
 // maybe squirt a base tag into the head so relative urls will still work?
@@ -737,6 +767,15 @@ display.items=async function(showidx)
 			let iframe = document.getElementById('arss_page')
 			let parent = iframe.parentNode
 			iframe.remove()
+			iframe.srcdoc=""
+			if(feed&&feed.js) // enable js
+			{
+				iframe.sandbox="allow-popups allow-scripts"
+			}
+			else
+			{
+				iframe.sandbox="allow-popups"
+			}
 			iframe.srcdoc=html
 			parent.append(iframe)
 			
