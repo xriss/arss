@@ -752,9 +752,9 @@ display.items=async function(showidx)
 			if(item && item.feed){feed=await feeds.cache(item.feed)}
 			
 			let html=await hoard.fetch_text(url)
-			if(html.length>(512*1024)) // this is some bullshit
+			if(html.length>(1024*1024)) // this is some bullshit
 			{
-				html="HTML download is bigger than 512k so has been skipped, are you sure these people know how to HTML?"
+				html="HTML page is bigger than 1024k so has been skipped, are you sure these people know how to HTML?"
 			}
 
 // maybe squirt a base tag into the head so relative urls will still work?
