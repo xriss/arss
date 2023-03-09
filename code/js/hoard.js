@@ -47,11 +47,13 @@ hoard.fetch_text=async function(url,refresh)
 		}catch(e){console.error(e)}
 		await db.set("hoard",url,it) // always write even if we fail
 	}
+/*
 	if(oldtext)
 	{
 		write() // do not wait
 		return oldtext // return old cache
 	}
+*/
 	await write()
 	return it.text
 }
