@@ -754,7 +754,7 @@ display.items=async function(showidx)
 			let html=await hoard.fetch_text(url)
 			if(html.length>(512*1024)) // this is some bullshit
 			{
-				html="FILE TOO LARGE"
+				html="HTML download is bigger than 512k so has been skipped, are you sure these people know how to HTML?"
 			}
 
 // maybe squirt a base tag into the head so relative urls will still work?
