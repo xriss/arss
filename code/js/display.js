@@ -752,7 +752,7 @@ display.items=async function(showidx)
 			if(item && item.feed){feed=await feeds.cache(item.feed)}
 			
 			let html=await hoard.fetch_text(url)
-			if(html.length>(256*1024)) // this is some bullshit
+			if(html.length>(512*1024)) // this is some bullshit
 			{
 				html="FILE TOO LARGE"
 			}
