@@ -4,9 +4,9 @@ A RSS reader.
 In a browser, less of a book marker app, more of a doom scoller.
 
 We present the RSS published content in a small column whilst *auto* 
-loading the full webpage with javascript disabled in an iframe. This 
-works well with news sites that only publish teaser content then expect 
-you to visit the full site to keep reading.
+loading the full page with javascript disabled in an iframe. This works 
+well with news sites that only publish teaser content then expect you 
+to visit the full site to keep reading.
 
 This requires some hacks to disable browser security so it can do 
 naughty things like read other websites from a web page, shock, horror.
@@ -44,7 +44,9 @@ If you use a link like this while connected to github it will pop up a
 confirm requester before merging all the feeds with your own as this 
 would be hard to undo. Visiting this link while not connected to a 
 github gist will just be a seamless reading experience with local 
-caching and of course you can add feeds by modifying the OPML file.
+caching and of course you can add feeds by modifying the OPML file. ( 
+an easy way to disconnect from github so you can preview an OPML is to 
+open a link in incognito mode )
 
 	https://xriss.github.io/arss/?opml=https://images.ruk.ca/opml/peter_rukavina_blogroll.opml
 
