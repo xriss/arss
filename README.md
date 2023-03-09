@@ -1,6 +1,13 @@
 
 A RSS reader.
 
+In a browser, less of a book marker app, more of a doom scoller.
+
+We present the RSS published content in a small column whilst *auto* 
+loading the full webpage with javascript disabled in an iframe. This 
+works well with news sites that only publish teaser content then expect 
+you to visit the full site to keep reading.
+
 This requires some hacks to disable browser security so it can do 
 naughty things like read other websites from a web page, shock, horror.
 
