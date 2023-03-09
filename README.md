@@ -19,7 +19,7 @@ Ironically this is the most secure as otherwise you are sending all
 your tasty data to my CORS bouncer server.
 
 
-If you want to force another cors proxy
+Some options if you want to force another CORS proxy
 
 	https://xriss.github.io/arss/?cors=https://cors-anywhere.herokuapp.com
 	
@@ -27,4 +27,17 @@ or maybe force a github token
 
 	https://xriss.github.io/arss/?gist=randomsupersecret
 
-then use these query params.
+or just read an OPML published on the web. This is a good way to use 
+this app as a reader without connecting to github. I've included 
+someones ( I just googled and found 
+https://ruk.ca/content/heres-my-opml ) public OPML file as it makes for 
+a good demonstration of how this can work.
+
+If you use a link like this while connected to github it will pop up a 
+confirm requester before merging all the feeds with your own as this 
+would be hard to undo. Visiting this link while not connected to a 
+github gist will just be a seamless reading experience with local 
+caching and of course you can add feeds by modifying the OPML file.
+
+	https://xriss.github.io/arss/?opml=https://images.ruk.ca/opml/peter_rukavina_blogroll.opml
+
