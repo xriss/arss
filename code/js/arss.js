@@ -45,6 +45,7 @@ arss.start=async function()
 {
 	console.log("ARSS! is here")
 	
+	db.name=arss.args.idb || arss.query.idb || "arss"	// force a name use "delete" for an autodeleted db
 	await db.setup()
 
 // pickup cors proxy and gist token from url/args/db

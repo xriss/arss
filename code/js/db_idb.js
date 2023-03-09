@@ -10,10 +10,12 @@ const db=exports
 
 const idb = require( "idb/with-async-ittr" )
 
+db.name="arss"
+
 db.setup=async function()
 {
 	let newdata=false
-	db.handle = await idb.openDB("arss", 2, {
+	db.handle = await idb.openDB(db.name, 2, {
 		upgrade(handle) {
 			newdata=true
 			try{
@@ -38,8 +40,16 @@ db.setup=async function()
 
 		},
 	})
-// auto add default feeds to empty database
-	if(newdata)
+	
+	if(db.name=="delete") // purge all data at startup if using this database name
+	{
+		await db.clear("keyval")
+	//	await db.clear("hoard")	// keep cache
+		await db.clear("feeds")
+		await db.clear("items")
+	}
+	else
+	if(newdata) // auto add default feeds to empty database
 	{
 		try{
 			let its=[

@@ -40,13 +40,18 @@ someones ( I just googled and found
 https://ruk.ca/content/heres-my-opml ) public OPML file as it makes for 
 a good demonstration of how this can work.
 
+	https://xriss.github.io/arss/?opml=https://images.ruk.ca/opml/peter_rukavina_blogroll.opml
+
 If you use a link like this while connected to github it will pop up a 
 confirm requester before merging all the feeds with your own as this 
-would be hard to undo. Visiting this link while not connected to a 
-github gist will just be a seamless reading experience with local 
-caching and of course you can add feeds by modifying the OPML file. ( 
-an easy way to disconnect from github so you can preview an OPML is to 
-open a link in incognito mode )
+would be hard to undo. You can also use the idb param to change the 
+database name and if you choose "delete" as the database name then data 
+will be auto purged on startup keeping everything clean and fresh.
 
-	https://xriss.github.io/arss/?opml=https://images.ruk.ca/opml/peter_rukavina_blogroll.opml
+What that means is this link will let you read an opml without messing 
+with your personal options and adding the feeds to your view since the 
+database will be cleared on startup. Note that it still keeps the data 
+caching so refreshes of a page should be fast. 
+https://xriss.github.io/arss/?idb=delete&opml=https://images.ruk.ca/opml/peter_rukavina_blogroll.opml
+
 
