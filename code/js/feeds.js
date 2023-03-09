@@ -92,9 +92,9 @@ feeds.add_opml=async function(data,url)
 
 	let check;check=async function(it)
 	{
-		let feed={}
 		if( it["@xmlurl"] )
 		{
+			let feed={}
 			feed.url=it["@xmlurl"]
 			await feeds.add(feed)
 		}

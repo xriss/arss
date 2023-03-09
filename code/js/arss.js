@@ -62,7 +62,7 @@ arss.start=async function()
 	}
 
 	await gist.setup()
-
+	
 	if( window.location.hash=="" || window.location.hash=="#" )
 	{
 		if(gist.handle)
@@ -81,6 +81,23 @@ arss.start=async function()
 	await display.items(0)
 
 	await arss.load_gist()
+
+	if( arss.query.opml ) // auto merge this opml
+	{
+		try{
+			let ok=true
+			if(gist.handle)
+			{
+				ok=confirm("New feeds will be added and saved to github.");
+			}
+			if(ok)
+			{
+				display.status("Loading OPML")
+				await feeds.add_opml(false,arss.query.opml)
+				display.status("OPML loaded")
+			}
+		}catch(e){console.error(e)}
+	}
 
 	// keep refreshing feeds
 	let feeds_fetch;feeds_fetch=async function()

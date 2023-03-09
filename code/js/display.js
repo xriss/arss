@@ -462,8 +462,10 @@ display.feeds=async function()
 		let date="never"
 		if(feed.items_date)
 		{
-			date=(new Date(feed.items_date)).toISOString().split("T")
-			date=date[0]+" "+date[1].substring(0,5)
+			try{
+				date=(new Date(feed.items_date)).toISOString().split("T")
+				date=date[0]+" "+date[1].substring(0,5)
+			}catch(e){console.error(e)}
 		}
 		let count="none"
 		if("number" == typeof feed.items_count)
@@ -662,7 +664,7 @@ display.items=async function(showidx)
 {
 	items.add_count=0
 	document.getElementById('arss_list_read').innerHTML = ""
-	display.status("")
+//	display.status("")
 	
 	let aa=[]
 	

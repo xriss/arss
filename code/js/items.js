@@ -68,6 +68,21 @@ items.prepare=function(item,feed)
 			item.date=new Date(atom["/updated"])
 		}
 		else
+		if(atom["/created"]) // wtf?
+		{
+			item.date=new Date(atom["/created"])
+		}
+		else
+		if(atom["/issued"]) // wtf?
+		{
+			item.date=new Date(atom["/issued"])
+		}
+		else
+		if(atom["/modified"]) // wtf?
+		{
+			item.date=new Date(atom["/modified"])
+		}
+		else
 		if(feed && feed.date) // maybe the feed had a date
 		{
 			item.date=feed.date
