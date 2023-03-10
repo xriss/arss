@@ -736,10 +736,10 @@ display.items=async function(showidx)
 		}
 		
 		let time=Date.now()
-		if( (time-display_item_time)  < 1000 ) // do not spam
+		if( (time-display_item_time)  < 200 ) // do not fast spam
 		{
 			display_item_next=url // flag and remember
-			await new Promise(resolve=>setTimeout(resolve, 1000 ))
+			await new Promise(resolve=>setTimeout(resolve, 200 ))
 			url=display_item_next // may have changed
 			display_item_next=null // remove flag
 		}
@@ -751,11 +751,13 @@ display.items=async function(showidx)
 			let feed
 			if(item && item.feed){feed=await feeds.cache(item.feed)}
 			
-			let html=await hoard.fetch_text(url)
-			if(html.length>(1024*1024)) // this is some bullshit
+			let html=await hoard.fast_text(url)
+/*
+			if(html.length>((1024+512)*1024)) // this is some bullshit
 			{
-				html="HTML page is bigger than 1024k so has been skipped, are you sure these people know how to HTML?"
+				html="This HTML page is bigger than 1024k so has been skipped, are you sure these people know how to HTML?"
 			}
+*/
 
 // maybe squirt a base tag into the head so relative urls will still work?
 			if(html)
@@ -773,6 +775,7 @@ display.items=async function(showidx)
 			let iframe = document.getElementById('arss_page')
 			let parent = iframe.parentNode
 			iframe.remove()
+			iframe=display.element(`<iframe name="arss_page" id="arss_page" class="arss_page"/>`)
 			iframe.srcdoc=""
 			if(feed&&feed.js) // enable js
 			{
