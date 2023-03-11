@@ -727,6 +727,7 @@ display.items=async function(showidx)
 	
 	let display_item_time=Date.now()
 	let display_item_next=null
+	let display_item_thinking=false
 	let display_item_safe=async function(url)
 	{
 		if(display_item_next) // just update the next url we are waiting to display
@@ -736,13 +737,15 @@ display.items=async function(showidx)
 		}
 		
 		let time=Date.now()
-		if( (time-display_item_time)  < 200 ) // do not fast spam
+		if( ( (time-display_item_time)  < 200 ) || display_item_thinking )// do not fast spam
 		{
+			display_item_thinking=true
 			display_item_next=url // flag and remember
 			await new Promise(resolve=>setTimeout(resolve, 200 ))
 			url=display_item_next // may have changed
 			display_item_next=null // remove flag
 		}
+		display_item_thinking=true
 		display_item_time=time
 		
 		if(url)
@@ -789,6 +792,7 @@ display.items=async function(showidx)
 			parent.append(iframe)
 			
 		}
+		display_item_thinking=false
 	}
 	let display_item_last=null
 	let display_item=async function(e)
