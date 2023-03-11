@@ -23,6 +23,7 @@ function getQueryVariable(variable) {
 	return ret
 }
 
+arss.version="V"+__VERSION__
 
 arss.setup=function(args)
 {
@@ -77,7 +78,7 @@ arss.start=async function()
 	}
 	display.all()
 
-	display.status("Loading...")
+	display.status(arss.version)
 
 	await display.items(0)
 
