@@ -8,6 +8,7 @@ See https://github.com/xriss/arss for full notice.
 
 const display=exports
 
+const arss = require('./arss.js')
 const gist = require('./gist.js')
 const feeds = require('./feeds.js')
 const items = require('./items.js')
@@ -96,6 +97,15 @@ display.opts=function()
 
 if(gist.url)
 {
+
+	parent.append(display.element(`
+<div class="arss_info_butt_info">
+
+A RSS ${arss.version}
+
+</div>
+`))
+
 	parent.append(display.element(`
 <div class="arss_info_butt_info">
 
