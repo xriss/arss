@@ -3,6 +3,8 @@
 
 In a browser, less of a book marker app, more of a doom scoller.
 
+To celebrate the ten year deathday of google reader -- "Go back into the water, live there, die there."
+
 ![Screenshot](plated/source/img/arss_shot.jpg)
 
 We present the RSS published content in a small column whilst *auto* 
