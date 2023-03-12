@@ -3,6 +3,8 @@ A RSS reader.
 
 In a browser, less of a book marker app, more of a doom scoller.
 
+https://github.com/xriss/arss/raw/master/plated/source/img/arss_shot.jpg
+
 We present the RSS published content in a small column whilst *auto* 
 loading the full page with javascript disabled in an iframe. This works 
 well with news sites that only publish teaser content then expect you 
