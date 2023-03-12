@@ -1,5 +1,5 @@
 
-A RSS reader.
+# A RSS reader.
 
 In a browser, less of a book marker app, more of a doom scoller.
 
