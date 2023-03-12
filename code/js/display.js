@@ -737,7 +737,6 @@ display.items=async function(showidx)
 	
 	let display_item_time=Date.now()
 	let display_item_next=null
-	let display_item_thinking=false
 	let display_item_safe=async function(url)
 	{
 		if(display_item_next) // just update the next url we are waiting to display
@@ -746,63 +745,65 @@ display.items=async function(showidx)
 			return
 		}
 		
+		display_item_next=url // flag we are in update cycle
+		
 		let time=Date.now()
-		if( ( (time-display_item_time)  < 200 ) || display_item_thinking )// do not fast spam
+		if( (time-display_item_time)  < 200 )// do not fast spam
 		{
-			display_item_thinking=true
-			display_item_next=url // flag and remember
 			await new Promise(resolve=>setTimeout(resolve, 200 ))
-			url=display_item_next // may have changed
-			display_item_next=null // remove flag
 		}
-		display_item_thinking=true
 		display_item_time=time
 		
-		if(url)
+		url=null // force at least one loop
+		while( url != display_item_next ) // repeat untill we catch up
 		{
-			let item=await items.cache(url)
-			let feed
-			if(item && item.feed){feed=await feeds.cache(item.feed)}
-			
-			let html=await hoard.fast_text(url)
-/*
-			if(html.length>((1024+512)*1024)) // this is some bullshit
+			url=display_item_next // may have changed
+			if(url)
 			{
-				html="This HTML page is bigger than 1024k so has been skipped, are you sure these people know how to HTML?"
-			}
-*/
-
-// maybe squirt a base tag into the head so relative urls will still work?
-			if(html)
-			{
-				let aa=html.split("<head>")
-				if(aa.length==2)
+				let item=await items.cache(url)
+				let feed
+				if(item && item.feed){feed=await feeds.cache(item.feed)}
+				
+				let html=await hoard.fast_text(url)
+	/*
+				if(html.length>((1024+512)*1024)) // this is some bullshit
 				{
-					let parts = new URL(".",url)
-					let baseurl=parts.origin+parts.pathname
-					html=aa.join(`<head><base href="${baseurl}" target="_blank" /><meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />`)
+					html="This HTML page is bigger than 1024k so has been skipped, are you sure these people know how to HTML?"
 				}
-			}
+	*/
 
-			// remove + change + add so we do not create page history
-			let iframe = document.getElementById('arss_page')
-			let parent = iframe.parentNode
-			iframe.remove()
-			iframe=display.element(`<iframe name="arss_page" id="arss_page" class="arss_page"/>`)
-			iframe.srcdoc=""
-			if(feed&&feed.js) // enable js
-			{
-				iframe.sandbox="allow-popups allow-scripts"
+	// maybe squirt a base tag into the head so relative urls will still work?
+				if(html)
+				{
+					let aa=html.split("<head>")
+					if(aa.length==2)
+					{
+						let parts = new URL(".",url)
+						let baseurl=parts.origin+parts.pathname
+						html=aa.join(`<head><base href="${baseurl}" target="_blank" /><meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />`)
+					}
+				}
+
+				// remove + change + add so we do not create page history
+				let iframe = document.getElementById('arss_page')
+				let parent = iframe.parentNode
+				iframe.remove()
+				iframe=display.element(`<iframe name="arss_page" id="arss_page" class="arss_page"/>`)
+				iframe.srcdoc=""
+				if(feed&&feed.js) // enable js
+				{
+					iframe.sandbox="allow-popups allow-scripts"
+				}
+				else
+				{
+					iframe.sandbox="allow-popups"
+				}
+				iframe.srcdoc=html
+				parent.append(iframe)
+				
 			}
-			else
-			{
-				iframe.sandbox="allow-popups"
-			}
-			iframe.srcdoc=html
-			parent.append(iframe)
-			
 		}
-		display_item_thinking=false
+		display_item_next=false // finish
 	}
 	let display_item_last=null
 	let display_item=async function(e)
