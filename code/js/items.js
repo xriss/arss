@@ -43,7 +43,8 @@ items.prepare=function(item,feed)
 {
 	let atom=item.atom||{}
 	let rss=item.rss||{}
-	
+	let any=item.rss||item.atom||{}
+
 	if(feed) // cache some basic feed values
 	{
 		item.feed=feed.url
@@ -81,6 +82,11 @@ items.prepare=function(item,feed)
 		if(atom["/modified"]) // wtf?
 		{
 			item.date=new Date(atom["/modified"])
+		}
+		else
+		if(any["/dc:date"]) // why you do dis?
+		{
+			item.date=new Date(any["/dc:date"])
 		}
 		else
 		if(feed && feed.date) // maybe the feed had a date

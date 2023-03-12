@@ -56,4 +56,14 @@ database will be cleared on startup. Note that it still keeps the data
 caching so refreshes of a page should be fast. 
 https://xriss.github.io/arss/?idb=delete&opml=https://images.ruk.ca/opml/peter_rukavina_blogroll.opml
 
+If you link directly to an atom/rss feed instead of an opml then we 
+will pick it up and import just that feed so urls like 
+https://xriss.github.io/arss/?idb=delete&opml=http://feeds.bbci.co.uk/news/rss.xml#READ 
+can be used to auto reed a single feed in isolation.
+
+
+FYI https://opml.glitch.me/ can be used to scan your twitter followings 
+and find RSS feeds from peoples sites. I'd recommend prettying up the 
+output opml file and manually editing it to remove the comment feeds 
+before importing it.
 

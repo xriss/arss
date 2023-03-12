@@ -114,6 +114,26 @@ feeds.add_opml=async function(data,url)
 			await check(it)
 		}
 	}
+	else
+	if( jsn["/rss/channel/item/title"] ) // looks like a rss
+	{
+		if(url) // so subscribe to this url
+		{
+			let feed={}
+			feed.url=url
+			await feeds.add(feed)
+		}
+	}
+	else
+	if( jsn["/feed/entry/title"] ) // looks like attom
+	{
+		if(url) // so subscribe to this url
+		{
+			let feed={}
+			feed.url=url
+			await feeds.add(feed)
+		}
+	}
 }
 
 feeds.build_opml=async function()
@@ -173,11 +193,9 @@ feeds.fetch=async function(feed)
 	try{
 		let txt=await hoard.fetch_text(feed.url)
 
-		let rss
 		try{ feed.rss=jxml.parse_xml(txt,jxml.xmap.rss) }
 		catch(e){}
 
-		let atom
 		try{ feed.atom=jxml.parse_xml(txt,jxml.xmap.atom) }
 		catch(e){}
 
