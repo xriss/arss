@@ -167,10 +167,9 @@ feeds.fetch_all=async function()
 	
 	for(let feed of list )
 	{
-		rets.push(feeds.fetch(feed))
-		feeds.cache(feed.url,feed)
+		await feeds.cache(feed.url,feed)
+		await feeds.fetch(feed)
 	}
-	await Promise.all(rets)
 
 	if(items.add_count>0)
 	{
