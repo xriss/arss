@@ -81,8 +81,8 @@ hoard.fetch_text=async function(url,refresh)
 				it.text=`<a href="${display.sanistr(url)}" target="_blank">This HTML page is bigger than ${hoard.maxsize}k so has been skipped, are you sure these people know how to HTML?</a>`
 			}
 			it.randage=Math.floor(Math.random() * hoard.maxage);
+			await db.set("hoard",url,it) // always write if we get here, errors will not write
 		}catch(e){console.error(e)}
-		await db.set("hoard",url,it) // always write even if we fail
 	}
 /*
 	if(oldtext)
