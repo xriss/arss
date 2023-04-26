@@ -230,6 +230,7 @@ feeds.fetch=async function(feed)
 				items.prepare(item,feed)
 				check_date(item)
 				await items.add(item)
+				await hoard.first_text(item.link)
 			}
 			feed.fails=0
 		}
@@ -244,6 +245,7 @@ feeds.fetch=async function(feed)
 				items.prepare(item,feed)
 				check_date(item)
 				await items.add(item)
+				await hoard.first_text(item.link)
 			}
 			feed.fails=0
 		}

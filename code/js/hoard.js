@@ -14,6 +14,15 @@ const display = require('./display.js')
 
 const fetch = require('fetch')
 
+// make sure we have a cache of the page available, no matter how old
+hoard.first_text=async function(url)
+{
+	if( ! await db.get("hoard",url) ) // if not exist
+	{
+		return await hoard.fetch_text(url) // make exist
+	}
+}
+
 hoard.fast_text=async function(url)
 {
 	let it
