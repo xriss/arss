@@ -75,6 +75,7 @@ hoard.fetch_text=async function(url,refresh)
 			let res=await fetch(corsurl,{signal})//,{redirect: 'follow',follow: 20})
 			it.status=res.status
 			it.text=await res.text()
+			if(it.text=="undefined") { it.text="STATUS : "+it.status }
 			if(it.text.length>hoard.maxsize*1024)
 			{
 				it.text=`<a href="${display.sanistr(url)}" target="_blank">This HTML page is bigger than ${hoard.maxsize}k so has been skipped, are you sure these people know how to HTML?</a>`
