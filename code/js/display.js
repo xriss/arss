@@ -213,6 +213,9 @@ display.list=function()
 
 }
 
+
+
+display.iframe_width="75%"
 display.drag=function()
 {
 	let parent=document.getElementById('arss_bar')
@@ -248,6 +251,7 @@ display.drag=function()
 			document.getElementById("arss_bar").style.left=f+"%"
 			document.getElementById("arss_list").style.left=f+"%"
 			document.getElementById("arss_page").style.width=f+"%"
+			display.iframe_width=f+"%"
 		}
 	}
 }
@@ -788,7 +792,7 @@ display.items=async function(showidx)
 				let iframe = document.getElementById('arss_page')
 				let parent = iframe.parentNode
 				iframe.remove()
-				iframe=display.element(`<iframe name="arss_page" id="arss_page" class="arss_page"/>`)
+				iframe=display.element(`<iframe name="arss_page" id="arss_page" class="arss_page" style="width:${display.iframe_width}"/>`)
 				iframe.srcdoc=""
 				if(feed&&feed.js) // enable js
 				{
