@@ -165,6 +165,11 @@ feeds.fetch_all=async function()
 	feeds.list_length=list.length
 	feeds.list_length_count=0
 	
+	// try and get popular feeds first
+	list.sort(function(a,b){
+		return ( b.items_date || 0 ) - ( a.items_date || 0 )
+	})
+	
 	for(let feed of list )
 	{
 		await feeds.cache(feed.url,feed)
