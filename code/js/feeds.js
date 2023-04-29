@@ -188,6 +188,14 @@ feeds.fetch_all=async function()
 	{
 		display.status("")
 	}
+
+// preload items in background
+	let items_list=await db.list("items",{},"date","prev")
+	for(let item of items_list )
+	{
+		await hoard.first_text(item.link)
+	}
+
 }
 
 feeds.fetch=async function(feed)
@@ -234,7 +242,7 @@ feeds.fetch=async function(feed)
 				items.prepare(item,feed)
 				check_date(item)
 				await items.add(item)
-				await hoard.first_text(item.link)
+//				await hoard.first_text(item.link)
 			}
 			feed.fails=0
 		}
@@ -249,7 +257,7 @@ feeds.fetch=async function(feed)
 				items.prepare(item,feed)
 				check_date(item)
 				await items.add(item)
-				await hoard.first_text(item.link)
+//				await hoard.first_text(item.link)
 			}
 			feed.fails=0
 		}
