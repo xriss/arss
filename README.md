@@ -32,7 +32,7 @@ your tasty data to my CORS bouncer server.
 
 Some options if you want to force another CORS proxy
 
-	https://xriss.github.io/arss/?cors=https://cors-anywhere.herokuapp.com
+	https://xriss.github.io/arss/?cors=https://cors-anywhere.herokuapp.com/
 	
 or maybe force a github token
 

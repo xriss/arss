@@ -20,7 +20,6 @@
     "@vighnesh153/github-gist": "^0.3.0",
     "browserfs": "^1.4.3",
     "buffer": "^6.0.3",
-    "cross-fetch": "^3.1.5",
     "fs": "^0.0.1-security",
     "idb": "^7.1.1",
     "json-stable-stringify": "^1.0.2",

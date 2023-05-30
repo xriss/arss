@@ -12,7 +12,7 @@ const db = require('./db_idb.js')
 const arss = require('./arss.js')
 const display = require('./display.js')
 
-const fetch = require('fetch')
+//const fetch = require('fetch')
 
 // make sure we have a cache of the page available, no matter how old
 hoard.first_text=async function(url)
