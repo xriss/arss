@@ -69,10 +69,18 @@ hoard.fetch_text=async function(url,refresh)
 		it.status=0
 		it.date=new Date()
 		try{
-			const controller = new AbortController()
-			const signal = controller.signal
-			setTimeout(function(){controller.abort()}, 10*1000)
-			let res=await fetch(corsurl,{signal})//,{redirect: 'follow',follow: 20})
+			let res
+			if(security_theater) // use extension if available.
+			{
+				res=await security_theater.fetch(url)
+			}
+			else
+			{
+				const controller = new AbortController()
+				const signal = controller.signal
+				setTimeout(function(){controller.abort()}, 10*1000)
+				res=await fetch(corsurl,{signal})//,{redirect: 'follow',follow: 20})
+			}
 			it.status=res.status
 			it.text=await res.text()
 			if(it.text=="undefined") { it.text="STATUS : "+it.status }

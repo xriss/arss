@@ -29,6 +29,11 @@ Which allows everything.
 Ironically this is the most secure as otherwise you are sending all 
 your tasty data to my CORS bouncer server.
 
+Alternatively you can install this extension that create a CORS bouncer 
+in the browser which we will automatically use. Technically this is 
+also secure, although slightly evil.
+
+	http://github.com/xriss/security-theater
 
 Some options if you want to force another CORS proxy
 
