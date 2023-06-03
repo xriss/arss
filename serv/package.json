@@ -1,0 +1,19 @@
+{
+  "name": "arserv",
+  "description": "A rss server.",
+  "version": "0.0.1",
+  "license": "MIT",
+  "main": "js/serv.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xriss/arss",
+    "directory": ""
+  },
+  "bin": {},
+  "directories": {},
+  "dependencies": {
+    "json-stable-stringify": "^1.0.2"
+  },
+  "devDependencies": {
+  }
+}
