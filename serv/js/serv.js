@@ -7,47 +7,66 @@ See https://github.com/xriss/arss for full notice.
 
 */
 
-const cmd=exports;
-
-const pfs=require("fs").promises
-
-const jml=require("./jxml.js")
-
-
-const ls=function(a) { console.log(util.inspect(a,{depth:null})); }
-
-
-cmd.parse=function(argv)
+let argv=require('yargs').argv; global.argv=argv;
+let argv_parse=function(argv)
 {
-	argv.filename_cmd=__filename
+
+	//setting     = commandline   || environment                 || default                      ;
+	argv.port     = argv.port     || process.env.ARSS_PORT       || 12345                        ;
 
 }
+argv_parse(argv)
 
 
-cmd.run=async function(argv)
-{
-	if( argv._[0]=="jxml" )
+
+
+let express = require('express');
+let app = express();
+
+
+//express.static.mime.define({'text/plain': ['']});
+
+//app.use( express_fileupload() );
+
+
+app.use(function(req, res, next) {
+
+ 	var aa=req.path.split("/");
+	var ab=aa && (aa[aa.length-1].split("."));
+
+	if( ab && (ab.length==1) ) // no extension
 	{
-		await require("./jxml.js").test(argv)
-		return
+		res.contentType('text/html'); // set to html
 	}
+	
+	next();
+});
 
-	// help text
-	console.log(
-`
->	arss jxml
+app.use(express.static( argv.staticdir || (__dirname+"/../static") ));
 
-Test jxml code.
+//app.use( express.json( { limit: '10MB' } ) )
+
+app.use(function(req, res, next) {
+	var aa=req.path.split("/");
+	var ab=aa && aa[1] && (aa[1].split("."));
+
+console.log(req.path)
+
+	if( ab && (ab[0]=="rss") ) // rss output
+	{
+//		require("../../dstore/js/query").serv(req,res,next);
+	}
+	else
+	{
+		next();
+	}
+});
 
 
-`)
-}
 
-// if global.argv is set then we are inside another command so do nothing
-if(!global.argv)
-{
-	var argv = require('yargs').argv
-	global.argv=argv
-	cmd.parse(argv)
-	cmd.run(argv)
-}
+
+
+console.log("Starting static server at http://localhost:"+argv.port+"/");
+
+app.listen(argv.port);
+
