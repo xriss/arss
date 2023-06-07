@@ -72,14 +72,17 @@ hoard.fetch_text=async function(url,refresh)
 			let res
 			if(security_theater) // use extension if available.
 			{
-				res=await security_theater.fetch(url)
+				res=await Promise.race([
+					security_theater.fetch(url),
+					new Promise((_, reject) => setTimeout(() => reject("timeout"), 10*1000)),
+				])
 			}
 			else
 			{
-				const controller = new AbortController()
-				const signal = controller.signal
-				setTimeout(function(){controller.abort()}, 10*1000)
-				res=await fetch(corsurl,{signal})//,{redirect: 'follow',follow: 20})
+				res=await Promise.race([
+					fetch(corsurl),
+					new Promise((_, reject) => setTimeout(() => reject("timeout"), 10*1000)),
+				])
 			}
 			it.status=res.status
 			it.text=await res.text()
