@@ -74,14 +74,14 @@ hoard.fetch_text=async function(url,refresh)
 			{
 				res=await Promise.race([
 					security_theater.fetch(url),
-					new Promise((_, reject) => setTimeout(() => reject("timeout"), 10*1000)),
+					new Promise((_, reject) => setTimeout(() => reject("timeout"), 1*1000)),
 				])
 			}
 			else
 			{
 				res=await Promise.race([
 					fetch(corsurl),
-					new Promise((_, reject) => setTimeout(() => reject("timeout"), 10*1000)),
+					new Promise((_, reject) => setTimeout(() => reject("timeout"), 1*1000)),
 				])
 			}
 			it.status=res.status
