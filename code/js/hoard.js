@@ -70,7 +70,7 @@ hoard.fetch_text=async function(url,refresh)
 		it.date=new Date()
 		try{
 			let res
-			if(security_theater) // use extension if available.
+			if(typeof security_theater !== 'undefined') // use extension if available.
 			{
 				res=await Promise.race([
 					security_theater.fetch(url),
