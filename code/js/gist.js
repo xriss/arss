@@ -134,7 +134,7 @@ gist.write=async function(filename,content)
 	if(!gist.url){return} // not loaded
 	
 	let file={}
-	file.name=filename
+	file.filename=filename
 	file.content=content
 	
 	let files={}
