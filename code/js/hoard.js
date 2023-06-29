@@ -14,7 +14,7 @@ const display = require('./display.js')
 
 hoard.test_probe=async function()
 {
-	let testurl="http://example.com/"
+	let testurl=location.protocol+"//google.com/"
 	
 	let res={}
 	let txt={}
