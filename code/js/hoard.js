@@ -12,6 +12,64 @@ const db = require('./db_idb.js')
 const arss = require('./arss.js')
 const display = require('./display.js')
 
+hoard.test_probe=async function()
+{
+	let testurl="http://example.com/"
+	
+	let res={}
+	let txt={}
+
+	try{
+		if(typeof security_theater !== 'undefined') // use my extension if available.
+		{
+			console.log("Trying security theater")
+			res.theater=await Promise.race([
+				security_theater.fetch(testurl),
+				new Promise((_, reject) => setTimeout(() => reject("timeout"), 1*1000)),
+			])
+			txt.theater=await res.theater.text()
+			if(txt.theater)
+			{
+				console.log("found security theater")
+				return "theater"
+			}
+		}
+	}catch(e){console.error(e)}
+
+	try{
+		console.log("Trying cors extension")
+		res.plain=await Promise.race([
+			fetch(testurl),
+			new Promise((_, reject) => setTimeout(() => reject("timeout"), 1*1000)),
+		])
+		txt.plain=await res.plain.text()
+		if(txt.plain)
+		{
+			console.log("found cors extensions is enabled")
+			arss.cors=""
+			return "plain"
+		}
+	}catch(e){console.error(e)}
+
+	try{
+		if(arss.cors)
+		{
+			console.log("Trying cors bouncer : "+arss.cors)
+			res.bounce=await Promise.race([
+				fetch(arss.cors+testurl),
+				new Promise((_, reject) => setTimeout(() => reject("timeout"), 1*1000)),
+			])
+			txt.bounce=await res.bounce.text()
+			if(txt.bounce)
+			{
+				console.log("found cors bouncer : "+arss.cors)
+				return "bounce"
+			}
+		}
+	}catch(e){console.error(e)}
+
+}
+
 //const fetch = require('fetch')
 
 // make sure we have a cache of the page available, no matter how old

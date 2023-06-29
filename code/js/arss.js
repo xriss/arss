@@ -63,6 +63,16 @@ arss.start=async function()
 		if( hostname == "xriss.github.io" ) { arss.cors = "https://cors.xixs.com:4444/" }
 	}
 
+	hoard.mode=await hoard.test_probe()
+	if(!hoard.mode)
+	{
+		alert("CORS is blocking access to feeds!\n\nPlease enable a CORS plugin or provide a CORS bouncer.\n\nYou can provide a CORS bouncer such as corsanywhere by adding ?cors=BOUNCERURL to this page or search for and enable a CORS extension from your browser menu.");
+		location.reload();
+	}
+	console.log("CORS is : "+hoard.mode)
+
+
+
 	await gist.setup()
 	
 	if( window.location.hash=="" || window.location.hash=="#" )
