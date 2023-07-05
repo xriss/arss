@@ -173,3 +173,13 @@ items.add=async function(it)
 	await db.set("items",item.uuid,item)
 }
 
+items.mark_readed=async function(uuid,value)
+{
+	if( typeof value == "undefined" ) { value=0 }
+	let item=await items.get(uuid)
+	if( item.readed!=value ) // only update if changed
+	{
+		item.readed=value
+		await items.set(item)
+	}
+}

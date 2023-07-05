@@ -159,6 +159,8 @@ feeds.list_length=0
 feeds.list_length_count=0
 feeds.fetch_all=async function()
 {
+	console.log("starting feeds fetch_all")
+
 	let rets=[]
 	let list=await db.list("feeds")
 	

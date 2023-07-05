@@ -674,6 +674,23 @@ display.feeds_js_checkbox_changed=async function(e)
 	await arss.save_gist()
 }
 
+display.item_checkbox_changed=async function(e)
+{
+	let div_item=display.div_lookup(this,"arss_item")
+	if(!div_item){ return } // required
+	
+	let url=div_item.id
+	
+	if( this.checked )
+	{
+		await items.mark_readed(url,1)
+	}
+	else
+	{
+		await items.mark_readed(url,0)
+	}
+}
+
 display.items=async function(showidx)
 {
 	items.add_count=0
@@ -702,6 +719,13 @@ display.items=async function(showidx)
 	}
 	
 	let items_list=await db.list("items",filter,"date","prev")
+	items_list.sort(function(a,b){
+		if(a.readed && !b.readed) { return 1 }
+		if(!a.readed && b.readed) { return -1 }
+		if(a.date>b.date) { return -1 }
+		if(a.date<b.date) { return 1 }
+		return 0
+	})
 	let count=0
 	let now=(new Date()).getTime()
 	for(let item of items_list)
@@ -719,10 +743,17 @@ display.items=async function(showidx)
 		const cleanhtml = sanihtml(item.html||"",allowtags)
 		let date=item.date.toISOString().split("T")
 		date=date[0]+" "+date[1].substring(0,5)
+		
+		let checked=""
+		
+		if(item.readed)
+		{
+			checked="checked"
+		}
 
 		aa.push(`
 <div class="arss_item" id="${cleanlink}">
-<div class="arss_item_link"><a href="${cleanlink}" target="_blank" ">${cleantitle}</a></div>
+<div class="arss_item_link"><input class="arss_item_checkbox" type="checkbox" ${checked} /> <a href="${cleanlink}" target="_blank" ">${cleantitle}</a></div>
 <div class="arss_item_date">${date}</div>
 <div class="arss_item_feed" url="${cleanfeed}" >${cleanfeedtitle}</div>
 <div>${cleanhtml}</div>
@@ -810,25 +841,32 @@ display.items=async function(showidx)
 		display_item_next=false // finish
 	}
 	let display_item_last=null
+	let display_item_timeout=null
 	let display_item=async function(e)
 	{
 		if(display_item_last==e) { return }
 		if(display_item_last) { display_item_last.classList.remove("active") }
 		display_item_last=e
 		e.classList.add("active")
-		display_item_safe(e.id)
-/*
-		if(!display_item_next) // if not spamming
+
+		if(display_item_timeout)
 		{
-			// auto pre cache next/prev pages
-			let el=e.nextSibling
-			while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.nextSibling }
-			if(el) { hoard.fetch_text(el.id) }
-			el=e.previousSibling
-			while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.previousSibling }
-			if(el) { hoard.fetch_text(el.id) }
+			window.clearTimeout(display_item_timeout)
 		}
-*/
+		display_item_timeout=window.setTimeout(async function(){
+			if( display_item_last == e )
+			{
+				let c=e.querySelector(".arss_item_checkbox")
+				if(c)
+				{
+					await items.mark_readed(e.id,1)
+					c.checked = true
+				}
+			}
+		}, 3*1000) // if still viewed after 3 secs then mark as read
+
+		display_item_safe(e.id)
+
 	}
 
 	let top=function(e)
@@ -873,6 +911,11 @@ display.items=async function(showidx)
 	for(let e of document.getElementsByClassName("arss_item_feed") )
 	{
 		e.onclick=display.items_feed_select
+	}
+
+	for(let e of document.getElementsByClassName("arss_item_checkbox") )
+	{
+		e.onchange=display.item_checkbox_changed
 	}
 
 
