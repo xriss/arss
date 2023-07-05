@@ -158,6 +158,10 @@ can also be used to "log you into your ARSS account" on a new browser.
 `))
 
 	parent.append(display.element(`
+<div class="arss_info_butt" id="arss_info_butt_mark_read">Mark all items as read.</div>
+`))
+
+	parent.append(display.element(`
 <div class="arss_info_butt" id="arss_info_butt_empty_cache">Reload all cache.</div>
 `))
 
@@ -185,6 +189,7 @@ can also be used to "log you into your ARSS account" on a new browser.
 	document.getElementById("arss_info_butt_gist_token").onclick = display.gist_token
 //	document.getElementById("arss_info_butt_gist_disconnect").onclick = display.gist_disconnect
 
+	document.getElementById("arss_info_butt_mark_read").onclick = display.mark_read
 	document.getElementById("arss_info_butt_empty_cache").onclick = display.empty_cache
 	document.getElementById("arss_info_butt_empty_items").onclick = display.empty_items
 	document.getElementById("arss_info_butt_empty_feeds").onclick = display.empty_feeds
@@ -394,6 +399,23 @@ display.gist_disconnect=async function(e)
 {
 	await db.set("keyval","gist_token","")
 	display.reload()
+}
+
+display.mark_read=async function(e)
+{
+console.log("mark_read")
+	let items_list=await db.list("items")
+	let i=0
+	for(let item of items_list)
+	{
+		i=i+1
+		display.status(i+"/"+items_list.length)
+		if(item.readed!=1)
+		{
+			await items.mark_readed(item.uuid,1)
+		}
+	}
+	await display.empty_cache()
 }
 
 display.empty_cache=async function(e)
