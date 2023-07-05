@@ -863,7 +863,7 @@ display.items=async function(showidx)
 					c.checked = true
 				}
 			}
-		}, 3*1000) // if still viewed after 3 secs then mark as read
+		}, 2*1000) // if still viewed after 2 secs then mark as read
 
 		display_item_safe(e.id)
 
