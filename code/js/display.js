@@ -740,7 +740,7 @@ display.items=async function(showidx)
 		}
 	}
 	
-	let items_list=await db.list("items",filter,"date","prev")
+	let items_list=await db.list("items",filter,"date","prev",1000)
 	items_list.sort(function(a,b){
 		if(a.readed && !b.readed) { return 1 }
 		if(!a.readed && b.readed) { return -1 }

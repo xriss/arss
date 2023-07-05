@@ -102,7 +102,7 @@ db.delete=async function(table,key)
 	table=table||"keyval"
 	await db.handle.delete(table,key)
 }
-db.list=async function(table,filter,sort,sortdir)
+db.list=async function(table,filter,sort,sortdir,maxlength)
 {
 	table=table||"keyval"
 	filter=filter || {}
@@ -110,6 +110,13 @@ db.list=async function(table,filter,sort,sortdir)
 	const tx = db.handle.transaction(table, 'readonly');
 	const f=function(cursor)
 	{
+		if(maxlength)
+		{
+			if( rs.length >= maxlength )
+			{
+				return true
+			}
+		}
 		let it = { ...cursor.value }
 		let ok=true
 		for(let name in filter) // check filter object
@@ -120,20 +127,21 @@ db.list=async function(table,filter,sort,sortdir)
 		{
 			rs.push(it)
 		}
+		return false
 	}
 	if(sort)
 	{
 		const index=tx.store.index(sort)
 		for await (const cursor of index.iterate(null,sortdir))
 		{
-			f(cursor)
+			if( f(cursor) ) { break }
 		}
 	}
 	else
 	{
 		for await (const cursor of tx.store.iterate(null,sortdir))
 		{
-			f(cursor)
+			if( f(cursor) ) { break }
 		}
 	}
 	await tx.done;
