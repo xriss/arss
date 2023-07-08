@@ -837,7 +837,7 @@ display.items=async function(showidx)
 					{
 						let parts = new URL(".",url)
 						let baseurl=parts.origin+parts.pathname
-						html=aa.join(`<head><base href="${baseurl}" target="_blank" /><meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />`)
+						html=aa.join(`<head><base href="${baseurl}" target="_blank"/><meta name="referrer" content="no-referrer"/><meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />`)
 					}
 				}
 
