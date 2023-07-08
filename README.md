@@ -65,7 +65,7 @@ https://xriss.github.io/arss/?idb=delete&opml=https://images.ruk.ca/opml/peter_r
 
 If you link directly to an atom/rss feed instead of an opml then we 
 will pick it up and import just that feed so urls like 
-https://xriss.github.io/arss/?idb=delete&opml=http://feeds.bbci.co.uk/news/rss.xml#READ 
+https://xriss.github.io/arss/?idb=delete&opml=http://www.whatsonsteam.com/feed.rss#READ 
 can be used to auto reed a single feed in isolation.
 
 
