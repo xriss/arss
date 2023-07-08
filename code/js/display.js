@@ -833,7 +833,7 @@ display.items=async function(showidx)
 				if(html)
 				{
 					let aa=html.split(/<head[^>]*>/i)
-					if(aa.length==2)
+					if(aa.length>=2)
 					{
 						let parts = new URL(".",url)
 						let baseurl=parts.origin+parts.pathname
