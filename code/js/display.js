@@ -849,11 +849,11 @@ display.items=async function(showidx)
 				iframe.srcdoc=""
 				if(feed&&feed.js) // enable js
 				{
-					iframe.sandbox="allow-popups allow-scripts"
+					iframe.sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts"
 				}
 				else
 				{
-					iframe.sandbox="allow-popups"
+					iframe.sandbox="allow-popups allow-popups-to-escape-sandbox"
 				}
 				iframe.srcdoc=html
 				parent.append(iframe)
