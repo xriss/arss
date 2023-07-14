@@ -183,6 +183,11 @@ arss.save_gist=async function()
 	let jsn=await arss.save()
 	let txt=stringify(jsn,{space:" "})
 	await gist.write("arss.json",txt)
+
+// auto save an opml
+	let data=await feeds.build_opml()
+	await gist.write("subscriptions.opml",data)
+
 //	console.log(txt)
 }
 
