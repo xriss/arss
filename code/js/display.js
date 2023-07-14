@@ -111,7 +111,7 @@ A RSS ${arss.version}
 	parent.append(display.element(`
 <div class="arss_info_butt_info">
 
-Your CORS bypass method is ${CORS_METHOD}
+Your CORS bypass method is <b>${CORS_METHOD}</b>
 
 </div>
 `))
@@ -970,7 +970,6 @@ display.items=async function(showidx)
 
 
 	if("number"==typeof showidx){ display_item(parent.children[showidx]) }
-	display_item_last=null
 }
 
 display.items_feed_select=async function(e)

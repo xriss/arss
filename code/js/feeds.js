@@ -186,6 +186,13 @@ feeds.fetch_all=async function()
 				let testitem=(await db.list("items",{},"date","prev",1))[0] ; testitem=testitem && testitem.uuid
 				if( testitem != topitem )
 				{
+					let parent=document.getElementById('arss_list_read')
+					let id=parent && parent.children && parent.children[0] && parent.children[0].id
+					if(id)
+					{
+						await items.mark_readed(id,0) // mark top item as unread ( before refresh, so it will stay near the top )
+					}
+
 					display.items(0)
 					topitem=(await db.list("items",{},"date","prev",1))[0] ; topitem=topitem && topitem.uuid
 				}
