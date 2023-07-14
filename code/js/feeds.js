@@ -172,19 +172,30 @@ feeds.fetch_all=async function()
 		return ( b.items_date || 0 ) - ( a.items_date || 0 )
 	})
 	
+	let topitem=(await db.list("items",{},"date","prev",1))[0] ; topitem=topitem && topitem.uuid
+
 	for(let feed of list )
 	{
 		await feeds.cache(feed.url,feed)
 		await feeds.fetch(feed)
+
+		if(items.add_count>0)
+		{
+			if( document.getElementById('arss_list_read').parentElement.scrollTop==0 ) // at top, so refresh
+			{
+				let testitem=(await db.list("items",{},"date","prev",1))[0] ; testitem=testitem && testitem.uuid
+				if( testitem != topitem )
+				{
+					display.items(0)
+					topitem=(await db.list("items",{},"date","prev",1))[0] ; topitem=topitem && topitem.uuid
+				}
+			}
+		}
 	}
 
 	if(items.add_count>0)
 	{
 		display.status("+"+items.add_count)
-		if( document.getElementById('arss_list_read').parentElement.scrollTop==0 ) // at top, so refresh
-		{
-			display.items(0)
-		}
 	}
 	else
 	{
@@ -273,6 +284,7 @@ feeds.fetch=async function(feed)
 	}
 
 	feeds.list_length_count++
-	display.status(Math.floor(100*(feeds.list_length_count/feeds.list_length))+"% +"+items.add_count)
+//	display.status(Math.floor(100*(feeds.list_length_count/feeds.list_length))+"% +"+items.add_count)
+	display.status(feeds.list_length_count +"/"+ feeds.list_length + " +"+items.add_count)
 }
 

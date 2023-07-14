@@ -106,6 +106,34 @@ A RSS ${arss.version}
 </div>
 `))
 
+	let CORS_METHOD = hoard.mode + " " + ( arss.cors || "" )
+
+	parent.append(display.element(`
+<div class="arss_info_butt_info">
+
+Your CORS bypass method is ${CORS_METHOD}
+
+</div>
+`))
+
+
+if( hoard.mode == "bounce" )
+{
+	parent.append(display.element(`
+<div class="arss_info_butt_warn">
+
+All data is currently routed through a CORS bouncer server. <br/> <br/> 
+</b>${arss.cors}</b> <br/> <br/> Please note that it is better to use a 
+<a href="https://chrome.google.com/webstore/search/CORS">CORS browser 
+extension</a> and enable it for this site. A CORS bouncer  will always 
+be slower and unreliable.
+
+</div>
+`))
+}
+
+
+
 	parent.append(display.element(`
 <div class="arss_info_butt_info">
 
@@ -942,6 +970,7 @@ display.items=async function(showidx)
 
 
 	if("number"==typeof showidx){ display_item(parent.children[showidx]) }
+	display_item_last=null
 }
 
 display.items_feed_select=async function(e)
