@@ -144,6 +144,18 @@ hoard.fetch_text=async function(url,refresh)
 			}
 			it.status=res.status
 			it.text=await res.text()
+			
+			if(it.text=="undefined") { it.text="STATUS : "+it.status }
+			if(it.text.slice(0,4)=="%PDF") { it.text=`
+<html>
+<body>
+	<object data="${url}" type="application/pdf">
+		<a href="${url}">${url}</a>
+	</object>
+</body>
+</html>
+`			} // probably a pdf so no cache just link
+
 			if(it.text=="undefined") { it.text="STATUS : "+it.status }
 			if(it.text.length>hoard.maxsize*1024)
 			{
