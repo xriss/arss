@@ -862,7 +862,7 @@ display.items=async function(showidx)
 	// maybe squirt a base tag into the head so relative urls will still work?
 				if(html)
 				{
-					let aa=html.split("<head>")
+					let aa=html.split(/<head>/gi)
 					if(aa.length==2)
 					{
 						let parts = new URL(".",url)
