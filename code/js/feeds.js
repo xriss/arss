@@ -241,6 +241,7 @@ feeds.fetch=async function(feed)
 	try{
 		
 		console.log("fetching feed",feed)
+		let before_count=items.add_count
 		
 		let txt=await hoard.fetch_text(feed.url)
 
@@ -306,6 +307,12 @@ feeds.fetch=async function(feed)
 		}
 
 		await db.set("feeds",feed.url,feed) // save updated feed info
+
+		let count=items.add_count-before_count
+		if(count>0)
+		{
+			console.log("added "+count+" new items")
+		}
 	}catch(e){console.error(e)}
 	}
 
