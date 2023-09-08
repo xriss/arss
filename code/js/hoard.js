@@ -25,7 +25,7 @@ hoard.test_probe=async function()
 			console.log("Trying security theater")
 			res.theater=await Promise.race([
 				security_theater.fetch(testurl),
-				new Promise((_, reject) => setTimeout(() => reject("timeout"), 1*1000)),
+				new Promise((_, reject) => setTimeout(() => reject("timeout"), 2*1000)),
 			])
 			txt.theater=await res.theater.text()
 			if(txt.theater)
@@ -40,7 +40,7 @@ hoard.test_probe=async function()
 		console.log("Trying cors extension")
 		res.plain=await Promise.race([
 			fetch(testurl),
-			new Promise((_, reject) => setTimeout(() => reject("timeout"), 1*1000)),
+			new Promise((_, reject) => setTimeout(() => reject("timeout"), 2*1000)),
 		])
 		txt.plain=await res.plain.text()
 		if(txt.plain)
@@ -57,7 +57,7 @@ hoard.test_probe=async function()
 			console.log("Trying cors bouncer : "+arss.cors)
 			res.bounce=await Promise.race([
 				fetch(arss.cors+testurl),
-				new Promise((_, reject) => setTimeout(() => reject("timeout"), 1*1000)),
+				new Promise((_, reject) => setTimeout(() => reject("timeout"), 2*1000)),
 			])
 			txt.bounce=await res.bounce.text()
 			if(txt.bounce)
@@ -132,14 +132,14 @@ hoard.fetch_text=async function(url,refresh)
 			{
 				res=await Promise.race([
 					security_theater.fetch(url),
-					new Promise((_, reject) => setTimeout(() => reject("timeout"), 1*1000)),
+					new Promise((_, reject) => setTimeout(() => reject("timeout"), 2*1000)),
 				])
 			}
 			else
 			{
 				res=await Promise.race([
 					fetch(corsurl),
-					new Promise((_, reject) => setTimeout(() => reject("timeout"), 1*1000)),
+					new Promise((_, reject) => setTimeout(() => reject("timeout"), 2*1000)),
 				])
 			}
 			it.status=res.status
@@ -163,7 +163,7 @@ hoard.fetch_text=async function(url,refresh)
 			}
 			it.randage=Math.floor(Math.random() * hoard.maxage);
 			await db.set("hoard",url,it) // always write if we get here, errors will not write
-		}catch(e){console.error(e)}
+		}catch(e){console.error("failed url",url);console.error(e)}
 	}
 /*
 	if(oldtext)

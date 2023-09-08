@@ -164,6 +164,19 @@ feeds.fetch_all=async function()
 	let rets=[]
 	let list=await db.list("feeds")
 	
+	let url=window.location.hash.substring(1)
+	if(url && url.length>10) // only fetch this feed?
+	{
+		for(let feed of list )
+		{
+			if(feed.url==url)
+			{
+				list=[feed]
+				break
+			}
+		}
+	}
+	
 	feeds.list_length=list.length
 	feeds.list_length_count=0
 	
@@ -213,7 +226,10 @@ feeds.fetch_all=async function()
 	let items_list=await db.list("items",{},"date","prev")
 	for(let item of items_list )
 	{
-		await hoard.first_text(item.link)
+		if(item.link)
+		{
+			await hoard.first_text(item.link)
+		}
 	}
 
 }
@@ -223,6 +239,9 @@ feeds.fetch=async function(feed)
 	if(!feed.off) // check if the feed is turned off
 	{
 	try{
+		
+		console.log("fetching feed",feed)
+		
 		let txt=await hoard.fetch_text(feed.url)
 
 		try{ feed.rss=jxml.parse_xml(txt,jxml.xmap.rss) }
