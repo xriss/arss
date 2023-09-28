@@ -89,6 +89,7 @@ arss.start=async function()
 	display.all()
 
 	display.status(arss.version)
+	await feeds.precache()
 
 	await display.items(0)
 
@@ -168,8 +169,6 @@ arss.save=async function()
 
 arss.load_gist=async function()
 {
-console.log("GIST LOAD")
-
 	let data=await gist.read("arss.json")
 	if(data)
 	{
@@ -179,7 +178,6 @@ console.log("GIST LOAD")
 			await arss.load(jsn)
 		}
 	}
-console.log("GIST LOAD DONE")
 }
 arss.save_gist=async function()
 {

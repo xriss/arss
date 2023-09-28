@@ -18,6 +18,14 @@ const display = require('./display.js')
 
 feeds.cached={}
 
+feeds.precache=async function() // faster then individual cache, db is fecking slow
+{
+	for(let feed of await db.list("feeds"))
+	{
+		feeds.cache(feed.url,feed)
+	}
+}
+
 feeds.cache=async function(url,feed) // probably fast
 {
 	if(feed) { feeds.cached[url]=feed ; return feed }
@@ -67,19 +75,40 @@ feeds.prepare=function(feed)
 
 feeds.add=async function(it)
 {
-	let old=await db.get("feeds",it.url)
+
+	let changed=false
+
+	let old=await feeds.cache(it.url) // await db.get("feeds",it.url)
+
 	let feed={} // merge old and new here
 	if(old)
 	{
 		for(let n in old ){ feed[n]=old[n] }
 	}
-	for(let n in it ){ feed[n]=it[n] }
+	for(let n in it )
+	{
+		if( feed[n] != it[n] )
+		{
+			changed=true
+			feed[n]=it[n]
+		}
+	}
 	// maintain defaults
-	feed.date=feed.date||new Date()
-	feed.fails=feed.fails||0
-	await db.set("feeds",feed.url,feed)
+	if(feed.date===undefined)
+	{
+		changed=true
+		feed.date=new Date()
+	}
+	if(feed.fails===undefined)
+	{
+		changed=true
+		feed.fails=0
+	}
 	
-	feeds.cache(feed.url,feed)
+	if( changed )
+	{
+		await db.set("feeds",feed.url,feed)
+	}
 }
 
 
@@ -236,6 +265,7 @@ feeds.fetch_all=async function()
 
 feeds.fetch=async function(feed)
 {
+	display.status(feeds.list_length_count +"/"+ feeds.list_length + " +"+items.add_count)
 	if(!feed.off) // check if the feed is turned off
 	{
 	try{
@@ -317,7 +347,5 @@ feeds.fetch=async function(feed)
 	}
 
 	feeds.list_length_count++
-//	display.status(Math.floor(100*(feeds.list_length_count/feeds.list_length))+"% +"+items.add_count)
-	display.status(feeds.list_length_count +"/"+ feeds.list_length + " +"+items.add_count)
 }
 
