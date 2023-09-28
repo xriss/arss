@@ -13,10 +13,20 @@ const hoard = require('./hoard.js')
 const db = require('./db_idb.js')
 const jxml = require('./jxml.js')
 const display = require('./display.js')
+const stringify = require('json-stable-stringify')
 
 
 
 items.cached={}
+
+items.precache=async function() // faster then individual cache, db is fecking slow
+{
+	for(let item of await db.list("items"))
+	{
+		items.cache(item.uuid,item)
+	}
+}
+
 
 items.cache=async function(uuid,item) // probably fast
 {
@@ -154,7 +164,7 @@ items.prepare=function(item,feed)
 items.add_count=0
 items.add=async function(it)
 {
-	let old=await db.get("items",it.uuid)
+	let old=await items.cache(it.uuid) // db.get("items",it.uuid)
 	let item={}
 	if(old)
 	{
@@ -164,13 +174,20 @@ items.add=async function(it)
 	{
 		items.add_count++
 	}
-	for(let n in it ){ item[n]=it[n] }
+	for(let n in it )
+	{
+		item[n]=item[n]||it[n]
+	}
 	if(old) // old date has precedence
 	{
 		item.date=old.date||item.date
 	}
 	item.date=item.date||new Date() // make sure we have a date
-	await db.set("items",item.uuid,item)
+
+	if( stringify(old) != stringify(item) ) // something changed
+	{
+		await items.set(item)
+	}
 }
 
 items.mark_readed=async function(uuid,value)

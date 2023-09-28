@@ -90,6 +90,7 @@ arss.start=async function()
 
 	display.status(arss.version)
 	await feeds.precache()
+	await items.precache()
 
 	await display.items(0)
 

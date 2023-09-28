@@ -15,6 +15,7 @@ const jxml = require('./jxml.js')
 const items = require('./items.js')
 const gist = require('./gist.js')
 const display = require('./display.js')
+const stringify = require('json-stable-stringify')
 
 feeds.cached={}
 
@@ -75,9 +76,6 @@ feeds.prepare=function(feed)
 
 feeds.add=async function(it)
 {
-
-	let changed=false
-
 	let old=await feeds.cache(it.url) // await db.get("feeds",it.url)
 
 	let feed={} // merge old and new here
@@ -85,29 +83,14 @@ feeds.add=async function(it)
 	{
 		for(let n in old ){ feed[n]=old[n] }
 	}
-	for(let n in it )
-	{
-		if( feed[n] != it[n] )
-		{
-			changed=true
-			feed[n]=it[n]
-		}
-	}
+	for(let n in it ){ feed[n]=it[n] }
 	// maintain defaults
-	if(feed.date===undefined)
-	{
-		changed=true
-		feed.date=new Date()
-	}
-	if(feed.fails===undefined)
-	{
-		changed=true
-		feed.fails=0
-	}
+	feed.date=feed.date || new Date()
+	feed.fails=feed.fails || 0
 	
-	if( changed )
+	if( stringify(old) != stringify(feed) ) // something changed
 	{
-		await db.set("feeds",feed.url,feed)
+		await feeds.set(feed)
 	}
 }
 
