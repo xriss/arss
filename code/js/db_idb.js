@@ -14,6 +14,7 @@ db.name="arss"
 
 db.setup=async function()
 {
+console.log("DB OPEN")
 	let newdata=false
 	db.handle = await idb.openDB(db.name, 2, {
 		upgrade(handle) {
@@ -64,6 +65,7 @@ db.setup=async function()
 			}
 		}catch(e){console.error(e)}
 	}
+console.log("DB OPEN DONE")
 }
 
 db.close=async function()
