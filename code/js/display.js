@@ -296,7 +296,7 @@ display.hash_change=async function(e)
 	let feed=await feeds.cache(url)
 	let title=url
 	if(feed && feed.title) { title=feed.title }
-	window.document.title="ARSS on "+title
+	window.document.title=title+" my ARSS"
 }
 
 display.hash=function(hash)
