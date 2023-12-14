@@ -851,15 +851,25 @@ display.items=async function(showidx)
 				let feed
 				if(item && item.feed){feed=await feeds.cache(item.feed)}
 				
-				let html=await hoard.fast_text(url)
-	/*
-				if(html.length>((1024+512)*1024)) // this is some bullshit
+				let html=null				
+				// sniff mastodon
+				let au=url.split("/")
+				if(au.length==5)
 				{
-					html="This HTML page is bigger than 1024k so has been skipped, are you sure these people know how to HTML?"
+					if(au[3].slice(0,1)=="@")
+					{
+						if( /^\d+$/.test( au[4] ))
+						{
+							html=await hoard.fast_text(url+"/embed")
+						}
+					}
 				}
-	*/
+				if(!html)
+				{
+					html=await hoard.fast_text(url)
+				}
 
-	// maybe squirt a base tag into the head so relative urls will still work?
+// maybe squirt a base tag into the head so relative urls will still work?
 				if(html)
 				{
 					let aa=html.split(/<head>/gi)
@@ -869,6 +879,9 @@ display.items=async function(showidx)
 						let baseurl=parts.origin+parts.pathname
 						html=aa.join(`<head><base href="${baseurl}" target="_blank"/><meta name="referrer" content="no-referrer"/><meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />`)
 					}
+					// security bullshit needs removing
+					html=html.split('crossorigin="anonymous"').join('')
+					html=html.split('integrity="').join('integnoty="')
 				}
 
 				// remove + change + add so we do not create page history

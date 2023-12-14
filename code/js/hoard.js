@@ -104,7 +104,7 @@ hoard.fast_text=async function(url)
 // cache lasts from maxage to double maxage as a random thingy
 hoard.maxage=15*60*1000
 
-hoard.maxsize=512+1024
+hoard.maxsize=2*1024
 
 hoard.fetch_text=async function(url,refresh)
 {

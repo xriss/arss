@@ -56,6 +56,7 @@ db.setup=async function()
 				{url:"https://notshi.github.io/printscreen/blog/feed.xml",tags:"#QUIET"},
 				{url:"https://xixs.com/blog/feed.xml",tags:"#QUIET"},
 				{url:"https://4lfa.com/comic/feed.xml",tags:"#QUIET"},
+				{url:"https://mastodon.social/@xriss.rss",tags:"#QUIET"},
 			]
 			for(let it of its)
 			{
