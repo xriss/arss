@@ -16,6 +16,8 @@ const db = require('./db_idb.js')
 const jxml = require('./jxml.js')
 const hoard = require('./hoard.js')
 
+//const { Readability } = require('@mozilla/readability');
+
 const sanihtml = require('sanitize-html');
 
 display.element=function(html)
@@ -898,9 +900,22 @@ display.items=async function(showidx)
 				{
 					iframe.sandbox="allow-popups allow-popups-to-escape-sandbox"
 				}
+				
+/*
+				if(true)
+				{
+					let doc = document.implementation.createHTMLDocument('')
+					doc.open()
+					doc.write(html)
+					doc.close()
+					let article = new Readability(doc).parse();
+					console.log(article)
+					html=article.content
+				}
+*/
+				
 				iframe.srcdoc=html
 				parent.append(iframe)
-				
 			}
 		}
 		display_item_next=false // finish
