@@ -984,6 +984,7 @@ display.items=async function(showidx)
 		}
 	}
 
+/*
 	for(let e of document.getElementsByClassName("arss_item_date") )
 	{
 		e.onclick=display.items_feed_select
@@ -992,6 +993,7 @@ display.items=async function(showidx)
 	{
 		e.onclick=display.items_feed_select
 	}
+*/
 
 	for(let e of document.getElementsByClassName("arss_item_checkbox") )
 	{
