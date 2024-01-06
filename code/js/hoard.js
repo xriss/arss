@@ -6,11 +6,14 @@ See https://github.com/xriss/arss for full notice.
 
 */
 
-const hoard=exports
+let hoard={}
+export default hoard
 
-const db = require('./db_idb.js')
-const arss = require('./arss.js')
-const display = require('./display.js')
+
+import      arss      from "./arss.js"
+import      db        from "./db_idb.js"
+import      display   from "./display.js"
+
 
 hoard.test_probe=async function()
 {

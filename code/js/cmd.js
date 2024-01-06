@@ -7,11 +7,18 @@ See https://github.com/xriss/arss for full notice.
 
 */
 
-const cmd=exports;
+let cmd={}
+export default cmd
 
-const pfs=require("fs").promises
 
-const jml=require("./jxml.js")
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+
+import { promises as pfs }  from "fs"
+import          * as jml    from "./jxml.js"
 
 
 const ls=function(a) { console.log(util.inspect(a,{depth:null})); }
@@ -46,7 +53,7 @@ Test jxml code.
 // if global.argv is set then we are inside another command so do nothing
 if(!global.argv)
 {
-	var argv = require('yargs').argv
+	var argv = {_:process.argv}
 	global.argv=argv
 	cmd.parse(argv)
 	cmd.run(argv)

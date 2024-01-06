@@ -6,14 +6,18 @@ See https://github.com/xriss/arss for full notice.
 
 */
 
-const items=exports
+let items={}
+export default items
 
 
-const hoard = require('./hoard.js')
-const db = require('./db_idb.js')
-const jxml = require('./jxml.js')
-const display = require('./display.js')
-const stringify = require('json-stable-stringify')
+import      hoard     from "./hoard.js"
+import      db        from "./db_idb.js"
+import      jxml      from "./jxml.js"
+import      display   from "./display.js"
+
+import { configure } from 'safe-stable-stringify'
+const stringify = configure({})
+
 
 
 

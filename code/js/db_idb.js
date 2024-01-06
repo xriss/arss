@@ -6,9 +6,14 @@ See https://github.com/xriss/arss for full notice.
 
 */
 
-const db=exports
+let db={}
+export default db
 
-const idb = require( "idb/with-async-ittr" )
+
+import          * as idb  from "idb/with-async-ittr"
+
+
+
 
 db.name="arss"
 

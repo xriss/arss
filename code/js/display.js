@@ -6,19 +6,20 @@ See https://github.com/xriss/arss for full notice.
 
 */
 
-const display=exports
+let display={}
+export default display
 
-const arss = require('./arss.js')
-const gist = require('./gist.js')
-const feeds = require('./feeds.js')
-const items = require('./items.js')
-const db = require('./db_idb.js')
-const jxml = require('./jxml.js')
-const hoard = require('./hoard.js')
 
-//const { Readability } = require('@mozilla/readability');
+import      arss      from "./arss.js"
+import      gist      from "./gist.js"
+import      feeds     from "./feeds.js"
+import      items     from "./items.js"
+import      db        from "./db_idb.js"
+import      jxml      from "./jxml.js"
+import      hoard     from "./hoard.js"
 
-const sanihtml = require('sanitize-html');
+import      sanihtml  from "sanitize-html"
+
 
 display.element=function(html)
 {
@@ -471,7 +472,7 @@ display.empty_feeds=async function(e)
 
 display.add_feed=async function(e)
 {
-	feed_url=window.prompt("URL of feed to add.","");
+	let feed_url=window.prompt("URL of feed to add.","");
 	if(feed_url)
 	{
 		let feed={}

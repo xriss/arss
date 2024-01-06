@@ -6,7 +6,11 @@ See https://github.com/xriss/arss for full notice.
 
 */
 
-const jxml=exports
+let jxml={}
+export default jxml
+
+
+import          * as sax    from "sax"
 
 
 jxml.xmap={}
@@ -38,7 +42,6 @@ jxml.xmap.atom={
 }
 
 
-const sax=require('sax')
 
 jxml.sanistr=function(s)
 {
@@ -219,11 +222,6 @@ jxml.build_xml=function(data)
 
 	data=jxml.expand(data) // fully expand so every sub tag is an array
 	
-/*
-	let stringify = require('json-stable-stringify');
-	console.log(stringify(data,{space:" "}))
-*/
-
 	let parse
 	parse=function(it,paths)
 	{
@@ -270,10 +268,12 @@ jxml.build_xml=function(data)
 	return s
 }
 
+/*
 jxml.test=async function(argv)
 {
-	let stringify = require('json-stable-stringify');
-	let pfs=require("fs").promises
+	import { configure } from 'safe-stable-stringify'
+	const stringify = configure({})
+	import { promises as pfs } from 'fs'
 
 	argv.input=argv.input || "./plated/source/tmp/subscriptions.opml"
 	let txt=await pfs.readFile(argv.input,{ encoding: "utf8" })
@@ -283,4 +283,4 @@ jxml.test=async function(argv)
 
 	console.log(jxml.build_xml(ret))
 }
-
+*/

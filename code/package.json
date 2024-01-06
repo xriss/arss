@@ -1,7 +1,8 @@
 {
+  "type": "module",
   "name": "arss",
   "description": "A rss reader.",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "license": "MIT",
   "main": "js/cmd.js",
   "browserify": {
@@ -22,8 +23,8 @@
     "buffer": "^6.0.3",
     "fs": "^0.0.1-security",
     "idb": "^7.1.1",
-    "json-stable-stringify": "^1.0.2",
     "plated": "^0.0.89",
+    "safe-stable-stringify": "^2.4.3",
     "sanitize-html": "^2.10.0",
     "sax": "^1.2.4",
     "stream-browserify": "^3.0.0"

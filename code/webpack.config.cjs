@@ -32,13 +32,15 @@ module.exports = {
     maxEntrypointSize: 555555,
     maxAssetSize: 555555,
   },
+  experiments: {
+    outputModule: true,
+  },
   output: {
     path: path.resolve(__dirname, '../plated/source/js/'),
     filename: 'arss.js',
     globalObject: 'this',
     library: {
-      name: 'arss',
-      type: 'umd',
+      type: 'module',
     },
   },
 };

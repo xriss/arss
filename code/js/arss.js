@@ -6,19 +6,20 @@ See https://github.com/xriss/arss for full notice.
 
 */
 
-const arss=exports
-
-const stringify = require('json-stable-stringify')
-
-const jxml = require('./jxml.js')
-const db = require('./db_idb.js')
-const hoard = require('./hoard.js')
-const feeds = require('./feeds.js')
-const items = require('./items.js')
-const gist = require('./gist.js')
-const display = require('./display.js')
-
+let arss={}
+export default arss
   
+
+import { configure } from 'safe-stable-stringify'
+const stringify = configure({})
+import      jxml      from "./jxml.js"
+import      db        from "./db_idb.js"
+import      hoard     from "./hoard.js"
+import      feeds     from "./feeds.js"
+import      items     from "./items.js"
+import      gist      from "./gist.js"
+import      display   from "./display.js"
+
 function getQueryVariable(variable) {
 	return ret
 }

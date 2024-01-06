@@ -6,16 +6,20 @@ See https://github.com/xriss/arss for full notice.
 
 */
 
-const feeds=exports
+let feeds={}
+export default feeds
 
 
-const hoard = require('./hoard.js')
-const db = require('./db_idb.js')
-const jxml = require('./jxml.js')
-const items = require('./items.js')
-const gist = require('./gist.js')
-const display = require('./display.js')
-const stringify = require('json-stable-stringify')
+import      arss      from "./arss.js"
+import      display   from "./display.js"
+import      gist      from "./gist.js"
+import      items     from "./items.js"
+import      db        from "./db_idb.js"
+import      jxml      from "./jxml.js"
+import      hoard     from "./hoard.js"
+
+import { configure } from 'safe-stable-stringify'
+const stringify = configure({})
 
 feeds.cached={}
 
@@ -257,6 +261,7 @@ feeds.fetch=async function(feed)
 		let before_count=items.add_count
 		
 		let txt=await hoard.fetch_text(feed.url)
+console.log(txt)
 
 		try{ feed.rss=jxml.parse_xml(txt,jxml.xmap.rss) }
 		catch(e){}

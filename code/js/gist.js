@@ -6,14 +6,13 @@ See https://github.com/xriss/arss for full notice.
 
 */
 
-const gist=exports
-
-//const { GithubGist } = require('@vighnesh153/github-gist');
-const { Octokit } = require("@octokit/rest");
+let gist={}
+export default gist
 
 
-const db = require('./db_idb.js')
-const arss = require('./arss.js')
+import {    Octokit }  from "@octokit/rest"
+import      arss       from "./arss.js"
+import      db         from "./db_idb.js"
 
 /*
 
