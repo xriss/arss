@@ -261,7 +261,6 @@ feeds.fetch=async function(feed)
 		let before_count=items.add_count
 		
 		let txt=await hoard.fetch_text(feed.url)
-console.log(txt)
 
 		try{ feed.rss=jxml.parse_xml(txt,jxml.xmap.rss) }
 		catch(e){}

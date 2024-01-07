@@ -52,7 +52,7 @@ jxml.sanistr=function(s)
 		'>': '&gt;',
 		'"': '&quot;',
 	};
-	return s.replace(/[&<>"]/ig, (match)=>(map[match]));
+	return s.replace(/[&<>"]/ig, function(match){return map[match]});
 }
 
 /*
@@ -87,8 +87,8 @@ jxml.parse_xml=function(data,xmap)
 		return false
 	}
 
-	parser.onopentag=(node)=>{
-		tag="/"+node.name.toLowerCase()
+	parser.onopentag=function(node){
+		let tag="/"+node.name.toLowerCase()
 
 		let path=xpath.join("")+tag
 		let tagpath=opath.at(-1)+tag
@@ -113,7 +113,7 @@ jxml.parse_xml=function(data,xmap)
 //		console.log("+"+node.name+" "+path)
 	}
 
-	parser.onclosetag=(name)=>{
+	parser.onclosetag=function(name){
 		stack.pop()
 		top=stack.at(-1)
 		xpath.pop()
@@ -121,7 +121,7 @@ jxml.parse_xml=function(data,xmap)
 //		console.log("-"+name)
 	}
 
-	parser.ontext=(text)=>{
+	parser.ontext=function(text){
 		text=text.trim()
 		if(text!="") // ignore white space
 		{
@@ -139,11 +139,11 @@ jxml.parse_xml=function(data,xmap)
 	parser.oncdata=parser.ontext // oncdata is same function as ontext
 
 // maintain cdata text flag
-	parser.onopencdata=()=>{ cdata=true; }
-	parser.onclosecdata=()=>{ cdata=false; }
+	parser.onopencdata=function(){ cdata=true; }
+	parser.onclosecdata=function(){ cdata=false; }
 
 //throw any errors
-	parser.onerror=(e)=>{ throw new Error(e) }
+	parser.onerror=function(e){ throw new Error(e) }
 
 	parser.write(data);
 
