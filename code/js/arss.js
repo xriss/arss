@@ -76,17 +76,6 @@ arss.start=async function()
 
 	await gist.setup()
 	
-	if( window.location.hash=="" || window.location.hash=="#" )
-	{
-		if(gist.handle)
-		{
-			window.location.hash="#READ"
-		}
-		else
-		{
-			window.location.hash="#OPTS"
-		}
-	}
 	display.all()
 
 	display.status(arss.version)

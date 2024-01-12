@@ -20,6 +20,11 @@ import      hoard     from "./hoard.js"
 
 import      sanihtml  from "sanitize-html"
 
+// minimal
+let myencodeURIComponent=function(s)
+{
+	return s.replace( /[\=\&\%]/gi , encodeURIComponent )
+}
 
 display.element=function(html)
 {
@@ -49,10 +54,14 @@ display.all=function()
 	display.list()
 	display.drag()
 	display.opts()
-	display.page("read")
 
 	window.onhashchange = display.hash_change
 	display.hash_change()
+	
+	if( ! display.hash_args.page ) // first time
+	{
+		display.hash({page:"read"})
+	}
 
 }
 
@@ -87,9 +96,9 @@ display.bar=function()
 <div class="arss_butt" id="arss_butt_status">.</div>
 `))
 
-	document.getElementById("arss_butt_read").onclick = function(){display.hash("#READ")}
-	document.getElementById("arss_butt_feed").onclick = function(){display.hash("#FEED")}
-	document.getElementById("arss_butt_opts").onclick = function(){display.hash("#OPTS")}
+	document.getElementById("arss_butt_read").onclick = function(){display.hash({page:"read"})}
+	document.getElementById("arss_butt_feed").onclick = function(){display.hash({page:"feed"})}
+	document.getElementById("arss_butt_opts").onclick = function(){display.hash({page:"opts"})}
 
 }
 
@@ -292,27 +301,70 @@ display.drag=function()
 	}
 }
 
-display.hash_change=async function(e)
+display.hash_last=null
+display.hash_change=function(e)
 {
-	display.hash(window.location.hash)
+	if( display.hash_last === window.location.hash ) { return }
+	display.hash_last = window.location.hash
+
+	let hash={}
+	for(let a of display.hash_last.substring(1).split("&") )
+	{
+		let kv=a.split("=")
+		if( kv.length==2 )
+		{
+			hash[ decodeURIComponent(kv[0]) ] = decodeURIComponent(kv[1])
+		}
+	}
+
+	display.hash( hash )
+
+/*
 	let url=window.location.hash.substring(1)
 	let feed=await feeds.cache(url)
 	let title=url
 	if(feed && feed.title) { title=feed.title }
 	window.document.title=title+" my ARSS"
+*/
+
 }
 
+display.hash_args={}
+display.hash_mod=function(hash)
+{
+	for( let k in hash )
+	{
+		display.hash_args[k]=hash[k]
+	}
+	let aa=[]
+	for( let k in display.hash_args )
+	{
+		aa.push( encodeURIComponent(k)+"="+myencodeURIComponent(display.hash_args[k]) )
+	}
+	let shash="#"+aa.join("&")
+	display.hash_last=shash
+	window.location.hash=shash
+}
 display.hash=function(hash)
 {
 	if( hash )
 	{
-		if( window.location.hash != hash ) { window.location.hash=hash }
-		hash=hash.toUpperCase()
-		if(hash=="#READ") { display.page("read") } else
-		if(hash=="#FEED") { display.page("feed") } else
-		if(hash=="#OPTS") { display.page("opts") } else
-		display.page("read") // any other hash is a read filter
-		display.items(0)
+		let aa=[]
+		for( let k in hash )
+		{
+			aa.push( encodeURIComponent(k)+"="+myencodeURIComponent(hash[k]) )
+		}
+		let shash="#"+aa.join("&")
+		display.hash_last=shash
+		window.location.hash=shash
+		display.hash_args=hash
+		
+		if(hash.page=="feed") { display.page("feed") } else
+		if(hash.page=="opts") { display.page("opts") } else
+		{
+			display.page("read") // default to read
+			display.items(0)
+		}
 	}
 	return window.location.hash
 }
@@ -478,7 +530,7 @@ display.add_feed=async function(e)
 		let feed={}
 		feed.url=feed_url
 		await feeds.add(feed)
-		display.hash("#"+feed_url)
+//		display.hash("#"+feed_url)
 		display.reload()
 	}
 }
@@ -627,7 +679,7 @@ display.feeds_select=async function(e)
 	let feed=await db.get("feeds",url)
 	if(!feed){ return } // required
 
-	display.hash("#"+url) // read only this feed
+//	display.hash("#"+url) // read only this feed
 }
 
 display.feeds_delete=async function(e)
@@ -752,13 +804,15 @@ display.items=async function(showidx)
 	
 	let aa=[]
 	
-	let hash=display.hash()
+//	let hash=display.hash()
 	let filter={}
-	if( hash=="#READ" || hash=="#FEED" || hash=="#OPTS" || hash=="#" || hash=="" )
-	{
-		filter={} // no filter
-	}
-	else
+//	if( hash=="#READ" || hash=="#FEED" || hash=="#OPTS" || hash=="#" || hash=="" )
+//	{
+//		filter={} // no filter
+//	}
+//	else
+
+/*
 	{
 		let isfeed=await db.get("feeds",hash.substring(1))
 		if(isfeed)
@@ -770,7 +824,8 @@ display.items=async function(showidx)
 			filter={feed_tags:hash} // only this feed
 		}
 	}
-	
+*/
+
 	let items_list=await db.list("items",filter,"date","prev",1000)
 	items_list.sort(function(a,b){
 		if(a.readed && !b.readed) { return 1 }
@@ -917,6 +972,7 @@ display.items=async function(showidx)
 				
 				iframe.srcdoc=html
 				parent.append(iframe)
+				display.hash_mod({url:url})
 			}
 		}
 		display_item_next=false // finish
@@ -1020,6 +1076,6 @@ display.items_feed_select=async function(e)
 	let feed=await db.get("feeds",url)
 	if(!feed){ return } // required
 
-	display.hash("#"+url) // read only this feed
+//	display.hash("#"+url) // read only this feed
 }
 

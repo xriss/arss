@@ -10,7 +10,7 @@ let db={}
 export default db
 
 
-import          * as idb  from "idb/with-async-ittr"
+import          * as idb  from "idb"
 
 
 
