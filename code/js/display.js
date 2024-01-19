@@ -359,12 +359,7 @@ display.hash=function(hash)
 		window.location.hash=shash
 		display.hash_args=hash
 		
-		if(hash.page=="feed") { display.page("feed") } else
-		if(hash.page=="opts") { display.page("opts") } else
-		{
-			display.page("read") // default to read
-			display.items(0)
-		}
+		display.page(hash.page)
 	}
 	return window.location.hash
 }
@@ -380,6 +375,26 @@ display.reload=async function()
 
 display.page=function(name)
 {
+	if(name=="cors")
+	{
+	let parent=document.getElementsByTagName('body')[0]
+	parent.innerHTML=""
+
+	parent.append(display.element(`
+<div class="arss_info_butt_info">
+
+<p>CORS is blocking access to feeds!</p>
+
+<p>Please enable a CORS plugin or provide a CORS bouncer.</p>
+
+<p>You can provide a CORS bouncer such as corsanywhere by adding ?cors=BOUNCERURL to this page or search for and enable a CORS extension from your browser menu.</p>
+
+
+</div>
+`))
+
+	}
+	else
 	if(name=="read")
 	{
 		document.getElementById("arss_list_read").style.display="inline-block"

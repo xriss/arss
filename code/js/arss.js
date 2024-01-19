@@ -67,8 +67,10 @@ arss.start=async function()
 	hoard.mode=await hoard.test_probe()
 	if(!hoard.mode)
 	{
-		alert("CORS is blocking access to feeds!\n\nPlease enable a CORS plugin or provide a CORS bouncer.\n\nYou can provide a CORS bouncer such as corsanywhere by adding ?cors=BOUNCERURL to this page or search for and enable a CORS extension from your browser menu.");
-		location.reload();
+		display.page("cors")
+//		alert("CORS is blocking access to feeds!\n\nPlease enable a CORS plugin or provide a CORS bouncer.\n\nYou can provide a CORS bouncer such as corsanywhere by adding ?cors=BOUNCERURL to this page or search for and enable a CORS extension from your browser menu.");
+//		location.reload();
+		return
 	}
 	console.log("CORS is : "+hoard.mode)
 

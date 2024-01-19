@@ -15,12 +15,56 @@ import      db        from "./db_idb.js"
 import      display   from "./display.js"
 
 
+hoard.msg_send=function(msg)
+{
+	msg=msg || {}
+	msg.hoard=true
+	return new Promise((res, rej) => {
+
+		const channel = new MessageChannel()
+
+		channel.port1.onmessage = function(e)
+		{
+			channel.port1.close()
+			if (e.data.error)
+			{
+				rej(e.data.error)
+			}
+			else
+			{
+				res(e.data.result)
+			}
+		}
+
+		window.postMessage( msg , "*" , [channel.port2] )
+	})
+}
+
+// run a fetch in our worker
+hoard.msg_fetch=async function(url,opts)
+{
+	if(opts)
+	{
+		opts=JSON.parse(JSON.stringify(opts))	// remove possible functions that cannot be shared
+	}
+	let datauri=await hoard.msg_send({url:url,opts:opts } ) // pass up the chain
+	return await window.fetch.call(window,datauri) // create fake fetch response to a datauri
+}
+
+
+
 hoard.test_probe=async function()
 {
 	let testurl=location.protocol+"//google.com/"
 	
 	let res={}
 	let txt={}
+
+
+	if( chrome && chrome.runtime && chrome.runtime.sendMessage ) // we are an extension
+	{
+		return "msg"
+	}
 
 	try{
 		if(typeof security_theater !== 'undefined') // use my extension if available.
@@ -133,10 +177,21 @@ hoard.fetch_text=async function(url,refresh)
 			let res
 			if(typeof security_theater !== 'undefined') // use extension if available.
 			{
-				res=await Promise.race([
-					security_theater.fetch(url),
-					new Promise((_, reject) => setTimeout(() => reject("timeout"), 2*1000)),
-				])
+				if( hoard.mode == "theater" )
+				{
+					res=await Promise.race([
+						security_theater.fetch(url),
+						new Promise((_, reject) => setTimeout(() => reject("timeout"), 2*1000)),
+					])
+				}
+				else
+				if( hoard.mode == "msg" )
+				{
+					res=await Promise.race([
+						hoard.msg_fetch(url),
+						new Promise((_, reject) => setTimeout(() => reject("timeout"), 2*1000)),
+					])
+				}
 			}
 			else
 			{

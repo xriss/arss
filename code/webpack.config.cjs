@@ -13,6 +13,7 @@ let dd_version=dd_yy+"."+( ("0000"+dd_dd).slice(-5) )
 console.log("VERSION == "+dd_version)
 
 module.exports = {
+  devtool: false,
   plugins: [
 	new webpack.DefinePlugin({
 		__VERSION__: JSON.stringify(dd_version)
