@@ -1,0 +1,25 @@
+{
+
+	"description": "Just ARSSing around.",
+	"manifest_version": 3,
+	"name": "arss",
+	"version": "1.0",
+	"homepage_url": "https://github.com/xriss/arss",
+
+	"permissions": [
+        "tabs",
+		"nativeMessaging"
+	],
+
+	"host_permissions": [
+		"*://*/*"
+	],
+	
+	"action":{
+	},
+
+	"background": {
+		"service_worker": "js/worker.js"
+	}
+}
+
