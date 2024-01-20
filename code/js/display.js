@@ -449,30 +449,7 @@ display.load_opml=async function()
 
 display.save_opml=async function(e)
 {
-	let j={
- "/opml/head/title": "ARSS Reader",
- "/opml@version": "1.0",
- "/opml/body/outline": [],
-}
-
-	let out=j["/opml/body/outline"]
-	
-	let feeds=await db.list("feeds")
-	let now=(new Date()).getTime()
-	
-	for(let feed of feeds)
-	{
-		if(!feed.off) // disabled feeds are not exported
-		{
-			let it={}
-			it["@type"]="rss"
-			it["@xmlUrl"]=feed.url
-			it["@text"]=feed.title
-			it["@title"]=feed.title
-			out.push(it)
-		}
-	}
-	let x=jxml.build_xml(j)
+	let x=feeds.build_opml()
     
 	let link = document.createElement('a')
 	let data = "text/xml;charset=utf-8," + encodeURIComponent(x)
@@ -485,7 +462,7 @@ display.save_opml=async function(e)
 
 display.gist_token=async function(e)
 {
-	gist_token=window.prompt("Github gist token for persistent storage.","");
+	let gist_token=window.prompt("Github gist token for persistent storage.","");
 	if(gist_token)
 	{
 		await db.set("keyval","gist_token",gist_token)

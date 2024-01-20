@@ -154,21 +154,43 @@ feeds.add_opml=async function(data,url)
 
 feeds.build_opml=async function()
 {
-	let list=await db.list("feeds")
-	let data="<opml></opml>"
-	return data
+	let j={
+ "/opml/head/title": "ARSS Reader",
+ "/opml@version": "1.0",
+ "/opml/body/outline": [],
+}
+
+	let out=j["/opml/body/outline"]
+	
+	let feeds=await db.list("feeds")
+	let now=(new Date()).getTime()
+	
+	for(let feed of feeds)
+	{
+		if(!feed.off) // disabled feeds are not exported
+		{
+			let it={}
+			it["@type"]="rss"
+			it["@xmlUrl"]=feed.url
+			it["@text"]=feed.title
+			it["@title"]=feed.title
+			out.push(it)
+		}
+	}
+	let x=jxml.build_xml(j)
+	return x
 }
 
 feeds.load_opml=async function()
 {
-	let data=await gist.read("subscriptions.opml")
+	let data=await gist.read("arss.opml")
 	await feeds.add_opml(data)
 }
 
 feeds.save_opml=async function()
 {
 	let data=await feeds.build_opml()
-	await gist.write("subscriptions.opml",data)
+	await gist.write("arss.opml",data)
 }
 
 feeds.list_length=0

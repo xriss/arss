@@ -118,70 +118,18 @@ arss.start=async function()
 }
 
 
-// merge json settings with current datas
-arss.merge=async function(jsn)
-{
-	if(jsn.feeds)
-	{
-		for(let feed of jsn.feeds )
-		{
-			await feeds.add(feed)
-		}
-	}
-}
-
-// load json settings replacing current datas
-arss.load=async function(jsn)
-{
-	if(jsn.feeds)
-	{
-	}
-	await arss.merge(jsn)
-}
-
-// return a json of all current settings
-arss.save=async function()
-{
-	let jsn={}
-	
-	jsn.feeds=[]
-	let list=await db.list("feeds")
-	for(let feed of list )
-	{
-		let it={}
-		it.url=feed.url
-		it.title=feed.title
-		it.tags=feed.tags
-		if(feed.off){ it.off=feed.off }
-		if(feed.js){ it.js=feed.js }
-		jsn.feeds.push(it)
-	}
-	
-	return jsn
-}
-
 arss.load_gist=async function()
 {
-	let data=await gist.read("arss.json")
-	if(data)
+	let data_opml=await gist.read("arss.opml")
+	if(data_opml)
 	{
-		let jsn=JSON.parse(data)
-		if(jsn)
-		{
-			await arss.load(jsn)
-		}
+		await feeds.add_opml(data_opml)
 	}
 }
 arss.save_gist=async function()
 {
-	let jsn=await arss.save()
-	let txt=stringify(jsn,{space:" "})
-	await gist.write("arss.json",txt)
-
 // auto save an opml
 	let data=await feeds.build_opml()
-	await gist.write("subscriptions.opml",data)
-
-//	console.log(txt)
+	await gist.write("arss.opml",data)
 }
 
