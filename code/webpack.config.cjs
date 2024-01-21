@@ -2,6 +2,7 @@ const path = require('path');
 
 const webpack = require('webpack');
 const CopyPlugin = require("copy-webpack-plugin");
+var ZipPlugin = require('zip-webpack-plugin');
 
 
 let dd=new Date()
@@ -21,9 +22,15 @@ module.exports = {
 	}),
     new CopyPlugin({
       patterns: [
-        { from: "static/arss.css",       to: "arss.css" },
-        { from: "static/arss.worker.js", to: "arss.worker.js" },
+        { from: "static/manifest.json",        to: "manifest.json" },
+        { from: "static/index.html",        to: "index.html" },
+        { from: "static/index.js",          to: "index.js" },
+        { from: "static/arss.css",          to: "arss.css" },
+        { from: "static/arss.worker.js",    to: "arss.worker.js" },
       ],
+    }),
+    new ZipPlugin({
+      filename: 'arss.extension.zip',
     }),
   ],
   entry: './js/arss.js',
@@ -44,7 +51,7 @@ module.exports = {
     outputModule: true,
   },
   output: {
-    path: path.resolve(__dirname, '../plated/source/js/'),
+    path: path.resolve(__dirname, '../plated/source/'),
     filename: 'arss.js',
     globalObject: 'this',
     library: {
