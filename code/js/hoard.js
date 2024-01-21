@@ -61,13 +61,13 @@ hoard.test_probe=async function()
 	let txt={}
 
 
-	if( chrome && chrome.runtime && chrome.runtime.sendMessage ) // we are an extension
+	if( chrome && chrome.runtime && chrome.runtime.sendMessage ) // *we* are an installed extension
 	{
-		return "msg"
+		return "extension"
 	}
 
 	try{
-		if(typeof security_theater !== 'undefined') // use my extension if available.
+		if(typeof security_theater !== 'undefined') // use security theater extension if available.
 		{
 			console.log("Trying security theater")
 			res.theater=await Promise.race([
@@ -185,7 +185,7 @@ hoard.fetch_text=async function(url,refresh)
 					])
 				}
 				else
-				if( hoard.mode == "msg" )
+				if( hoard.mode == "extension" )
 				{
 					res=await Promise.race([
 						hoard.msg_fetch(url),
