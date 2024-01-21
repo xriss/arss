@@ -1,6 +1,7 @@
 const path = require('path');
 
 const webpack = require('webpack');
+const CopyPlugin = require("copy-webpack-plugin");
 
 
 let dd=new Date()
@@ -18,6 +19,12 @@ module.exports = {
 	new webpack.DefinePlugin({
 		__VERSION__: JSON.stringify(dd_version)
 	}),
+    new CopyPlugin({
+      patterns: [
+        { from: "static/arss.css",       to: "arss.css" },
+        { from: "static/arss.worker.js", to: "arss.worker.js" },
+      ],
+    }),
   ],
   entry: './js/arss.js',
   resolve: {

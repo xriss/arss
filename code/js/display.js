@@ -50,6 +50,18 @@ display.sanistr=function(s)
 
 display.all=function()
 {
+	let head=document.getElementsByTagName('head')[0]
+	head.append(display.element(`
+<link rel="stylesheet" href="./js/arss.css" />
+`))
+
+	let body=document.getElementsByTagName('body')[0]
+	body.innerHTML=`
+<div id="arss_bar" class="arss_bar" ></div>
+<div id="arss_list" class="arss_list" ></div>
+<iframe name="arss_page" id="arss_page" class="arss_page" sandbox="allow-popups" > </iframe>
+`
+
 	display.bar()
 	display.list()
 	display.drag()
