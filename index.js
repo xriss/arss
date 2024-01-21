@@ -1,5 +1,1 @@
-
-import arss from "./js/arss.js"
-
-arss.setup({})
-
+import arss from"./arss.js";arss.setup({});

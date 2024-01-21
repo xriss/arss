@@ -19,6 +19,6 @@
 	},
 
 	"background": {
-		"service_worker": "js/arss.worker.js"	}
+		"service_worker": "arss.worker.js"	}
 }
 
