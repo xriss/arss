@@ -52,7 +52,7 @@ display.all=function()
 {
 	let head=document.getElementsByTagName('head')[0]
 	head.append(display.element(`
-<link rel="stylesheet" href="./js/arss.css" />
+<link rel="stylesheet" href="./arss.css" />
 `))
 
 	let body=document.getElementsByTagName('body')[0]
