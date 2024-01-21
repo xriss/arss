@@ -401,7 +401,7 @@ display.page=function(name)
 
 <p>You can provide a CORS bouncer such as corsanywhere by adding ?cors=BOUNCERURL to this page or search for and enable a CORS extension from your browser menu.</p>
 
-<p>This website can also be *installed* as a chrome extension from <a href="https://xriss.github.io/arss/ext/arss-1.0.zip">arss-1.0.zip</a> to provide a CORS work around.</p>
+<p>This website can also be *installed* as a chrome extension from <a href="https://xriss.github.io/arss/arss.extension.zip">arss.extension.zip</a> to provide a CORS work around.</p>
 
 </div>
 `))
