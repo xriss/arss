@@ -413,6 +413,7 @@ display.page=function(name)
 		document.getElementById("arss_list_read").style.display="inline-block"
 		document.getElementById("arss_list_feed").style.display="none"
 		document.getElementById("arss_list_opts").style.display="none"
+		display.items(0)
 	}
 	else
 	if(name=="feed")

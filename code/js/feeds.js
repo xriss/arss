@@ -230,6 +230,7 @@ feeds.fetch_all=async function()
 		await feeds.cache(feed.url,feed)
 		await feeds.fetch(feed)
 
+/*
 		if(items.add_count>0)
 		{
 			if( document.getElementById('arss_list_read').parentElement.scrollTop==0 ) // at top, so refresh
@@ -249,6 +250,7 @@ feeds.fetch_all=async function()
 				}
 			}
 		}
+*/
 	}
 
 	if(items.add_count>0)
