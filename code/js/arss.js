@@ -84,8 +84,6 @@ arss.start=async function()
 	await feeds.precache()
 	await items.precache()
 
-	await display.items(0)
-
 	await arss.load_gist()
 
 	if( arss.query.opml ) // auto merge this opml
