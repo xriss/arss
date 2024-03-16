@@ -855,6 +855,7 @@ display.items=async function(showidx)
 		const cleanfeed = display.sanistr(item.feed)
 		const cleanfeedtitle = display.sanistr(item.feed_title)
 		const cleanhtml = sanihtml(item.html||"",allowtags)
+		const lmgtfylink = "https://www.google.com/search?q="+encodeURIComponent(cleantitle)
 		let date=item.date.toISOString().split("T")
 		date=date[0]+" "+date[1].substring(0,5)
 		let age=Math.floor(10 * ( ( now - item.date.getTime() )/(1000*60*60*24) ) )// 100% is 10 days
@@ -869,7 +870,7 @@ display.items=async function(showidx)
 
 		aa.push(`
 <div class="arss_item" id="${cleanlink}">
-<div class="arss_item_link"><input class="arss_item_checkbox" type="checkbox" ${checked} /> <a href="${cleanlink}" target="_blank" ">${cleantitle}</a></div>
+<div class="arss_item_link"><input class="arss_item_checkbox" type="checkbox" ${checked} /> <a href="${cleanlink}" target="_blank" >${cleantitle}</a><a href="${lmgtfylink}" target="_blank" class="arss_super_small" >LMGTFY</a></div>
 <div class="arss_item_date"><div class="arss_item_date_bar" style="width:${age}%"></div><div class="arss_item_date_text">${date}</div></div>
 <div class="arss_item_feed" url="${cleanfeed}" >${cleanfeedtitle}</div>
 <div>${cleanhtml}</div>
