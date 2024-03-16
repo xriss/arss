@@ -196,3 +196,11 @@ a.bar:hover	{background-color:#1400ff; border-bottom:none;}
 {
 	background:#f0f0f0;
 }
+
+.arss_super_small
+{
+	vertical-align: super;
+	line-height: 0;
+	font-size: x-small;
+	padding-left:8px;
+}
