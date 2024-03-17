@@ -20,6 +20,8 @@ import      hoard     from "./hoard.js"
 
 import      sanihtml  from "sanitize-html"
 
+import      urlParser from "js-video-url-parser"
+
 // minimal
 let myencodeURIComponent=function(s)
 {
@@ -856,6 +858,7 @@ display.items=async function(showidx)
 		const cleanfeedtitle = display.sanistr(item.feed_title)
 		const cleanhtml = sanihtml(item.html||"",allowtags)
 		const lmgtfylink = "https://www.google.com/search?q="+encodeURIComponent(cleantitle)
+
 		let date=item.date.toISOString().split("T")
 		date=date[0]+" "+date[1].substring(0,5)
 		let age=Math.floor(10 * ( ( now - item.date.getTime() )/(1000*60*60*24) ) )// 100% is 10 days
@@ -916,7 +919,9 @@ display.items=async function(showidx)
 				let feed
 				if(item && item.feed){feed=await feeds.cache(item.feed)}
 				
-				let html=null				
+				let html=null
+				let html_url=null
+				let no_sandbox=false
 				// sniff mastodon
 				let au=url.split("/")
 				if(au.length==5)
@@ -929,7 +934,18 @@ display.items=async function(showidx)
 						}
 					}
 				}
-				if(!html)
+				
+				const video=urlParser.parse(url)
+				if(video)
+				{
+					no_sandbox=true
+					if(video.provider=="youtube")
+					{
+						html_url="http://www.youtube.com/embed/"+video.id
+					}
+				}
+				
+				if( !html_url && !html )
 				{
 					html=await hoard.fast_text(url)
 				}
@@ -954,7 +970,11 @@ display.items=async function(showidx)
 				let parent = iframe.parentNode
 				iframe.remove()
 				iframe=display.element(`<iframe name="arss_page" id="arss_page" class="arss_page" style="width:${display.iframe_width}"/>`)
-				iframe.srcdoc=""
+//				iframe.srcdoc=""
+				if(no_sandbox)
+				{
+				}
+				else
 				if(feed&&feed.js) // enable js
 				{
 					iframe.sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts"
@@ -977,7 +997,8 @@ display.items=async function(showidx)
 				}
 */
 				
-				iframe.srcdoc=html
+				if( html_url ) { iframe.src=html_url }
+				if( html ) { iframe.srcdoc=html }
 				parent.append(iframe)
 				display.hash_mod({url:url})
 			}
