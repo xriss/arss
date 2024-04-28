@@ -61,17 +61,18 @@ hoard.test_probe=async function()
 	let txt={}
 
 
-	if( chrome && chrome.runtime && chrome.runtime.sendMessage ) // *we* are an installed extension
+	if( (typeof chrome != 'undefined') && chrome.runtime && chrome.runtime.sendMessage ) // *we* are an installed extension
 	{
 		return "extension"
 	}
 
 	try{
-		if(typeof security_theater !== 'undefined') // use security theater extension if available.
+		if(typeof security_theater_fetch !== 'undefined') // use security theater extension if available.
 		{
 			console.log("Trying security theater")
+			console.log(security_theater_fetch)
 			res.theater=await Promise.race([
-				security_theater.fetch(testurl),
+				security_theater_fetch(testurl),
 				new Promise((_, reject) => setTimeout(() => reject("timeout"), 2*1000)),
 			])
 			txt.theater=await res.theater.text()
@@ -175,12 +176,12 @@ hoard.fetch_text=async function(url,refresh)
 		it.date=new Date()
 		try{
 			let res
-			if(typeof security_theater !== 'undefined') // use extension if available.
+			if(typeof security_theater_fetch !== 'undefined') // use extension if available.
 			{
 				if( hoard.mode == "theater" )
 				{
 					res=await Promise.race([
-						security_theater.fetch(url),
+						security_theater_fetch(url),
 						new Promise((_, reject) => setTimeout(() => reject("timeout"), 2*1000)),
 					])
 				}
