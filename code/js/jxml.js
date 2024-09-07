@@ -10,7 +10,7 @@ let jxml={}
 export default jxml
 
 
-import          * as sax    from "sax"
+import  sax  from "sax"
 
 
 jxml.xmap={}

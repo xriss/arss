@@ -27,7 +27,7 @@
     "plated": "^0.0.100",
     "safe-stable-stringify": "^2.4.3",
     "sanitize-html": "^2.11.0",
-    "sax": "^1.3.0",
+    "sax": "^1.4.1",
     "stream-browserify": "^3.0.0"
   },
   "devDependencies": {
