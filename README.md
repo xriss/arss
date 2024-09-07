@@ -74,3 +74,6 @@ and find RSS feeds from peoples sites. I'd recommend prettying up the
 output opml file and manually editing it to remove the comment feeds 
 before importing it.
 
+To read my feed I recomend installing security-theater in a chrome like and then visiting
+https://xriss.github.io/arss/?idb=delete&opml=https://gist.githubusercontent.com/xriss/1ae83d25d088d102a0b633c3e59d3aa0/raw/4f7ed76a120b328983bb53021997dabc3f7dd9da/arss.opml
+Hint: It will take a while to fetch all the feeds so you can click on read while waiting to view partially downloaded feeds after a few seconds.
