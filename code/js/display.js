@@ -71,7 +71,7 @@ display.all=function()
 
 	window.onhashchange = display.hash_change
 	display.hash_change()
-	
+
 	if( ! display.hash_args.page ) // first time
 	{
 		display.hash({page:"read"})
@@ -148,10 +148,10 @@ if( hoard.mode == "bounce" )
 	parent.append(display.element(`
 <div class="arss_info_butt_warn">
 
-All data is currently routed through a CORS bouncer server. <br/> <br/> 
-</b>${arss.cors}</b> <br/> <br/> Please note that it is better to use a 
-<a href="https://chrome.google.com/webstore/search/CORS">CORS browser 
-extension</a> and enable it for this site. A CORS bouncer  will always 
+All data is currently routed through a CORS bouncer server. <br/> <br/>
+</b>${arss.cors}</b> <br/> <br/> Please note that it is better to use a
+<a href="https://chrome.google.com/webstore/search/CORS">CORS browser
+extension</a> and enable it for this site. A CORS bouncer  will always
 be slower and unreliable.
 
 </div>
@@ -163,8 +163,8 @@ be slower and unreliable.
 	parent.append(display.element(`
 <div class="arss_info_butt_info">
 
-You are are currently connected to <a target="_blank" 
-href="${gist.url}" >${gist.id}</a> If you wish to disconnect click the 
+You are are currently connected to <a target="_blank"
+href="${gist.url}" >${gist.id}</a> If you wish to disconnect click the
 token button and enter garbage.
 
 </div>
@@ -175,10 +175,10 @@ else
 	parent.append(display.element(`
 <div class="arss_info_butt_warn">
 
-You are are not currently connected to a github gist and I would advise 
-that you connect before clicking any other buttons. If you do not 
-connect then things will still work ( import an OPML and read away ) 
-but you must be aware that any changes you make can be lost in time, 
+You are are not currently connected to a github gist and I would advise
+that you connect before clicking any other buttons. If you do not
+connect then things will still work ( import an OPML and read away )
+but you must be aware that any changes you make can be lost in time,
 like tears in rain.
 
 </div>
@@ -192,12 +192,12 @@ like tears in rain.
 	parent.append(display.element(`
 <div class="arss_info_butt_info">
 
-This requires a github token with read / write access to your gists. 
-You can create one at <a target="_blank" 
-href="https://github.com/settings/tokens/new?scopes=gist">CREATE 
-TOKEN</a>. Make sure you copy it into your clipboard then click the 
-button above to input it and refresh the page. A private gist will be 
-created/reconnected and then used to store all your ARSS options. This 
+This requires a github token with read / write access to your gists.
+You can create one at <a target="_blank"
+href="https://github.com/settings/tokens/new?scopes=gist">CREATE
+TOKEN</a>. Make sure you copy it into your clipboard then click the
+button above to input it and refresh the page. A private gist will be
+created/reconnected and then used to store all your ARSS options. This
 can also be used to "log you into your ARSS account" on a new browser.
 
 </div>
@@ -239,7 +239,7 @@ can also be used to "log you into your ARSS account" on a new browser.
 
 	document.getElementById("arss_info_butt_load_opml_file").onchange = display.load_opml
 	document.getElementById("arss_info_butt_save_opml").onclick = display.save_opml
-	
+
 	document.getElementById("arss_info_butt_gist_token").onclick = display.gist_token
 //	document.getElementById("arss_info_butt_gist_disconnect").onclick = display.gist_disconnect
 
@@ -248,8 +248,8 @@ can also be used to "log you into your ARSS account" on a new browser.
 	document.getElementById("arss_info_butt_empty_items").onclick = display.empty_items
 	document.getElementById("arss_info_butt_empty_feeds").onclick = display.empty_feeds
 
-	
-	
+
+
 
 }
 
@@ -279,7 +279,7 @@ display.drag=function()
 {
 	let parent=document.getElementById('arss_bar')
 	let el=document.getElementById('arss_butt_drag')
-	
+
 	let width=0;
 
 	el.onmousedown=function(e)
@@ -287,7 +287,7 @@ display.drag=function()
 		e.preventDefault()
 
 		width=document.body.clientWidth
-		
+
 		let full=display.element(`
 <div style=' cursor:move; background:transparent; position:absolute; left:0px; right:0px; top:0px; bottom:0px; '></div>
 `)
@@ -303,7 +303,7 @@ display.drag=function()
 		full.onmousemove = function(e)
 		{
 			e.preventDefault()
-			
+
 			let f=Math.floor(100*(e.clientX+el.clientWidth)/width)
 			if(f<10){f=10}
 			if(f>90){f=90}
@@ -372,7 +372,7 @@ display.hash=function(hash)
 		display.hash_last=shash
 		window.location.hash=shash
 		display.hash_args=hash
-		
+
 		display.page(hash.page)
 	}
 	return window.location.hash
@@ -403,7 +403,9 @@ display.page=function(name)
 
 <p>You can provide a CORS bouncer such as corsanywhere by adding ?cors=BOUNCERURL to this page or search for and enable a CORS extension from your browser menu.</p>
 
-<p>This website can also be *installed* as a chrome extension from <a href="https://xriss.github.io/arss/arss.extension.zip">arss.extension.zip</a> to provide a CORS work around.</p>
+<p>This website will "just work" if you install this chrome extension from <a href="http://github.com/xriss/security-theater
+">http://github.com/xriss/security-theater
+</a> to provide a CORS work around.</p>
 
 </div>
 `))
@@ -444,7 +446,7 @@ display.load_opml=async function()
 		return new Promise(
 			function(resolve, reject)
 			{
-				let fp = new FileReader();  
+				let fp = new FileReader();
 				fp.onload = function()
 				{
 					resolve(fp.result )
@@ -457,7 +459,7 @@ display.load_opml=async function()
 	let data=await read(input.files[0])
 
 	await feeds.add_opml(data)
-	
+
 	await arss.save_gist()
 
 	display.reload()
@@ -466,7 +468,7 @@ display.load_opml=async function()
 display.save_opml=async function(e)
 {
 	let x=feeds.build_opml()
-    
+
 	let link = document.createElement('a')
 	let data = "text/xml;charset=utf-8," + encodeURIComponent(x)
 	link.setAttribute("href", "data:"+data)
@@ -548,10 +550,10 @@ display.add_feed=async function(e)
 display.feeds=async function()
 {
 	let aa=[]
-	
+
 	let feeds=await db.list("feeds")
 	let now=(new Date()).getTime()
-	
+
 	let tags={}
 	let parse_tags=function(s)
 	{
@@ -570,7 +572,7 @@ display.feeds=async function()
 	for(let feed of feeds)
 	{
 		parse_tags(feed.tags)
-		
+
 		let fails_style="display:none;"
 		let fails=display.sanistr(feed.fails)
 		if( ( (feed.fails||0)  > 0 ) || (feed.off) )
@@ -599,7 +601,7 @@ display.feeds=async function()
 		{
 			count=feed.items_count
 		}
-		
+
 		aa.push(`
 <div class="arss_feed" id="${cleanlink}">
 <div><input class="arss_feed_checkbox" type="checkbox" ${checked} /><a class="arss_feed_select" >${cleantitle}</a></div>
@@ -612,7 +614,7 @@ display.feeds=async function()
 </div>
 `)
 	}
-	
+
 	{
 		let ss=[]
 		for(let tag in tags)
@@ -623,8 +625,8 @@ display.feeds=async function()
 		}
 		aa.unshift( `<div class="arss_info"> `+ss.join(" ")+" </div>" ) // stick tag list at top
 	}
-	
-	document.getElementById('arss_list_feed').innerHTML = aa.join("")	
+
+	document.getElementById('arss_list_feed').innerHTML = aa.join("")
 
 	for(let e of document.getElementsByClassName("arss_feed_checkbox") )
 	{
@@ -650,12 +652,12 @@ display.feeds=async function()
 	{
 		e.onclick=display.feeds_delete
 	}
-	
+
 	for(let e of document.getElementsByClassName("arss_feed_select") )
 	{
 		e.onclick=display.feeds_select
 	}
-	
+
 
 }
 display.div_child=function(e,name)
@@ -682,7 +684,7 @@ display.feeds_select=async function(e)
 {
 	let div_feed=display.div_lookup(this,"arss_feed")
 	if(!div_feed){ return } // required
-	
+
 	let url=div_feed.id
 	let feed=await db.get("feeds",url)
 	if(!feed){ return } // required
@@ -694,7 +696,7 @@ display.feeds_delete=async function(e)
 {
 	let div_feed=display.div_lookup(this,"arss_feed")
 	if(!div_feed){ return } // required
-	
+
 	let url=div_feed.id
 	let feed=await db.get("feeds",url)
 	if(!feed){ return } // required
@@ -710,13 +712,13 @@ display.feeds_url_changed=async function(e)
 {
 	let div_feed=display.div_lookup(this,"arss_feed")
 	if(!div_feed){ return } // required
-	
+
 	let url=div_feed.id
 	let feed=await db.get("feeds",url)
 	if(!feed){ return } // required
-	
+
 	feed.url=this.value // set new url (which moves the feed)
-	
+
 	await feeds.set(feed)
 	await db.delete("feeds",url)
 	await arss.save_gist()
@@ -726,17 +728,17 @@ display.feeds_tags_changed=async function(e)
 {
 	let div_feed=display.div_lookup(this,"arss_feed")
 	if(!div_feed){ return } // required
-	
+
 	let url=div_feed.id
 	let feed=await db.get("feeds",url)
 	if(!feed){ return } // required
-	
+
 	let tags=this.value||""
 	tags=tags.trim()
 	tags=tags.toUpperCase()
 
 	feed.tags=this.value // set new tags
-	
+
 	await feeds.set(feed)
 	await arss.save_gist()
 }
@@ -745,15 +747,15 @@ display.feeds_checkbox_changed=async function(e)
 {
 	let div_feed=display.div_lookup(this,"arss_feed")
 	if(!div_feed){ return } // required
-	
+
 	let url=div_feed.id
 	let feed=await db.get("feeds",url)
 	if(!feed){ return } // required
-	
+
 	feed.off=!this.checked // set off status
-	
+
 	await feeds.set(feed)
-	
+
 	for(let it of div_feed.children)
 	{
 		if( it.classList.contains("arss_feed_fail") )
@@ -775,15 +777,15 @@ display.feeds_js_checkbox_changed=async function(e)
 {
 	let div_feed=display.div_lookup(this,"arss_feed")
 	if(!div_feed){ return } // required
-	
+
 	let url=div_feed.id
 	let feed=await db.get("feeds",url)
 	if(!feed){ return } // required
-	
+
 	feed.js=this.checked // set java script enabled status for feed
-	
+
 	await feeds.set(feed)
-	
+
 	await arss.save_gist()
 }
 
@@ -791,9 +793,9 @@ display.item_checkbox_changed=async function(e)
 {
 	let div_item=display.div_lookup(this,"arss_item")
 	if(!div_item){ return } // required
-	
+
 	let url=div_item.id
-	
+
 	if( this.checked )
 	{
 		await items.mark_readed(url,1)
@@ -809,9 +811,9 @@ display.items=async function(showidx)
 	items.add_count=0
 	document.getElementById('arss_list_read').innerHTML = ""
 //	display.status("")
-	
+
 	let aa=[]
-	
+
 //	let hash=display.hash()
 	let filter={}
 //	if( hash=="#READ" || hash=="#FEED" || hash=="#OPTS" || hash=="#" || hash=="" )
@@ -863,9 +865,9 @@ display.items=async function(showidx)
 		date=date[0]+" "+date[1].substring(0,5)
 		let age=Math.floor(10 * ( ( now - item.date.getTime() )/(1000*60*60*24) ) )// 100% is 10 days
 		if(age<0){age=0} ; if(age>100){age=100} // clamp to 0-100
-		
+
 		let checked=""
-		
+
 		if(item.readed)
 		{
 			checked="checked"
@@ -889,7 +891,7 @@ display.items=async function(showidx)
 	document.getElementById('arss_list_read').innerHTML = aa.join("")
 
 	let parent=document.getElementById('arss_list_read')
-	
+
 	let display_item_time=Date.now()
 	let display_item_next=null
 	let display_item_safe=async function(url)
@@ -899,16 +901,16 @@ display.items=async function(showidx)
 			display_item_next=url
 			return
 		}
-		
+
 		display_item_next=url // flag we are in update cycle
-		
+
 		let time=Date.now()
 		if( (time-display_item_time)  < 200 )// do not fast spam
 		{
 			await new Promise(resolve=>setTimeout(resolve, 200 ))
 		}
 		display_item_time=time
-		
+
 		url=null // force at least one loop
 		while( url != display_item_next ) // repeat untill we catch up
 		{
@@ -918,7 +920,7 @@ display.items=async function(showidx)
 				let item=await items.cache(url)
 				let feed
 				if(item && item.feed){feed=await feeds.cache(item.feed)}
-				
+
 				let html=null
 				let html_url=null
 				let no_sandbox=false
@@ -934,7 +936,7 @@ display.items=async function(showidx)
 						}
 					}
 				}
-				
+
 				const video=urlParser.parse(url)
 				if(video)
 				{
@@ -944,7 +946,7 @@ display.items=async function(showidx)
 						html_url="http://www.youtube.com/embed/"+video.id
 					}
 				}
-				
+
 				if( !html_url && !html )
 				{
 					html=await hoard.fast_text(url)
@@ -983,7 +985,7 @@ display.items=async function(showidx)
 				{
 					iframe.sandbox="allow-popups allow-popups-to-escape-sandbox"
 				}
-				
+
 /*
 				if(true)
 				{
@@ -996,7 +998,7 @@ display.items=async function(showidx)
 					html=article.content
 				}
 */
-				
+
 				if( html_url ) { iframe.src=html_url }
 				if( html ) { iframe.srcdoc=html }
 				parent.append(iframe)
@@ -1041,14 +1043,14 @@ display.items=async function(showidx)
 		var win = e.ownerDocument.defaultView
 		return rect.top + win.pageYOffset
 	}
-	
+
 	let lastx=0
 	let lasty=0
 	let mouseover=function(ev)
 	{
 		lastx=ev.clientX
 		lasty=ev.clientY
-		
+
 		let el=ev.target
 		while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.parentElement }
 		if(el){display_item(el)}
@@ -1096,7 +1098,7 @@ display.items_feed_select=async function(e)
 
 	let div_feed=display.div_child(div_item,"arss_item_feed")
 	if(!div_feed){ return } // required
-	
+
 	console.log(div_feed)
 	let url=div_feed.getAttribute("url")
 	console.log(url)

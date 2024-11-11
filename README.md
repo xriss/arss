@@ -20,7 +20,10 @@ bouncer in the browser which we will automatically use. So no extra
 bandwidth cost, very efficient, no bullshit. Technically this is also
 secure, although slightly evil.
 
-	http://github.com/xriss/security-theater
+http://github.com/xriss/security-theater
+
+Note that the above CORS plugin should be installed for
+https://xriss.github.io/arss/ to just work.
 
 Another way is to run a special chromium with security disabled like
 so.
@@ -33,11 +36,11 @@ Which allows everything.
 Some options can be passed in the URL for instance if you want to force
 the use of a CORS proxy
 
-	https://xriss.github.io/arss/?cors=https://cors-anywhere.herokuapp.com/
+https://xriss.github.io/arss/?cors=https://cors-anywhere.herokuapp.com/
 
 or maybe force a github token
 
-	https://xriss.github.io/arss/?gist=randomsupersecret
+https://xriss.github.io/arss/?gist=randomsupersecret
 
 or just read an OPML published on the web. This is a good way to use
 this app as a reader without connecting to github. I've included
@@ -45,7 +48,7 @@ someones ( I just googled and found
 https://ruk.ca/content/heres-my-opml ) public OPML file as it makes for
 a good demonstration of how this can simply work.
 
-	https://xriss.github.io/arss/?idb=delete&opml=https://images.ruk.ca/opml/peter_rukavina_blogroll.opml
+https://xriss.github.io/arss/?idb=delete&opml=https://images.ruk.ca/opml/peter_rukavina_blogroll.opml
 
 If you use a link like this while connected to github without the
 idb=delete it will pop up a confirm requester before merging all the
