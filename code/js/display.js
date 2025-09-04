@@ -95,6 +95,10 @@ display.bar=function()
 `))
 
 	parent.append(display.element(`
+<input class="arss_butt" id="arss_butt_anim" type="checkbox" />
+`))
+
+	parent.append(display.element(`
 <div class="arss_butt" id="arss_butt_read">READ</div>
 `))
 
@@ -109,6 +113,8 @@ display.bar=function()
 	parent.append(display.element(`
 <div class="arss_butt" id="arss_butt_status">.</div>
 `))
+
+	document.getElementById("arss_butt_anim").onclick = function(){display.anim_state()}
 
 	document.getElementById("arss_butt_read").onclick = function(){display.hash({page:"read"})}
 	document.getElementById("arss_butt_feed").onclick = function(){display.hash({page:"feed"})}
@@ -979,11 +985,11 @@ display.items=async function(showidx)
 				else
 				if(feed&&feed.js) // enable js
 				{
-					iframe.sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts"
+					iframe.sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-scripts"
 				}
 				else
 				{
-					iframe.sandbox="allow-popups allow-popups-to-escape-sandbox"
+					iframe.sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
 				}
 
 /*
@@ -1007,13 +1013,13 @@ display.items=async function(showidx)
 		}
 		display_item_next=false // finish
 	}
-	let display_item_last=null
+	display.item_last=null
 	let display_item_timeout=null
-	let display_item=async function(e)
+	display.item=async function(e)
 	{
-		if(display_item_last==e) { return }
-		if(display_item_last) { display_item_last.classList.remove("active") }
-		display_item_last=e
+		if(display.item_last==e) { return }
+		if(display.item_last) { display.item_last.classList.remove("active") }
+		display.item_last=e
 		e.classList.add("active")
 
 		if(display_item_timeout)
@@ -1021,7 +1027,7 @@ display.items=async function(showidx)
 			window.clearTimeout(display_item_timeout)
 		}
 		display_item_timeout=window.setTimeout(async function(){
-			if( display_item_last == e )
+			if( display.item_last == e )
 			{
 				let c=e.querySelector(".arss_item_checkbox")
 				if(c)
@@ -1053,7 +1059,7 @@ display.items=async function(showidx)
 
 		let el=ev.target
 		while(el && (!el.classList || !el.classList.contains("arss_item")) ){ el = el.parentElement }
-		if(el){display_item(el)}
+		if(el){display.item(el)}
 	}
 	for(let e of parent.children){e.onmouseover=mouseover}
 
@@ -1061,7 +1067,7 @@ display.items=async function(showidx)
 	{
 		let el=document.elementFromPoint(lastx,lasty)
 		while(el && !el.classList.contains("arss_item") ){ el = el.parentElement }
-		if(el){display_item(el)}
+		if(el){display.item(el)}
 		if(parent.parentElement.scrollTop==0) // hit top, maybe refresh
 		{
 			if(items.add_count>0)
@@ -1088,7 +1094,7 @@ display.items=async function(showidx)
 	}
 
 
-	if("number"==typeof showidx){ display_item(parent.children[showidx]) }
+	if("number"==typeof showidx){ display.item(parent.children[showidx]) }
 }
 
 display.items_feed_select=async function(e)
@@ -1108,4 +1114,62 @@ display.items_feed_select=async function(e)
 
 //	display.hash("#"+url) // read only this feed
 }
+
+display.anim_id=false
+display.anim_fps=4
+
+// start or stop slow scroll animation
+display.anim_state=function()
+{
+	if( display.anim_id )
+	{
+		clearTimeout(display.anim_id)
+		display.anim_id=false
+	}
+	
+	let checked=document.getElementById('arss_butt_anim').checked
+	display.anim_data={}
+	display.anim_id=setTimeout(display.anim_func,1000/display.anim_fps)
+}
+// perform a slow scroll animation
+display.anim_func=function()
+{
+	let checked=document.getElementById('arss_butt_anim').checked
+	if(!checked){return}
+	display.anim_id=setTimeout(display.anim_func,1000/display.anim_fps)
+	
+	if(!display.anim_data) { display.anim_data={} }
+	if(!display.anim_data.count) { display.anim_data.count=0 }
+
+	let arss_page=document.getElementById('arss_page')
+	let arss_list=document.getElementById('arss_list')
+	
+	let top=arss_page.contentWindow.document.documentElement.scrollTop
+	if(top===undefined) { return }
+
+	arss_page.contentWindow.document.documentElement.scrollTop+=1
+	if( top==arss_page.contentWindow.document.documentElement.scrollTop ) // end of scroll
+	{
+		display.anim_data.count+=1
+		if(display.anim_data.count>display.anim_fps*10)
+		{
+			display.anim_data.count=0
+			if(display.item_last)
+			{
+				let it=display.item_last.nextElementSibling
+				if(it)
+				{
+					it.scrollIntoView(true)
+					display.item(it)
+				}
+			}
+		}
+	}
+	else
+	{
+		display.anim_data.count=0
+	}
+}
+
+
 
