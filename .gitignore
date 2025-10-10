@@ -3,12 +3,4 @@
 /docs
 node_modules
 
-/plated/source/arss.css
-/plated/source/arss.extension.zip
-/plated/source/arss.js
-/plated/source/arss.js.LICENSE.txt
-/plated/source/arss.worker.js
-/plated/source/index.html
-/plated/source/index.js
-/plated/source/manifest.json
-
+/plated/source/jslib

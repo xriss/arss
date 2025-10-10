@@ -52,10 +52,12 @@ display.sanistr=function(s)
 
 display.all=function()
 {
+/*
 	let head=document.getElementsByTagName('head')[0]
 	head.append(display.element(`
 <link rel="stylesheet" href="./arss.css" />
 `))
+*/
 
 	let body=document.getElementsByTagName('body')[0]
 	body.innerHTML=`
@@ -1144,11 +1146,13 @@ display.anim_func=function()
 	let arss_page=document.getElementById('arss_page')
 	let arss_list=document.getElementById('arss_list')
 	
-	let top=arss_page.contentWindow.document.documentElement.scrollTop
+	let el=arss_page.contentWindow.document.documentElement
+	
+	let top=el.scrollTop
 	if(top===undefined) { return }
 
-	arss_page.contentWindow.document.documentElement.scrollTop+=1
-	if( top==arss_page.contentWindow.document.documentElement.scrollTop ) // end of scroll
+	el.scrollTop+=1
+	if( top==el.scrollTop ) // end of scroll when we do not move
 	{
 		display.anim_data.count+=1
 		if(display.anim_data.count>display.anim_fps*10)

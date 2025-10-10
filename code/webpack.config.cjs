@@ -51,7 +51,7 @@ module.exports = {
     outputModule: true,
   },
   output: {
-    path: path.resolve(__dirname, '../plated/source/'),
+    path: path.resolve(__dirname, '../plated/source/jslib'),
     filename: 'arss.js',
     globalObject: 'this',
     library: {
