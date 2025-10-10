@@ -1118,7 +1118,7 @@ display.items_feed_select=async function(e)
 }
 
 display.anim_id=false
-display.anim_fps=4
+display.anim_fps=1/4
 
 // start or stop slow scroll animation
 display.anim_state=function()
@@ -1148,14 +1148,18 @@ display.anim_func=function()
 	
 	let el=arss_page.contentWindow.document.documentElement
 	
-	let top=el.scrollTop
+	let top=el && el.scrollTop
 	if(top===undefined) { return }
-
-	el.scrollTop+=1
-	if( top==el.scrollTop ) // end of scroll when we do not move
+	top=Math.ceil(top)
+	let max=el.scrollHeight-el.clientHeight
+	let step=max/( display.anim_fps*120 )
+	if( step<2 ) { step=2 }
+	el.scrollTop=top+step
+	if( top+step>=max ) // end of scroll?
 	{
+//console.log(top,step,max)
 		display.anim_data.count+=1
-		if(display.anim_data.count>display.anim_fps*10)
+		if(display.anim_data.count>display.anim_fps*10) // wait 10 secs
 		{
 			display.anim_data.count=0
 			if(display.item_last)
