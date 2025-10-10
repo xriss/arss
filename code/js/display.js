@@ -1162,13 +1162,20 @@ display.anim_func=function()
 		if(display.anim_data.count>display.anim_fps*10) // wait 10 secs
 		{
 			display.anim_data.count=0
-			if(display.item_last)
+			if( items.add_count > 0 ) // get latest
 			{
-				let it=display.item_last.nextElementSibling
-				if(it)
+				display.items(0)
+			}
+			else
+			{
+				if(display.item_last)
 				{
-					it.scrollIntoView(true)
-					display.item(it)
+					let it=display.item_last.nextElementSibling
+					if(it)
+					{
+						it.scrollIntoView(true)
+						display.item(it)
+					}
 				}
 			}
 		}
