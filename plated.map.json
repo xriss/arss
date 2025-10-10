@@ -12,5 +12,12 @@
   "_root": "../",
   "_site": "{_root}",
   "_sourcename": "js/."
+ },
+ "jslib": {
+  "_dirname": "{_root}jslib",
+  "_filename": "{_root}jslib",
+  "_root": "../",
+  "_site": "{_root}",
+  "_sourcename": "jslib/."
  }
 }
