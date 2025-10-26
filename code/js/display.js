@@ -25,6 +25,7 @@ import      urlParser from "js-video-url-parser"
 // minimal
 let myencodeURIComponent=function(s)
 {
+	s=s.split("~").join("%7E") // urm ~ in patterns has trouble escaped?
 	return s.replace( /[\=\&\%]/gi , encodeURIComponent )
 }
 
@@ -1034,6 +1035,7 @@ display.items=async function(showidx)
 				if( html ) { iframe.srcdoc=html }
 				parent.append(iframe)
 //				display.hash_mod({url:url})
+//console.log(url,myencodeURIComponent(url))
 			}
 		}
 		display_item_next=false // finish
