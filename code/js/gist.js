@@ -28,7 +28,7 @@ https://microsoftedge.microsoft.com/addons/detail/cors-unblock/hkjklmhkbkdhlgnnf
 gist.setup=async function()
 {
 	
-	gist.filenameid="__ARSS_DATA_GIST__"
+	gist.filenameid="~ARSS_DATA_GIST"
 	gist.filewarning="This file is used by ARSS to find this data gist, please do not delete."
 	gist.files={}
 	gist.files[gist.filenameid]={ filename : gist.filenameid  , content : gist.filewarning }
@@ -100,6 +100,7 @@ gist.setup=async function()
 		else // create new
 		{
 			gist.data=await gist.octokit.rest.gists.create({
+				description:gist.filenameid,
 				files:gist.files,
 			})
 			gist.data=gist.data && gist.data.data

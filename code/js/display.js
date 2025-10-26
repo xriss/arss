@@ -814,6 +814,23 @@ display.item_checkbox_changed=async function(e)
 	}
 }
 
+display.html_sane=function(str,baseurl)
+{
+	let doc=( new DOMParser() ).parseFromString(str, 'text/html');
+
+	doc.querySelectorAll("head").forEach(function(item){
+		item.prepend( display.element(`<base href="${baseurl}" target="_blank"/>` ) )
+		item.prepend( display.element(`<meta name="referrer" content="no-referrer"/>` ) )
+		item.prepend( display.element(`<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />` ) )
+	})
+	doc.querySelectorAll("script").forEach(function(item){item.remove()})
+	doc.querySelectorAll("iframe").forEach(function(item){item.remove()})
+	doc.querySelectorAll("[crossorigin]").forEach(function(item){item.removeAttribute("crossorigin")})
+	doc.querySelectorAll("[integrity]").forEach(function(item){item.removeAttribute("integrity")})
+
+	return doc.firstElementChild.innerHTML;
+}
+
 display.items=async function(showidx)
 {
 	items.add_count=0
@@ -963,6 +980,10 @@ display.items=async function(showidx)
 // maybe squirt a base tag into the head so relative urls will still work?
 				if(html)
 				{
+					let partsurl = new URL(".",url)
+					let baseurl=partsurl.origin+partsurl.pathname
+					html=display.html_sane(html,baseurl)
+/*
 					let aa=html.split(/<head>/gi)
 					if(aa.length==2)
 					{
@@ -973,6 +994,7 @@ display.items=async function(showidx)
 					// security bullshit needs removing
 					html=html.split('crossorigin="anonymous"').join('')
 					html=html.split('integrity="').join('integnoty="')
+*/
 				}
 
 				// remove + change + add so we do not create page history
