@@ -824,6 +824,7 @@ display.html_sane=function(str,baseurl)
 		item.prepend( display.element(`<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />` ) )
 	})
 	doc.querySelectorAll("script").forEach(function(item){item.remove()})
+	doc.querySelectorAll("noscript").forEach(function(item){item.remove()})
 	doc.querySelectorAll("iframe").forEach(function(item){item.remove()})
 	doc.querySelectorAll("[crossorigin]").forEach(function(item){item.removeAttribute("crossorigin")})
 	doc.querySelectorAll("[integrity]").forEach(function(item){item.removeAttribute("integrity")})
@@ -1032,7 +1033,7 @@ display.items=async function(showidx)
 				if( html_url ) { iframe.src=html_url }
 				if( html ) { iframe.srcdoc=html }
 				parent.append(iframe)
-				display.hash_mod({url:url})
+//				display.hash_mod({url:url})
 			}
 		}
 		display_item_next=false // finish
